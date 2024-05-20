@@ -1,0 +1,321 @@
+<%- include('../partials/header') %>
+
+<main class="main">
+  <div
+    class="page-header text-center"
+    style="background-image: url('/assets/images/page-header-bg.jpg')"
+  >
+    <div class="container">
+      <h1 class="page-title">Shopping Cart<span>Shop</span></h1>
+    </div>
+    <!-- End .container -->
+  </div>
+  <!-- End .page-header -->
+  <nav aria-label="breadcrumb" class="breadcrumb-nav">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/productListPage">Products</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Shopping Cart
+        </li>
+      </ol>
+    </div>
+    <!-- End .container -->
+  </nav>
+  <!-- End .breadcrumb-nav -->
+
+  <div class="page-content">
+    <div class="cart">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-9">
+            <table
+              class="table table-cart table-mobile"
+              style="text-align: center"
+            >
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <% cartData.forEach((cart) => { %>
+                <tr class="cartProduct" id="cartProduct<%=cart%>">
+                  <td class="product-col">
+                    <div class="product" style="justify-content: space-evenly">
+                      <figure class="product-media">
+                        <a href="">
+                          <img
+                            src="/adminassets/uploads/<%= cart?.productId?.productImage[0]%>"
+
+                              
+                            alt=""
+                          />
+                        </a>
+                      </figure>
+                      <h3 class="product-title">
+                        <a href=""><%=cart?.productId?.productName%></a>
+                      </h3>
+                      <!-- End .product-title -->
+                    </div>
+                    <!-- End .product -->
+                  </td>
+                  <td class="price-col" id="price" name="price">
+                    ₹<%=cart?.productId?.productPrice%>
+                  </td>
+                  <td class="cart__update-wrapper cart-flex-item text-right">
+                    <div class="cart__qty text-center">
+                      <div class="qtyField">
+                        <button
+                          onclick="quantityminus('<%=cart.productId._id%>')"
+                        >
+                          <i class="icon icon-minus"></i>
+                        </button>
+                        &nbsp;
+                        <span
+                          id="productQuantity_<%=cart?.productId._id%>"
+                          name="productQuantity"
+                          ><%=cart?.productQuantity%></span
+                        >
+                        &nbsp;
+                        <button
+                          onclick="quantityMaximum('<%=cart.productId._id%>')"
+                        >
+                          <i class="icon icon-plus"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+
+                  
+
+                  <td
+                    class="total-col"
+                    id="totalCostProduct_<%=cart?.productId._id%>"
+                  >
+                    ₹<%=cart?.totalCostProduct %>
+                  </td>
+
+                  <td class="remove-col">
+                    <button
+                      onclick="deleteProduct('<%=cart._id%>')"
+                      class="btn-remove"
+                    >
+                      <i class="icon-close"></i>
+                    </button>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+            <!-- End .table table-wishlist -->
+
+            <div class="cart-bottom">
+              <!-- <div class="cart-discount">
+                                <form action="#">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" required placeholder="coupon code">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-primary-2" type="submit"><i class="icon-long-arrow-right"></i></button>
+                                        </div> -->
+              <!-- .End .input-group-append -->
+              <!-- </div> -->
+              <!-- End .input-group -->
+              <!-- </form> -->
+              <!-- </div> -->
+              <!-- End .cart-discount -->
+
+              <!-- <a href="#" class="btn btn-outline-dark-2"><span>UPDATE CART</span><i class="icon-refresh"></i></a> -->
+            </div>
+            <!-- End .cart-bottom -->
+          </div>
+          <!-- End .col-lg-9 -->
+          <aside class="col-lg-3">
+            <div class="summary summary-cart">
+              <h3 class="summary-title">Cart Total</h3>
+              <!-- End .summary-title -->
+
+              <table class="table table-summary">
+                <tbody>
+                  <!-- <tr class="summary-subtotal">
+                                        <td>Subtotal:</td>
+                                        <td>₹</td>
+                                    </tr> -->
+                  <!-- End .summary-subtotal -->
+                  <tr class="summary-shipping">
+                    <td>Shipping:</td>
+                    <td>&nbsp;</td>
+                  </tr>
+
+                  <tr class="summary-shipping-row">
+                    <td>
+                      <div class="custom-control custom-radio">
+                        <input
+                          type="radio"
+                          id="free-shipping"
+                          name="shipping"
+                          class="custom-control-input"
+                        />
+                        <label class="custom-control-label" for="free-shipping"
+                          >Free Shipping</label
+                        >
+                      </div>
+                      <!-- End .custom-control -->
+                    </td>
+                    <td>$0.00</td>
+                  </tr>
+                  <!-- End .summary-shipping-row -->
+
+                  <!-- <tr class="summary-shipping-estimate">
+                                        <td>Estimate for Your Country<br> <a href="dashboard.html">Change address</a></td>
+                                        <td>&nbsp;</td>
+                                    </tr> -->
+                  <!-- End .summary-shipping-estimate -->
+
+                  <tr class="summary-total">
+                    <td>Total:</td>
+                    <td id="grandTotal">₹</td>
+                  </tr>
+                  <!-- End .summary-total -->
+                </tbody>
+              </table>
+              <!-- End .table table-summary -->
+
+              <% if (cartData.length === 0) { %>
+              <a href="/checkoutPage">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary-2 btn-order btn-block"
+                >
+                  PROCEED TO CHECKOUT (Empty Cart)
+                </button>
+              </a>
+              <% } else { %>
+              <a href="/checkoutPage">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary-2 btn-order btn-block"
+                >
+                  PROCEED TO CHECKOUT
+                </button>
+              </a>
+              <% } %>
+            </div>
+            <!-- End .summary -->
+
+            <a href="/" class="btn btn-outline-dark-2 btn-block mb-3"
+              ><span>CONTINUE SHOPPING</span><i class="icon-refresh"></i
+            ></a>
+          </aside>
+          <!-- End .col-lg-3 -->
+        </div>
+        <!-- End .row -->
+      </div>
+      <!-- End .container -->
+    </div>
+    <!-- End .cart -->
+  </div>
+  <!-- End .page-content -->
+</main>
+<!-- End .main -->
+
+<script>
+  async function quantityminus(cartMinus) {
+    let response = await fetch(`/minusQuantity?id=${cartMinus}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    let result = await response.json();
+
+    if (result.lessminimum) {
+      await Swal.fire({
+        icon: "success",
+        title: "Less the Quantity",
+      });
+
+      document.getElementById(`productQuantity_${cartMinus}`).textContent =
+        result.updateQuantity;
+      document.getElementById(`totalCostProduct_${cartMinus}`).textContent =
+        result.updateTotalCoast;
+    }
+
+    if (result.minimum) {
+      await Swal.fire({
+        icon: "error",
+        title: "Minimum Quantity",
+      });
+    }
+  }
+</script>
+
+<script>
+  async function quantityMaximum(cartMaximum) {
+    let response = await fetch(`/maximumQuantity?id=${cartMaximum}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    let result = await response.json();
+
+    if (result.addQuantity) {
+      await Swal.fire({
+        icon: "success",
+        title: "Adding Quantity",
+      });
+
+      document.getElementById(`productQuantity_${cartMaximum}`).textContent =
+        result.updateQuantity;
+      document.getElementById(`totalCostProduct_${cartMaximum}`).textContent =
+        result.updateTotalCoast;
+    }
+
+    if (result.maximum) {
+      await Swal.fire({
+        icon: "error",
+        title: "Maximum Quantity",
+      });
+    }
+  }
+</script>
+
+<script>
+  async function deleteProduct(productId) {
+    let result = await Swal.fire({
+      title: "Are You sure",
+      text: "You won't be able to revert this!",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Delete",
+    });
+
+    if (result.isConfirmed) {
+      const response = await fetch(`/delete?id=${productId}`, {
+        method: "DELETE",
+      });
+      let res = await response.json();
+
+      if (res.success) {
+        await Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+        });
+
+        window.location.reload();
+      }
+    } else {
+      let cartProduct = document.getElementById("cartProduct" + productId);
+      if (cartProduct) {
+        cartProduct.style.display = "none";
+      }
+    }
+  }
+</script>
+
+<%- include ('../partials/footer') %>

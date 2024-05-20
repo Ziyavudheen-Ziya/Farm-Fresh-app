@@ -1,0 +1,299 @@
+<%- include('../partials/header') %>
+
+
+
+
+
+<style>
+    
+
+    .container-profiledetails {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    .transaction {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .transaction .amount {
+        font-weight: bold;
+    }
+
+    .transaction .date {
+        font-size: 12px;
+        color: #777;
+    }
+
+    .transaction .description {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .user-details {
+        margin-bottom: 20px;
+    }
+
+    .user-details p {
+        margin: 5px 0;
+    }
+
+    .user-details strong {
+        font-weight: bold;
+    }
+
+    .credit-transactions h2,
+    .debit-transactions h2 {
+        font-size: 24px;
+        color: #007bff;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 5px;
+    }
+
+    .container-profiledetails h1 {
+    font-size: 36px;
+    color: #c96;
+    text-align: center;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    border-bottom: 2px solid#c96;
+    padding-bottom: 10px;
+    }
+
+    .responsive-table th.active{
+        background-color: #d9e4f0;
+    }
+
+   
+    .responsive-table th {
+            width: 100%;
+            text-align: center;
+            padding: 5px;
+        }
+
+
+@media (max-width: 767px) {
+    .responsive-table { 
+        justify-content: center;
+        text-align: center;
+        display: flex !important;
+        width: 100%;
+    }
+
+    .responsive-table tr {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        margin-bottom: 10px;
+    }
+
+    .responsive-table th {
+        width: 100%;
+        text-align: center;
+        padding: 5px;
+    }
+
+    .responsive-table th.active {
+        background-color: #d9e4f0; /* Active column background color */
+        color: #fff; /* Active column text color */
+    }
+
+    
+}
+
+
+</style>
+
+
+        <div class="container profile-container">
+            <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+        		<div class="container">
+        			<h1 class="page-title"><span>Profile</span></h1>
+        		</div><!-- End .container -->
+        	</div><!-- End .page-header -->
+            <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+                <div class="container">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                    </ol>
+                </div><!-- End .container -->
+            </nav><!-- End .breadcrumb-nav -->
+            <hr>
+            
+            <!-- <table style="width: 100%;">               
+                <tr style="display: flex; justify-content: space-evenly;">
+                    <th>
+                        <a href="#">Profile</a>
+                    </th>
+                    <th>
+                        <a href="/profileChangePassword">Change Password</a>
+                    </th>
+                    <th>
+                        <a href="/addAddress">Add address</a>
+                    </th>
+                    <th>
+                        <a href="/myAddress">My address</a>
+                    </th>
+                    <th>
+                        <a href="/profile/userOrders">My Orders</a>
+                    </th>
+                </tr>    
+            </table> -->
+            <table class="responsive-table" style="width: 100%;">
+                <tr style="display: flex; justify-content: space-evenly;">
+                    <th class="active">
+                        <a href="#">Profile</a>
+                    </th>
+                    <th>
+                        <a href="/changePassword">Change Password</a>
+                    </th>
+                    <th>
+                        <a href="/addAddress">Add address</a>
+                    </th>
+                    <th>
+                        <a href="/myAddress">My address</a>
+                    </th>
+                    <th>
+                        <a href="/myOrdersPage">My Orders</a>
+                    </th>
+                </tr>
+            </table>
+            
+            <hr>
+
+            <div class="container-profiledetails">
+                <h1>User Profile</h1>
+                
+                <div class="user-details">
+                    <p><strong>Name :<%=userData?.name%></strong>  </p>
+                    <p><strong>Phone :<%=userData?.phone%> </strong></p>
+                    <p><strong>Email :<%=userData?.email%> </strong> </p>
+                    <div class="text-center" style="margin-bottom: 20px;">
+                        <a href="/editProfile" class="btn btn-outline-primary-2">
+                            <span>Edit</span>
+                            <i class="icon-long-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="referralCode"><strong>Referral Code:</strong></label>
+                        <div style="display: flex; align-items: center;">
+                            <input type="text" class="form-control" id="referralText" aria-describedby="emailHelp" value="" disabled>
+                            <button type="submit" id="copyReferral" class="btn btn-primary" style="margin-left: 10px;">Copy</button>
+                        </div>
+                    </div>
+
+                    <!-- Add more user details as needed -->
+                </div>
+            
+                <hr>
+                
+                <h1>Wallet Transactions</h1>
+                <h3 style="text-align: center; color: #70b5fa;">Wallet Balance : </h3>
+                
+                <div class="credit-transactions">
+                    <h2>Credit Transactions</h2>
+
+                            <div class="transaction">
+                                <div class="amount" style="color: green;"></div>
+                                <div class="date"></div>
+                                <div class="description"></div>
+                            </div>
+
+                       
+
+                        
+
+                        <div class="debit-transactions">
+                            <h2>Debit Transactions</h2>
+                          
+
+                                <div class="transaction">
+                                    <div class="amount" style="color: red;"></div>
+                                    <div class="date"></div>
+                                    <div class="description"></div>
+                                </div>
+
+                
+
+                        </div>
+
+
+            </div>
+            
+            
+            
+            
+    
+            
+
+    
+            <hr>
+    
+            <!-- <div class="row">
+                <div class="col-md-6">
+                    <div class="address-section">
+                        <h2>Address</h2>
+                        <p><strong>Street:</strong> 123 Main St</p>
+                        <p><strong>City:</strong> Cityville</p>
+                        <p><strong>Zip Code:</strong> 12345</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="edit-form" id="editForm">
+                        <h2>Edit Address</h2>
+                        <form id="addressForm">
+                            <div class="form-group">
+                                <label for="street">Street:</label>
+                                <input type="text" class="form-control" id="street" name="street" placeholder="Enter street">
+                            </div>
+                            <div class="form-group">
+                                <label for="city">City:</label>
+                                <input type="text" class="form-control" id="city" name="city" placeholder="Enter city">
+                            </div>
+                            <div class="form-group">
+                                <label for="zip">Zip Code:</label>
+                                <input type="text" class="form-control" id="zip" name="zip" placeholder="Enter zip code">
+                            </div>
+                            <button type="button" class="btn btn-primary" onclick="saveChanges()">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div> -->
+        
+            
+        </div>
+
+
+        <script>
+
+              
+        </script>
+
+
+
+
+        <%- include ('../partials/footer') %>
+
+
+
+
+
+
+

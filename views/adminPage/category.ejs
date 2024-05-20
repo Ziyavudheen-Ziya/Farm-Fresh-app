@@ -1,0 +1,366 @@
+<%- include('../adminpartials/adminheader') %>
+
+<style>
+  footer.main-footer {
+    bottom: 0;
+    padding: 30px 3%;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    height: 60px;
+    display: none;
+  }
+</style>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- jQuery Validation plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<section class="section-padding pb-0">
+  <button
+    type="button"
+    class="btn btn-primary"
+    data-toggle="modal"
+    data-target="#exampleModal"
+  >
+    Add Category
+  </button>
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Category</h5>
+        </div>
+        <div class="modal-body">
+          <form id="addCat">
+            <div class="form-outline mb-4">
+              <input
+                type="text"
+                placeholder="Category"
+                name="categoryname"
+                id="categoryname"
+                class="form-control"
+              />
+            </div>
+
+            <div class="form-outline mb-4">
+              <input
+                type="text"
+                placeholder="Category Description"
+                name="categorydescription"
+                id="categorydescription"
+                class="form-control pb-5"
+              />
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-primary">
+                Save changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $("#addCat").validate({
+      rules: {
+        categoryname: {
+          required: true,
+        },
+        categorydescription: {
+          required: true,
+        },
+      },
+
+      submitHandler: async (form, event) => {
+        event.preventDefault();
+
+        let formData = {
+          categoryName: form.categoryname.value,
+          categoryDescription: form.categorydescription.value,
+        };
+
+        let response = await fetch("/addCategory", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+
+        let result = await response.json();
+
+        if (result.success) {
+          await Swal.fire({
+            icon: "success",
+            title: "Category Added",
+          });
+          window.location.reload();
+        } else {
+          await Swal.fire({
+            icon: "error",
+            title: "Category Already Exists",
+          });
+          window.location.reload();
+        }
+      },
+    });
+  </script>
+   
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">Category Name</th>
+        <th scope="col">Description</th>
+        <th scope="col">List/Unlist</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      
+      <% Category.forEach((category)=>{ %>
+         
+
+      <tr>
+        <th scope="row"><%= category.categoryname %></th>
+
+        <td><%= category.categoryDescription %></td>
+
+        <% if(category.isListed){%>
+
+        <td>
+          <button
+            id="unList<%= category.categoryname %>"
+            type="button"
+            onclick="fnList('<%= category.categoryname %>')"
+            class="btn btn-danger"
+          >
+            Unlist
+          </button>
+        </td>
+
+        <% }else{%>
+
+        <td>
+          <button
+            id="list<%= category.categoryname %>"
+            type="button"
+            onclick="fnUnlist('<%= category.categoryname %>')"
+            class="btn btn-success"
+          >
+            List
+          </button>
+        </td>
+
+        <% } %>
+
+        <td>
+          <button
+            id="unblock<%category%>"
+            data-target="#categoryModel<%=category._id%>"
+            data-toggle="modal"
+            type="button"
+            class="btn btn-info"
+          >
+            Edit
+          </button>
+        </td>
+      </tr>
+
+      <div
+        class="modal fade"
+        id="categoryModel<%=category._id%>"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Category</h5>
+            </div>
+            <div class="modal-body">
+              <form id="categoryEdit<%=category._id%>">
+                <div class="form-outline mb-4">
+                  <input
+                    type="text"
+                    placeholder="Category"
+                    title="Please Enter Atleast 3 Charcter"
+                    minlength="3"
+                    maxlength="20"
+                    value="<%=category.categoryname%>"
+                    name="categoryNameEdit"
+                    id="categoryNameEdit"
+                    class="form-control"
+                  />
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input
+                    type="text"
+                    placeholder="Category Description"
+                    title="Please Enter Valid Description"
+                    minlength="3"
+                    maxlength="20"
+                    value="<%=category.categoryDescription%>"
+                    name="categoryDescriptionEdit"
+                    id="categoryDescriptionEdit"
+                    class="form-control pb-5"
+                  />
+                </div>
+
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+
+                  <button type="submit" class="btn btn-primary">
+                    Save changes
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+
+
+        $("#categoryEdit<%=category._id%>").validate({
+          rules: {
+            "categoryNameEdit": {
+              required:true
+              
+            },
+
+            "categoryDescriptionEdit": {
+              required: true,
+
+              
+            },
+          },
+
+          submitHandler: async (form, event) => {
+            event.preventDefault();
+
+              
+            
+            let formData = {
+              categoryName: form.categoryNameEdit.value,
+              categoryDescription: form.categoryDescriptionEdit.value,
+              categoryId: "<%=category._id%>",
+            };
+
+            let response = await fetch("/editCategory", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            });
+
+            let result = await response.json();
+
+            if (result.success) {
+              await Swal.fire({
+                icon: "succes",
+                title: "Category Edited",
+              });
+
+              window.location.reload();
+            }
+            if (result.exists) {
+              await Swal.fire({
+                icon: "error",
+                title: "Category Already Exists",
+              });
+
+              window.location.reload();
+            }
+            if (result.notValue) {
+              await Swal.fire({
+                icon: "error",
+                title: "Give any value",
+              });
+
+              window.location.reload();
+            }
+          },
+        });
+      </script>
+
+      <% }); %>
+    </tbody>
+  </table>
+</section>
+
+<script>
+  async function fnList(catName) {
+    let response = await fetch(`/listCategory?id=${catName}`, {
+      method: "GET",
+    });
+
+    let result = await response.json();
+
+    if (result.list) {
+      await Swal.fire({
+        icon: "error",
+        title: "Category Unlisted",
+      });
+    }
+
+    window.location.reload();
+  }
+
+  async function fnUnlist(catName) {
+    let response = await fetch(`/unListCategory?id=${catName}`, {
+      method: "GET",
+    });
+
+    let result = await response.json();
+
+    if (result.unList) {
+      await Swal.fire({
+        icon: "success",
+        title: "Category Listed",
+        confirmButtonText: "OK",
+      });
+    }
+    window.location.reload();
+  }
+</script>
+
+<%- include('../adminpartials/adminfooter') %>

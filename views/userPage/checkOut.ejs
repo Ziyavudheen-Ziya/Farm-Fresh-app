@@ -1,0 +1,373 @@
+
+
+<%- include('../partials/header') %>
+
+
+<style>
+
+    #couponContainer{
+        width: 50%;
+        overflow-x: scroll;
+        white-space: nowrap;
+        padding: 20px 0;
+        margin-bottom: 20px;
+        position: relative;
+    
+    }
+    
+    .couponElement {
+        display: inline-block;
+        width: 200px;
+        margin-right: 20px;
+        border: 1px solid #a6e0ff;
+        border-radius: 5px;
+        padding: 10px;
+        transition: box-shadow 0.3s;
+        cursor: pointer;
+        background-color: #a6e0ff;
+    }
+    
+    
+    </style>
+    
+            <main class="main">
+                <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+                    <div class="container">
+                        <h1 class="page-title">Checkout<span>Shop</span></h1>
+                    </div><!-- End .container -->
+                </div><!-- End .page-header -->
+                <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                    <div class="container">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="/productListPage">Products</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                        </ol>
+                    </div><!-- End .container -->
+                </nav><!-- End .breadcrumb-nav -->
+    
+                <div class="page-content">
+                    <div class="checkout">
+                        <div class="container">
+                            
+    
+                            <div class="onepage-checkout col-lg-12">
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                  <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                      <p class="panel-title">
+                                        <a role="button" data-toggle="collapse" data-parent="#accordion"
+                                          href="#BillingInformation" aria-expanded="true"
+                                          aria-controls="BillingInformation">
+                                          <!-- <button type="button" class="btn btn-primary">Choose Address</button> -->
+    
+                                        </a>
+                                      </p>
+                                    </div>
+                                    <!-- <div id="BillingInformation" class="panel-collapse collapse in" role="tabpanel"
+                                      aria-labelledby="BillingInformation" style="float: left; width: 50%;">
+                                      <div class="panel-body">
+                                        <div style="clear: both"></div> -->
+                                        <!-- Address Choosing Section -->
+                                        <div class="form-group required maxwidth300">
+                                            <hr>
+                                          <label for="SelectAddress"> <b>Select Address </b><sup>*</sup></label>
+
+
+                                     
+
+
+                                      
+                                          <br>
+                                          <% adrressData.forEach((data)=>{ %>
+                                                
+                                                    <input type="radio" id="SelectAddress" name="chosenAddress" value="<%=data._id%>">
+                                                    <label for="address"></label><%=data?.name%>, <%=data?.city%> ...<br>
+
+                                                    <% }) %>
+                                           
+                                          <br>
+
+
+                                        
+                                          
+                                          <a href="/addAddress"><button class="btn btn-outline-primary-2">Add Address</button></a>
+                                        </div>
+                                        <!-- <script>
+                                          document.getElementById('editAddressButton').addEventListener('click', function () {
+                                            var selectedAddressId = document.getElementById('SelectAddress').value;
+                                            window.location.href = "/profile/" + selectedAddressId;
+                                          });
+                                        </script> -->
+                                        <!-- End of Address Choosing Section -->
+                                        <!-- Other Checkout Sections -->
+                                        <!-- Add your other checkout sections here -->
+                                      <!-- </div>
+                                    </div> -->
+    
+                                  </div>
+                                </div>
+    
+    
+    
+                                <!-- <div class="checkout-discount">
+                                    <div id="applyCoupon">
+                                        <input type="text" class="form-control" required id="checkout-discount-input" placeholder="Have a coupon? Click here to enter your code ">
+                                        <button type="submit"  id="" class="btn btn-light">Apply</button> 
+                                    </div>
+        
+                                </div>
+    
+                                <div id="couponContainer">
+                                    
+    
+                                           <div class="couponElement">
+                                               <h4>Code : <span id="couponCode"></span></h4>
+                                               <p>Discount Percentage : %</p>
+                                               <p>Minimum Purchase : <span id="minimumPurchase"></span></p>
+                                           </div>
+                                 
+                                     </div> -->
+                            </div>
+    
+    
+                              
+                              
+                              <hr>
+    
+    
+                                <div class="summary" style="padding: 5em 10em;">
+                                    <div>
+                                        <h3 class="summary-title">Your Order</h3><!-- End .summary-title -->
+    
+                                        <table class="table table-summary">
+                                        <thead>
+                                            <tr>
+                                                <th>Product</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+    
+                                        <tbody>
+                                            
+
+                                            <% cartData.forEach((data)=>{%>
+
+                                          
+                                                <tr>
+                                                    <td><a href="#"><%=data?.productId?.productName%></a></td>
+                                                    <td>₹ <%=data?.totalCostProduct%> </td>
+                                                    
+                                                </tr> 
+
+                                                <%  }) %>
+
+                                             
+                                         
+                                            
+    
+                                            <tr class="summary-subtotal">
+                                                <td>Subtotal:</td>
+                                                <td>₹ <%=grandTotal%></td>
+                                            </tr><!-- End .summary-subtotal -->
+                                            <tr>
+                                                <td>Shipping:</td>
+                                                <td>Free shipping</td>
+                                            </tr>
+                                            
+                                                   <!-- COUPAN SPACE YOU HAVE ALRAEDY JUST CONTROL SLASH  -->
+
+                                                <!-- <tr class="summary-subtotal">
+                                                    <td>Coupon Amount :</td>
+                                                    <td>- ₹ </td>
+                                                </tr> -->
+<!--     
+                                                <tr class="summary-total">
+                                                    <td>Total:</td>
+                                                    <td>₹ <span id="grandTotalCheckout"></span></td>                                        
+                                                </tr>
+    
+                                           
+                                                <tr class="summary-total">
+                                                    <td>Total:</td>
+                                                    <td>₹ <span id="grandTotalCheckout"></span></td>                                        
+                                                </tr> -->
+
+                                            <!-- COUPAN ENDING -->
+
+                                         
+                                            
+                                        </tbody>
+                                        </table><!-- End .table table-summary -->
+    
+                                    <div class="accordion-summary" id="accordion-payment">
+                                        <!-- <div class="card"> -->
+                                            <!-- <div class="card-header" id="heading-1">
+                                                <h2 class="card-title">
+                                                    <a role="button" data-toggle="collapse" href="#collapse-1" aria-expanded="true" aria-controls="collapse-1">
+                                                        Direct bank transfer
+                                                    </a>
+                                                </h2>
+                                            </div> -->
+                                            <!-- End .card-header -->
+                                            <!-- <div id="collapse-1" class="collapse show" aria-labelledby="heading-1" data-parent="#accordion-payment"> -->
+                                                <!-- <div class="card-body">
+                                                    Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order will not be shipped until the funds have cleared in our account.
+                                                </div> -->
+                                                <!-- End .card-body -->
+                                            <!-- </div> -->
+                                            <!-- End .collapse -->
+                                        <!-- </div --><!-- End .card -->
+    
+                                        <!-- <div class="card"> -->
+                                            <!-- <div class="card-header" id="heading-2">
+                                                <h2 class="card-title">
+                                                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+                                                        Check payments
+                                                    </a>
+                                                </h2>
+                                            </div> -->
+                                            <!-- End .card-header -->
+                                            <!-- <div id="collapse-2" class="collapse" aria-labelledby="heading-2" data-parent="#accordion-payment"> -->
+                                                <!-- <div class="card-body">
+                                                    Ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis. 
+                                                </div> -->
+                                                <!-- End .card-body -->
+                                            <!-- </div> -->
+                                            <!-- End .collapse -->
+                                        <!-- </div> -->
+                                        <!-- End .card -->
+    
+                                        <div class="card">
+                                            <div class="card-header" id="heading-3">
+                                                <br>
+                                                <h2 class="card-title">
+                                                    <!-- <a class="collapsed" role="button" data-toggle="collapse" href="#collapse-3" aria-expanded="false" aria-controls="collapse-3">
+                                                        Cash on delivery
+                                                    </a> -->
+                                                    <input type="radio" name="paymentType" class="paymentType" value="Cash on delivery">&nbsp; Cash on delivery <br> <br>
+                                                    <!-- <input type="radio" name="paymentType" class="paymentType" value="razorPay">&nbsp; Razorpay <br> <br>
+                                                    <input type="radio" name="paymentType" class="paymentType" value="Wallet">&nbsp; Wallet <br> <br> -->
+                                                </h2>
+                                                <br>
+                                            </div><!-- End .card-header -->
+                                            <div id="collapse-3" class="collapse" aria-labelledby="heading-3" data-parent="#accordion-payment">
+                                                <div class="card-body">Quisque volutpat mattis eros. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec odio. Quisque volutpat mattis eros. 
+                                                </div><!-- End .card-body -->
+                                            </div><!-- End .collapse -->
+                                        </div><!-- End .card -->
+    
+                                        
+
+
+                                          
+                                        <button type="submit" onclick="placeOrder('<%=grandTotal%>')"  class="btn btn-outline-primary-2 btn-order btn-block">
+                                           <span class="btn-text">Place Order</span>
+                                           <span class="btn-hover-text" >Place Order</span>
+                                        </button>
+
+    
+                           
+                                    </div>
+                                    
+                                </div><!-- End .summary -->
+    
+                        </div><!-- End .container -->
+                    </div><!-- End .checkout -->
+                </div><!-- End .page-content -->
+            </main><!-- End .main -->
+
+
+
+            <script>
+
+                 async function placeOrder(grandTotalCheckout){
+
+                      let selectAdrress = document.querySelector('input[name=chosenAddress]:checked')
+
+                      let paymentType = document.querySelector('input[name=paymentType]:checked')
+                    
+                      let selectAddressValue = selectAdrress? selectAdrress.value :null;
+                        let paymentTypeValue = paymentType? paymentType.value : null;
+
+
+                      if(selectAddressValue == null){
+
+                             await Swal.fire({
+                                 
+                                icon:"error",
+                                text:"Address is not selected",
+                                title:"oops!"
+
+                             })
+                             return;
+                      }
+                      
+                      console.log(`data grandTotal varund${grandTotalCheckout}`);
+
+                       if(paymentTypeValue == null){
+
+                            await Swal.fire({
+
+                                 icon:"error",
+                                 text:"Payment method is not selected",
+                                 title:"oops!"
+                            })
+
+                            return;
+                       }
+
+
+
+
+              
+                        
+
+
+
+                     
+
+                       let data = {
+
+                            grandTotalCheckout:grandTotalCheckout,
+                            paymentTypeValue:paymentTypeValue,
+                            selectAddressValue:selectAddressValue,
+                       }
+
+
+                       let response = await fetch(`/orderData`,{
+
+                              method:"post",
+                              headers:{"Content-Type":"application/json"},
+                              body:JSON.stringify(data)
+                              
+                       })
+
+
+                       let result = await response.json()
+
+                      
+                        if(result.success){
+
+                            window.location.href = "/orderSuccessPage";
+
+                           }
+
+
+
+                      
+                   
+
+                      
+
+
+                       
+
+                      
+                 }
+            </script>
+
+
+    
+
+ <%- include ('../partials/footer') %>

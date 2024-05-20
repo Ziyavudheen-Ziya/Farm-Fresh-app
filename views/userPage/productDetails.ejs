@@ -1,0 +1,582 @@
+<%- include('../partials/header') %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+<main class="main">
+  <div
+    class="page-header text-center"
+    style="background-image: url('assets/images/page-header-bg.jpg')"
+  >
+    <div class="container">
+      <h1 class="page-title">Products Detils<span>Shop</span></h1>
+    </div>
+    <!-- End .container -->
+  </div>
+  <nav aria-label="breadcrumb" class="breadcrumb-nav border-0 mb-0">
+    <div class="container d-flex align-items-center">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/productListPage">Products</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Default</li>
+      </ol>
+    </div>
+    <!-- End .container -->
+  </nav>
+  <!-- End .breadcrumb-nav -->
+
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Product Details</title>
+      <!-- Add your CSS stylesheets and JavaScript files here -->
+    </head>
+
+    <body>
+      <div class="page-content">
+        <div class="container">
+          <div class="product-details-top">
+            <div class="row">
+              <!-- Product Gallery Column -->
+              <div class="col-md-6">
+                <div class="product-gallery product-gallery-vertical">
+                  <div class="row">
+                    <figure class="product-main-image">
+                      <img
+                        id="disp-img"
+                        src="/adminassets/uploads/<%=singleData?.productImage[0]%>"
+                        data-zoom-image=""
+                        class="zoom-img"
+                        alt="product image"
+                      />
+                      <a
+                        href="#"
+                        id="btn-product-gallery"
+                        class="btn-product-gallery"
+                      >
+                        <i class="icon-arrows"></i>
+                      </a>
+                    </figure>
+                    <!-- End .product-main-image -->
+
+                    <div id="disp-img-thumbnails" class="product-image-gallery">
+                      <a
+                        class="product-gallery-item active"
+                        href="#"
+                        data-image=""
+                        data-zoom-image=""
+                      >
+                        <img
+                          src="/adminassets/uploads/<%=singleData?.productImage[0]%>"
+                          alt="product side"
+                        />
+                      </a>
+
+                      <a
+                        class="product-gallery-item"
+                        href="#"
+                        data-image=""
+                        data-zoom-image=""
+                      >
+                        <img
+                          src="/adminassets/uploads/<%=singleData?.productImage[1]%>"
+                          alt="product cross"
+                        />
+                      </a>
+                      <a
+                        class="product-gallery-item"
+                        href="#"
+                        data-image=""
+                        data-zoom-image=""
+                      >
+                        <img
+                          src="/adminassets/uploads/<%=singleData?.productImage[2]%>"
+                          alt="product with model"
+                        />
+                      </a>
+                    </div>
+                    <!-- End .product-image-gallery -->
+                  </div>
+                  <!-- End .row -->
+                </div>
+                <!-- End .product-gallery -->
+              </div>
+              <!-- End .col-md-6 -->
+
+              <!-- jQuery library -->
+              <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                        <script
+                            src="https://cdnjs.cloudflare.com/ajax/libs/elevatezoom/3.0.8/jquery.elevatezoom.min.js"></script>
+
+                        <script>
+                            $(document).ready(function () {
+                                $(".zoom-img").elevateZoom({
+                                    cursor: "crosshair",
+                                    easing: true,
+                                });
+                            });
+                            
+
+
+                            function changeImg(clickedImg) {
+                                let image = document.getElementById("disp-img");
+                                image.src = clickedImg.getAttribute('data-image');
+                                // Optional: Update the zoom image source if needed
+                                $(image).data('zoom-image', clickedImg.getAttribute('data-zoom-image'));
+                        
+                            }
+                        </script>
+
+ -->
+
+              <!-- Product Details Column -->
+              <div class="col-md-6">
+                <div class="product-details">
+                  <!-- Product Title -->
+                  <h1 class="product-title"></h1>
+                  <!-- End .product-title -->
+
+                  <!-- Product Ratings -->
+                  <div class="ratings-container"></div>
+                  <!-- End .ratings-container -->
+
+                  <!-- Product Price -->
+                  <div class="product-price"></div>
+                  <!-- End .product-price -->
+
+                  <!-- Product Content/Description -->
+                  <div class="product-content">
+                    <p>
+                      Sed egestas, ante et vulputate volutpat, eros pede semper
+                      est, vitae luctus metus libero eu augue. Morbi purus
+                      libero, faucibus adipiscing. Sed lectus.
+                    </p>
+                  </div>
+                  <!-- End .product-content -->
+
+                 <% if(singleData?.productStock==0){%>
+
+                    <div class="details-filter-row details-row-size">
+                      <div class="product-details-quantity">
+                        <span id="stockMessage" style="color: red">Out of Stock</span>
+                      </div>
+                    </div>
+
+
+
+                 <% }else{ %> 
+
+                  <div class="details-filter-row details-row-size">
+                    <div class="product-details-quantity">
+                      <span id="stockMessage" style="color: black">Stock <%=singleData?.productStock%></span>
+                    </div>
+                  </div>
+
+                  <div class="product-details-action">
+                    <!-- <p style="color: red;">Out of stock</p> -->
+                    
+                    <button
+                      id="<%=singleData._id%>"
+                      onclick="addToCart('<%=singleData._id%>')"
+                      class="btn-product btn-cart"
+                    >
+                      <span>Add to cart</span>
+                    </button>
+
+                    <div class="details-action-wrapper"></div>
+                    <!-- End .details-action-wrapper -->
+                  </div>
+
+
+
+
+
+                 <%} %>
+                  
+
+
+                  <!-- End .details-filter-row -->
+                 
+                  <!-- End .product-details-action -->
+                </div>
+                <!-- End .product-details-action -->
+                <div class="product-details-footer">
+                  <div class="product-cat">
+                    <span>Category:</span>
+                    <a href="#"> <%=singleData?.parentCategory%> </a>
+                    <!-- <a href="#">Shoe</a>,
+                                            <a href="#">oots</a> -->
+                  </div>
+                  <!-- End .product-cat -->
+                </div>
+                <!-- End .product-details-footer -->
+              </div>
+              <!-- End .product-details -->
+            </div>
+          </div>
+          <!-- End .col-md-6 -->
+        </div>
+        <!-- End .row -->
+      </div>
+      <!-- End .product-details-top -->
+
+      <!-- Add your JavaScript files here -->
+    </body>
+
+
+    <script>
+      async function addToCart(cartId) {
+    
+        console.log(`cart Id ${cartId.productPrice}`);
+      
+        let response = await fetch(`/addToCart?id=${cartId}`, {
+          method: "post",
+          headers:{'Content-Type':'application/json'}
+        });
+    
+        let result = await response.json();
+    
+        if (result.success) {
+          await Swal.fire({
+            icon: "success",
+            title: "Product Added",
+          });
+    
+          window.location.reload();
+    
+        }
+
+        if(result.add){
+
+            await Swal.fire({
+
+                icon:"success",
+                title:"Increasing the quantity"
+            })
+        }
+    
+    
+    
+    
+          if(result.limitExceeded){
+    
+              await Swal.fire({
+    
+                  icon:"error",
+                  title:"Maximum Quantity"
+              })
+    
+              window.location.reload()
+          }
+
+            if(result.limitReach){
+
+                 await Swal.fire({
+                     
+                    icon:"error",
+                    title:"OK"
+                 })
+
+                 window.location.reload()
+            }
+
+
+            if(result.empty){
+                 
+              await Swal.fire({
+                  
+                icon:"error",
+                text:"Cart is Empty",
+                title:"OK"
+              })
+            }
+         
+
+
+      }
+    
+       
+    
+    </script>
+    
+    
+
+
+
+
+
+  </html>
+
+  
+
+  <div class="product-details-tab">
+    <ul class="nav nav-pills justify-content-center" role="tablist">
+      <li class="nav-item">
+        <a
+          class="nav-link active"
+          id="product-desc-link"
+          data-toggle="tab"
+          href="#product-desc-tab"
+          role="tab"
+          aria-controls="product-desc-tab"
+          aria-selected="true"
+          >Description</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          id="product-info-link"
+          data-toggle="tab"
+          href="#product-info-tab"
+          role="tab"
+          aria-controls="product-info-tab"
+          aria-selected="false"
+          >Additional information</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          id="product-shipping-link"
+          data-toggle="tab"
+          href="#product-shipping-tab"
+          role="tab"
+          aria-controls="product-shipping-tab"
+          aria-selected="false"
+          >Shipping & Returns</a
+        >
+      </li>
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          id="product-review-link"
+          data-toggle="tab"
+          href="#product-review-tab"
+          role="tab"
+          aria-controls="product-review-tab"
+          aria-selected="false"
+          >Reviews (2)</a
+        >
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div
+        class="tab-pane fade show active"
+        id="product-desc-tab"
+        role="tabpanel"
+        aria-labelledby="product-desc-link"
+      >
+        <div class="product-desc-content">
+          <h3>Product Information</h3>
+          <p>
+            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec
+            odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis.
+            Suspendisse urna viverra non, semper suscipit, posuere a, pede.
+            Donec nec justo eget felis facilisis fermentum. Aliquam porttitor
+            mauris sit amet orci. Aenean dignissim pellentesque felis. Phasellus
+            ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer
+            ligula vulputate sem tristique cursus.
+          </p>
+          <ul>
+            <li>
+              Nunc nec porttitor turpis. In eu risus enim. In vitae mollis elit.
+            </li>
+            <li>Vivamus finibus vel mauris ut vehicula.</li>
+            <li>
+              Nullam a magna porttitor, dictum risus nec, faucibus sapien.
+            </li>
+          </ul>
+
+          <p>
+            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec
+            odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis.
+            Suspendisse urna viverra non, semper suscipit, posuere a, pede.
+            Donec nec justo eget felis facilisis fermentum. Aliquam porttitor
+            mauris sit amet orci. Aenean dignissim pellentesque felis. Phasellus
+            ultrices nulla quis nibh. Quisque a lectus. Donec consectetuer
+            ligula vulputate sem tristique cursus.
+          </p>
+        </div>
+        <!-- End .product-desc-content -->
+      </div>
+      <!-- .End .tab-pane -->
+      <div
+        class="tab-pane fade"
+        id="product-info-tab"
+        role="tabpanel"
+        aria-labelledby="product-info-link"
+      >
+        <div class="product-desc-content">
+          <h3>Information</h3>
+          <p>
+            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Donec
+            odio. Quisque volutpat mattis eros. Nullam malesuada erat ut turpis.
+            Suspendisse urna viverra non, semper suscipit, posuere a, pede.
+            Donec nec justo eget felis facilisis fermentum. Aliquam porttitor
+            mauris sit amet orci.
+          </p>
+
+          <h3>Fabric & care</h3>
+          <ul>
+            <li>Faux suede fabric</li>
+            <li>Gold tone metal hoop handles.</li>
+            <li>RI branding</li>
+            <li>Snake print trim interior</li>
+            <li>Adjustable cross body strap</li>
+            <li>Height: 31cm; Width: 32cm; Depth: 12cm; Handle Drop: 61cm</li>
+          </ul>
+
+          <h3>Size</h3>
+          <p>one size</p>
+        </div>
+        <!-- End .product-desc-content -->
+      </div>
+      <!-- .End .tab-pane -->
+      <div
+        class="tab-pane fade"
+        id="product-shipping-tab"
+        role="tabpanel"
+        aria-labelledby="product-shipping-link"
+      >
+        <div class="product-desc-content">
+          <h3>Delivery & returns</h3>
+          <p>
+            We deliver to over 100 countries around the world. For full details
+            of the delivery options we offer, please view our
+            <a href="#">Delivery information</a><br />
+            We hope you’ll love every purchase, but if you ever need to return
+            an item you can do so within a month of receipt. For full details of
+            how to make a return, please view our
+            <a href="#">Returns information</a>
+          </p>
+        </div>
+        <!-- End .product-desc-content -->
+      </div>
+      <!-- .End .tab-pane -->
+      <div
+        class="tab-pane fade"
+        id="product-review-tab"
+        role="tabpanel"
+        aria-labelledby="product-review-link"
+      >
+        <div class="reviews">
+          <h3>Reviews (2)</h3>
+          <div class="review">
+            <div class="row no-gutters">
+              <div class="col-auto">
+                <h4><a href="#">Samanta J.</a></h4>
+                <div class="ratings-container">
+                  <div class="ratings">
+                    <div class="ratings-val" style="width: 80%"></div>
+                    <!-- End .ratings-val -->
+                  </div>
+                  <!-- End .ratings -->
+                </div>
+                <!-- End .rating-container -->
+                <span class="review-date">6 days ago</span>
+              </div>
+              <!-- End .col -->
+              <div class="col">
+                <h4>Good, perfect size</h4>
+
+                <div class="review-content">
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                    Ducimus cum dolores assumenda asperiores facilis porro
+                    reprehenderit animi culpa atque blanditiis commodi
+                    perspiciatis doloremque, possimus, explicabo, autem fugit
+                    beatae quae voluptas!
+                  </p>
+                </div>
+                <!-- End .review-content -->
+
+                <div class="review-action">
+                  <a href="#"><i class="icon-thumbs-up"></i>Helpful (2)</a>
+                  <a href="#"><i class="icon-thumbs-down"></i>Unhelpful (0)</a>
+                </div>
+                <!-- End .review-action -->
+              </div>
+              <!-- End .col-auto -->
+            </div>
+            <!-- End .row -->
+          </div>
+          <!-- End .review -->
+
+          <div class="review">
+            <div class="row no-gutters">
+              <div class="col-auto">
+                <h4><a href="#">John Doe</a></h4>
+                <div class="ratings-container">
+                  <div class="ratings">
+                    <div class="ratings-val" style="width: 100%"></div>
+                    <!-- End .ratings-val -->
+                  </div>
+                  <!-- End .ratings -->
+                </div>
+                <!-- End .rating-container -->
+                <span class="review-date">5 days ago</span>
+              </div>
+              <!-- End .col -->
+              <div class="col">
+                <h4>Very good</h4>
+
+                <div class="review-content">
+                  <p>
+                    Sed, molestias, tempore? Ex dolor esse iure hic veniam
+                    laborum blanditiis laudantium iste amet. Cum non voluptate
+                    eos enim, ab cumque nam, modi, quas iure illum repellendus,
+                    blanditiis perspiciatis beatae!
+                  </p>
+                </div>
+                <!-- End .review-content -->
+
+                <div class="review-action">
+                  <a href="#"><i class="icon-thumbs-up"></i>Helpful (0)</a>
+                  <a href="#"><i class="icon-thumbs-down"></i>Unhelpful (0)</a>
+                </div>
+                <!-- End .review-action -->
+              </div>
+              <!-- End .col-auto -->
+            </div>
+            <!-- End .row -->
+          </div>
+          <!-- End .review -->
+        </div>
+        <!-- End .reviews -->
+      </div>
+      <!-- .End .tab-pane -->
+    </div>
+    <!-- End .tab-content -->
+  </div>
+  <!-- End .product-details-tab -->
+
+  <div class="col-lg-12 clearfix mt-4">
+    <ul class="pager">
+      <li class="previous pull-right">
+        <a href="/"> <i class="fa fa-home"></i> Go to Shop </a>
+      </li>
+    </ul>
+  </div>
+  <!-- </div>
+    </div> -->
+</main>
+<!-- End .main -->
+
+
+
+<%- include ('../partials/footer') %>

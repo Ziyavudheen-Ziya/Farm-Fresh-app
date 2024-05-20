@@ -1,0 +1,294 @@
+<%- include('../partials/header') %>
+
+<style>
+  .responsive-table th.active {
+    background-color: #d9e4f0; /* Active column background color */
+    color: #fff; /* Active column text color */
+  }
+
+  .responsive-table th {
+    width: 100%;
+    text-align: center;
+    padding: 5px;
+  }
+
+  /* Responsive styles */
+  @media (max-width: 767px) {
+    .responsive-table {
+      display: flex !important;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      /* display: block; */
+    }
+
+    .responsive-table tr {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+      margin-bottom: 10px;
+    }
+
+    .responsive-table th {
+      width: 100%;
+      text-align: center;
+      padding: 5px;
+    }
+
+    .responsive-table th.active {
+      background-color: #d9e4f0; /* Active column background color */
+      color: #fff; /* Active column text color */
+    }
+  }
+</style>
+
+<div class="container profile-container">
+  <div
+    class="page-header text-center"
+    style="background-image: url('/assets/images/page-header-bg.jpg')"
+  >
+    <div class="container">
+      <h1 class="page-title"><span>My Orders</span></h1>
+    </div>
+    <!-- End .container -->
+  </div>
+  <!-- End .page-header -->
+  <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">My Orders</li>
+      </ol>
+    </div>
+    <!-- End .container -->
+  </nav>
+  <!-- End .breadcrumb-nav -->
+
+  <table class="responsive-table" style="width: 100%">
+    <tr style="display: flex; justify-content: space-evenly">
+      <th>
+        <a href="/profile">Profile</a>
+      </th>
+      <th>
+        <a href="/profileChangePassword">Change Password</a>
+      </th>
+      <th>
+        <a href="/addAddress">Add address</a>
+      </th>
+      <th>
+        <a href="/myAddress">My address</a>
+      </th>
+      <th class="active">
+        <a href="#">My Orders</a>
+      </th>
+    </tr>
+  </table>
+  <hr />
+  <div class="col-lg-12">
+    <table class="table table-cart table-mobile" style="text-align: center">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Date</th>
+          <th>Price</th>
+          <th>Status</th>
+          <!-- <th>Action</th> -->
+          <th>Cancel/Return</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <%orderData.reverse().forEach((data)=>{%>
+
+        <tr >
+          <td class="product-col" style="justify-content: space-evenly">
+            <div class="product" style="justify-content: space-evenly">
+              <h3 class="product-title">
+                <a href="#"><%=data?.orderNumber%> </a>
+              </h3>
+              <!-- End .product-title -->
+            </div>
+            <!-- End .product -->
+          </td>
+          <td class="product-col" style="justify-content: space-evenly">
+            <div class="product" style="justify-content: space-evenly">
+              <h3 class="product-title">
+                <a href="#"><%=data?.orderDate%> </a>
+              </h3>
+              <!-- End .product-title -->
+            </div>
+            <!-- End .product -->
+          </td>
+          <td class="product-col" style="justify-content: space-evenly">
+            <div class="product" style="justify-content: space-evenly">
+              <h3 class="product-title">
+                <a href="#">₹ <%=data?.grandTotalCost%> </a>
+              </h3>
+              <!-- End .product-title -->
+            </div>
+            <!-- End .product -->
+          </td>
+          <td class="product-col" style="justify-content: space-evenly">
+            <div class="product" style="justify-content: space-evenly">
+              <h3 class="product-title">
+                <a href="#"> <%=data?.orderStatus%> </a>
+              </h3>
+              <!-- End .product-title -->
+            </div>
+            <!-- End .product -->
+          </td>
+          <!-- <td class="product-col" style="justify-content: space-evenly;">
+                            <div class="product" style="justify-content: space-evenly;">
+                                <h3 class="product-title">
+                                    <a class="btn btn-light" href=""> Details </a>
+                                </h3>
+                            </div>
+                        </td> -->
+          <td class="product-col">
+            <% if(data?.orderStatus == 'pending' || data?.orderStatus ==
+            'shipped') { %>
+            <div class="product" style="justify-content: space-evenly">
+              <h3 class="product-title">
+                <button
+                  id="cancel"
+                  class="btn btn-danger"
+                  onclick="cancelFunction('<%=data._id%>')"
+                >
+                  Cancel
+                </button>
+              </h3>
+              <!-- End .product-title -->
+            </div>
+            <!-- End .product -->
+            <% } else if(data?.orderStatus == 'deliverd') { %>
+            <div class="product" style="justify-content: space-evenly">
+              <h3 class="product-title">
+                <button
+                  id="return"
+                  class="btn btn-primary"
+                  onclick="returnFunction('<%=data._id%>')"
+                >
+                  Return
+                </button>
+              </h3>
+              <!-- End .product-title -->
+            </div>
+            <!-- End .product -->
+            <% } else if(data?.orderStatus == 'return') { %>
+            <div class="product" style="justify-content: space-evenly">
+              <h3 class="product-title">
+                <button
+                  id="cancel"
+                  class="btn btn-danger"
+                  onclick="cancelFunction()"
+                >
+                  Cancel
+                </button>
+              </h3>
+              <!-- End .product-title -->
+            </div>
+            <!-- End .product -->
+
+            <div class="product" style="justify-content: space-evenly">
+              <h3 class="product-title">
+                <a style="display: none" class="btn btn-primary" href="">
+                  Return
+                </a>
+              </h3>
+              <!-- End .product-title -->
+            </div>
+            <!-- End .product -->
+            <% } %>
+          </td>
+        </tr>
+
+        <% }) %>
+      </tbody>
+    </table>
+    <!-- End .table table-wishlist -->
+  </div>
+  <hr />
+  <div class="pagination-area mt-15 mb-50">
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        <li class="page-item"><a class="page-link" href=""></a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<script>
+  async function cancelFunction(orderId) {
+
+    let result = await Swal.fire({
+      title: "Confirm Cancel",
+      text: "Are you sure you want to cancel this order?",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, cancel it",
+    });
+  
+   
+
+      console.log(`oredr entering${orderId}`);
+    let response = await fetch(`/cancelOrderUser?id=${orderId}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    let res = await response.json();
+
+     if(result.isConfirmed){
+
+      if (res.cancelled) {
+      await Swal.fire({
+        icon: "success",
+        title: "OK",
+      });
+
+      window.location.reload();
+    }
+
+    let rs = document.getElementById("cancel");
+
+    rs.style.display = "none";
+
+
+
+     }
+
+   
+
+
+ 
+
+
+
+    
+  }
+
+  async function returnFunction(orderId) {
+    let response = await fetch(`/returnUser?id=${orderId}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    let result = await response.json();
+
+    if (result.return) {
+      await Swal.fire({
+        icon: "success",
+        title: "OK",
+      });
+
+      window.location.reload();
+    }
+
+    let rs = document.getElementById("return");
+
+    rs.style.display = "Cancel";
+  }
+</script>
+
+<%- include ('../partials/footer') %>

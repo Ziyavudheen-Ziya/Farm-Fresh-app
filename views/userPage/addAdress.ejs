@@ -1,0 +1,368 @@
+<%- include('../partials/header') %>
+
+  
+
+
+
+
+
+
+<style>
+
+    .responsive-table th.active {
+        background-color: #bcc2c8; /* Active column background color */
+        color: #fff; /* Active column text color */
+    }
+    
+    .responsive-table th {
+                width: 100%;
+                text-align: center;
+                padding: 5px;
+            }
+    
+    #addAddressValidation {
+        padding-left: 5%;
+        padding-right: 5%;
+    }
+    
+    .responsive-table th.active{
+        background-color: #d9e4f0;
+    }
+    
+    @media (max-width: 767px) {
+            .responsive-table {
+                justify-content: center;
+                text-align: center;
+                display: flex !important;
+                width: 100%;
+                /* display: block; */
+            }
+    
+            .responsive-table tr {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-evenly;
+                margin-bottom: 10px;
+            }
+    
+            .responsive-table th {
+                width: 100%;
+                text-align: center;
+                padding: 5px;
+            }
+    
+            .responsive-table th.active {
+                color: #fff; /* Active column text color */
+            }
+        }
+    
+    </style>
+    
+          
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/jquery.hoverIntent.min.js"></script>
+    <script src="assets/js/jquery.waypoints.min.js"></script>
+    <script src="assets/js/superfish.min.js"></script>
+    <script src="assets/js/owl.carousel.min.js"></script>
+    <script src="assets/js/jquery.magnific-popup.min.js"></script>
+    <!-- Main JS File -->
+    <script src="assets/js/main.js"></script>
+
+
+
+
+     <!-- form validate -->
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"
+integrity="sha512-WMEKGZ7L5LWgaPeJtw9MBM4i5w5OSBlSjTjCtSnvFJGSVD26gE5+Td12qN5pvWXhuWaWcVwF++F7aqu9cvqP0A=="
+crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/additional-methods.min.js"
+integrity="sha512-TiQST7x/0aMjgVTcep29gi+q5Lk5gVTUPE9XgN0g96rwtjEjLpod4mlBRKWHeBcvGBAEvJBmfDqh2hfMMmg+5A=="
+crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+    
+    
+            <div class="container profile-container">
+                <div class="page-header text-center" style="background-image: url('assets/images/page-header-bg.jpg')">
+                    <div class="container">
+                        <h1 class="page-title"><span>Add Address</span></h1>
+                    </div><!-- End .container -->
+                </div><!-- End .page-header -->
+                <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+                    <div class="container">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Add Address</li>
+                        </ol>
+                    </div><!-- End .container -->
+                </nav><!-- End .breadcrumb-nav -->
+    
+                <table class="responsive-table" style="width: 100%;">
+                    <tr style="display: flex; justify-content: space-evenly;">
+                        <th>
+                            <a href="/profilePage">Profile</a>
+                        </th>
+                        <th>
+                            <a href="/profileChangePassword">Change Password</a>
+                        </th>
+                        <th class="active">
+                            <a href="/addAddress">Add address</a>
+                        </th>
+                        <th>
+                            <a href="/myAddress">My address</a>
+                        </th>
+                        <th>
+                            <a href="/myOrdersPage">My Orders</a>
+                        </th>
+                    </tr>
+                </table>
+                <hr>
+                <form id="addAddress" >
+                    <div class="form-group">
+                      <label for="register-username">Name </label>
+                      <input
+                        type="text"
+                        
+                        class="form-control"
+                        name="name"
+                        
+                        required
+                      />
+                    </div>
+                    <!-- End .form-group -->
+                    <div class="form-group">
+                      <label for="register-number">Phone Number </label>
+                      <input
+                        type="number"
+                        minlength="10"
+                        maxlength="10"
+                        
+                        class="form-control"
+                        name="phone"
+                        required
+                      />
+                    </div>
+                    <!-- End .form-group -->
+                    <div class="form-group">
+                      <label for="register-number">House No.</label>
+                      <input
+                        type="text"
+                        min="3"
+                       
+                        class="form-control"
+                        name="houseNumber"
+                        required
+                      />
+                    </div>
+                    <!-- End .form-group -->
+                    <div class="form-group">
+                      <label for="register-email">City </label>
+                      <input
+                        type="text"
+
+                        class="form-control"
+                        name="city"
+                        required
+                      />
+                    </div>
+                    <!-- End .form-group -->
+    
+                    <div class="form-group">
+                      <label for="register-password">State </label>
+                      <input
+                        type="text"
+                     
+                        class="form-control"
+                        name="state"
+                        required
+                      />
+                    </div>
+                    <!-- End .form-group -->
+                    <div class="form-group">
+                      <label for="register-conform-password"
+                        >Pin Code </label
+                      >
+                      <input
+                        type="number"
+                        minlength="6"
+                    
+                        class="form-control"
+                        name="pincode"
+                        required
+                      />
+                    </div>
+                    <!-- End .form-group -->
+    
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-outline-primary-2" >Save</button>
+                  </div>
+                    <!-- End .form-footer -->
+                </form>
+        
+                <hr>
+        
+                <hr>
+        
+            </div>
+
+            <script src="assets/plugins/jquery/jquery-3.5.1.min.js"></script>
+            <script src="assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script src="assets/plugins/simplebar/simplebar.min.js"></script>
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/additional-methods.min.js"></script>
+
+
+            
+       <script>
+        $.validator.addMethod("noWhitespace", function (value, element) {
+          return value.trim() !== ""; // Check if the trimmed value is not empty
+      }, "Please enter a valid value.");
+
+
+       </script>
+            
+        
+      
+
+            <script>
+          
+
+            $("#addAddress").validate({
+
+                 rules:{
+
+                  name:{
+                      
+                    required:true,
+                    noWhitespace:true,
+                    
+                  pattern: /^[a-zA-Z\s]+$/,
+                    
+                    
+                  },
+
+                  phone:{
+
+                     required:true,
+                     minlength:10,
+                     maxlength:10,
+                     number:true,
+                     pattern: /^\d+$/,
+                     
+                  },
+                  houseNumber:{
+                    required:true,
+                    pattern: /^\d+$/,
+                    
+
+                  },
+                  city:{
+                    required:true,
+                    noWhitespace:true,
+
+                    pattern:/^[a-zA-Z\s]+$/,
+
+
+                  },
+                  state:{
+                    required:true,
+                    noWhitespace:true,
+
+                    pattern: /^[a-zA-Z\s]+$/,
+                  },
+                  
+                  pincode:{
+                    required:true,
+                    minlength: 6,
+                    pattern: /^\d+$/,
+                     
+                  },
+
+                 
+                },
+
+                    submitHandler :async(form, event)=> {
+
+                      event.preventDefault();
+
+                      console.log(form);
+
+                        let formData = {
+                             
+                          name:form.name.value,
+                          phone:form.phone.value,
+                          houseNumber:form.houseNumber.value,
+                          city:form.city.value,
+                          state:form.state.value,
+                          pincode:form.pincode.value
+
+                        };
+
+                        let response = await fetch('/addNewAddress',{
+
+
+                                  method:"POST",
+                                  headers:{'Content-Type':'application/json'},
+                                  body:JSON.stringify(formData)
+                        });
+
+                        let result = await response.json()
+
+
+                         if(result.exsist){
+
+                              await Swal.fire({
+                                 
+                                 icon:"error",
+                                 title:"Already Exist"
+                              });
+
+                              window.location.reload()
+
+
+                         }
+
+                         if(result.success){
+
+                            await Swal.fire({
+
+                                 icon:"success",
+                                 title:"Address Saved"
+                            });
+
+                            window.location.href='/myAddress'
+                         }
+
+                
+                       
+                    },
+
+
+                     
+
+
+                 
+            })
+             
+
+
+
+                  
+                   
+              
+   
+            </script>
+
+
+
+    
+    
+     <%- include ('../partials/footer') %>
+    

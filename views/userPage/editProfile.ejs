@@ -1,0 +1,138 @@
+<%- include('../partials/header') %>
+
+<style>
+  .container {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+</style>
+
+<div class="container profile-container">
+  <hr />
+  <h1 class="text-center">Edit Profile</h1>
+  <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+    <div class="container">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/profilePage">Profile</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
+      </ol>
+    </div>
+    <!-- End .container -->
+  </nav>
+  <!-- End .breadcrumb-nav -->
+
+  <form id="editProfileValidation<%=data._id%>">
+    <div class="form-group">
+      <label for="register-username">Name *</label>
+      <input
+        type="text"
+        class="form-control"
+        id="name"
+        name="name"
+        value="<%=data.name%>"
+        required
+      />
+    </div>
+    <!-- End .form-group -->
+    <div class="form-group">
+      <label for="register-number">Phone Number *</label>
+      <input
+        type="number"
+        class="form-control"
+        id="phone"
+        name="phone"
+        value="<%=data.phone%>"
+        required
+      />
+    </div>
+    <!-- End .form-group -->
+    <div class="form-group">
+      <label for="register-number">Email *</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        value="<%=data.email%>"
+        required
+        readonly
+      />
+    </div>
+    <!-- End .form-group -->
+    <div class="text-center">
+      <button class="btn btn-primary" type="submit">Save Changes</button>
+      <a href="/profilePage">
+        <div class="btn btn-danger">Cancel</div>
+      </a>
+    </div>
+  </form>
+
+  <hr />
+
+  <hr />
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/additional-methods.min.js"></script>
+
+<script>
+  $("#editProfileValidation<%=data._id%>").validate({
+    rules: {
+      name: {
+        required: true,
+        minlength: 2,
+        maxlength: 20,
+        pattern: /^[a-zA-Z]+(?: [a-zA-Z]+)*$/,
+      },
+      phone: {
+        required: true,
+
+        required: true,
+        pattern: /^\d+$/,
+        min: 10,
+      },
+      email: {
+        required: true,
+      },
+    },
+    messages: {
+      name: {
+        pattern: "Please enter a valid name",
+      },
+      phone: {
+        pattern: "Please enter a valid 10-digit phone number",
+      },
+    },
+    submitHandler: async (form, event) => {
+      event.preventDefault();
+
+      let formData = {
+        name: $("#name").val(),
+        phone: $("#phone").val(),
+        email: $("#email").val(),
+        userId: "<%=data._id%>",
+      };
+
+      let response = await fetch(`/editProfile`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      let result = await response.json();
+
+      if (result.success) {
+        await Swal.fire({
+          icon: "success",
+          title: "OK",
+        });
+
+        window.location.href = "/profilePage";
+      }
+    },
+  });
+</script>
+
+<%- include ('../partials/footer') %>

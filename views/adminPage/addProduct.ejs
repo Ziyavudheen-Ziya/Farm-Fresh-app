@@ -1,0 +1,212 @@
+<%- include('../adminpartials/adminheader') %>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- jQuery Validation plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+<section class="content-main">
+
+          
+
+
+  <div class="row">
+    <div class="col-9">
+      <div class="content-header">
+        <h2 class="content-title">Add New Product</h2>
+        <div>
+          <!-- <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">
+                            Save to draft
+                        </button>
+                        <button class="btn btn-md rounded font-sm hover-up">Publich</button> -->
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4>Add Your New Products</h4>
+        </div>
+        <div class="card-body">
+          <form id="addProduct" >
+            <div class="modal-body">
+              <div class="input-group mb-3">
+                <input
+                  name="productName"
+                  id="productName"
+                  type="text"
+                  class="form-control"
+                  placeholder="Product Name"
+                  required
+                />
+              </div>
+
+         
+
+              <div class="input-group mb-3">
+                <label class="container">
+                  <span>Select Parent Category</span>
+                  <select
+                    name="parentCategory"
+                    id="parentCategory"
+                    class="form-select"
+                    aria-label="Default select example"
+                    required
+                  >
+                    <option disabled selected>Select Parent Category</option>
+
+                    <% categoryData.forEach((category)=>{ %>
+
+                    <option value="<%=category.categoryname%>">
+                      <%=category.categoryname%>
+                    </option>
+
+                    <% }) %>
+                  </select>
+                </label>
+              </div>
+
+              <div class="input-group mb-3">
+                   
+                
+                <input type="file" accept="image/*" name="images" class="form-control-file" id="images" multiple >
+
+
+                    
+              </div>
+
+              <div class="input-group mb-3">
+                <input
+                  name="productPrice"
+                  id="productPrice"
+                  type="tel"
+                  class="form-control"
+                  min="1"
+                  placeholder="Product Price"
+                  required
+                />
+              </div>
+              <div class="input-group mb-3">
+                <input
+                  name="productStock"
+                  id="productStock"
+                  type="tel"
+                  class="form-control"
+                  min="1"
+                  placeholder="Product Stock"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="submit" class="btn btn-info">Save changes</button>
+            </div>
+          </form>
+
+        
+        </div>
+      </div>
+      <!-- card end// -->
+    </div>
+  </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/additional-methods.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $("#addProduct").validate({
+      rules: {
+        productName: {
+          required: true,
+          minlength: 2,
+          maxlength: 20,
+          pattern: /^[a-zA-Z\s\-]+$/
+        },
+        productPrice: {
+          required: true,
+          pattern: /^\d+(\.\d{1,2})?$/,
+          min: 0.01 
+        },
+        productStock: {
+          required: true,
+          pattern: /^\d+$/,
+          min: 1 
+        },
+        parentCategory: {
+          required: true
+        }
+      },
+      messages: {
+        productName: {
+          pattern: "Please enter a valid product name containing only letters, numbers, and spaces"
+        },
+        productPrice: {
+          pattern: "Please enter a valid price (e.g., 10 or 10.50)",
+          min: "Price must be greater than 0"
+        },
+        productStock: {
+          pattern: "Please enter a valid stock quantity (e.g., 10)",
+          min: "Stock quantity must be at least 1"
+        }
+      },
+      submitHandler: async function(form, event) {
+        event.preventDefault();
+        const formData = new FormData(form);
+        try {
+          let response = await fetch("/addProducts", {
+            method: "POST",
+            body: formData,
+          });
+          let result = await response.json();
+          if (result.exists) {
+            await Swal.fire({
+              icon: "error",
+              title: "Product Already Exists",
+            });
+          }
+          if (result.success) {
+            await Swal.fire({
+              icon: "success",
+              title: "Product Added",
+            });
+            window.location.href = "/productsdetails";
+          }
+          if (result.noValue) {
+            await Swal.fire({
+              icon: "error",
+              title: "No Value in Product Name",
+            });
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+    });
+  });
+</script>
+
+
+
+<%- include('../adminpartials/adminfooter') %>

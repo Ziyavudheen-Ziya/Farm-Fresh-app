@@ -1,0 +1,284 @@
+<%- include('../adminpartials/adminheader') %>
+
+
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Products List</h2>
+            <p>Lorem ipsum dolor sit amet.</p>
+        </div>
+        <div>
+            <!-- <a href="#" class="btn btn-light rounded font-md">Export</a>
+            <a href="#" class="btn btn-light rounded  font-md">Import</a> -->
+            <a href="/addProduct" class="btn btn-primary btn-sm rounded">Add new product</a>
+        </div>
+    </div>
+
+   
+
+
+    <div class="card mb-4">
+       
+        <div class="card-body">
+
+            <table id="example" class="display" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Parent Category</th>
+                        <th>Product Images</th>
+                       
+                        <th>Price in INR</th>
+                        <th>In stock</th>
+                        <th>List/Unlist</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   
+                   
+                
+
+                   <% productDatas.forEach((product)=>{ %>
+
+                  
+
+                  
+                        <tr>
+
+                            <th scope="row">
+                                <%=product?.productName%>
+                            </th>
+                            <td>
+                                       <%=product?.parentCategory%>
+                                
+                            </td>
+                            <td>
+                               
+                         <% for(let j=0;j<product.productImage.length;j++){ %>
+
+
+
+                                <img src="/adminassets/uploads/<%=product?.productImage[j]%>" alt="" style="width: 100px; height: 100px">
+
+
+
+
+
+    
+                                      
+                                <%}%>
+                            </td>
+
+                               
+                              <td>
+                                  <%=product?.productPrice %>
+                            </td>
+                            <td>
+
+                                <%=product?.productStock %>
+                               
+                            </td>
+                     
+                            
+
+                            <%if(product.isListed){  %>
+
+                        
+                                
+                              
+                              
+                                <td>
+                                   
+                                        <button id="unblock<%=product?.productName%>" onclick="fnBlock('<%=product?.productName %>')" type="submit" class="btn btn-success">Unlist</button>
+                                
+                                </td>
+
+                                <%}else{%>
+                            
+                                    <td>
+                                        
+                                            <button id="block<%=product?.productName%>" onclick="fnUnBlock('<%=product?.productName %>')" type="submit" class="btn btn-danger">List</button>
+                                      
+                                    </td>
+
+                                    <%}%>
+
+                             
+                                  
+
+
+                                        <td>
+
+
+
+
+
+                                            <a href="/editPage/<%=product.id%>"
+                                                class="btn btn-primary btn-sm rounded">edit</a>
+
+                                                <button  class="btn btn-info"onclick="deleteProduct('<%=product._id%>')">Delete
+                                                </button>
+                                            
+
+
+
+                                        </td>
+                        </tr>
+
+                        <% }) %>
+                    
+       
+                </tbody>
+            </table>
+          </div> <!-- card-body end// -->
+
+
+    </div> <!-- card end// -->
+
+   
+
+
+
+   
+    <div class="d-flex justify-content-center py-3">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+
+                
+                    <li class="page-item">
+                        <a class="page-link" href="">
+                            
+                        </a>
+                    </li>
+                 
+            </ul>
+
+    </div>
+
+
+</section> <!-- content-main end// -->
+
+<script>
+  
+    async function fnBlock(productId){
+  
+           let response = await fetch(`/blockProduct?id=${productId}`,{
+  
+              method:"GET"
+           })
+  
+           let result = await response.json()
+  
+           if(result.block){
+  
+               await Swal.fire({
+                   icon:"error",
+                   title:"Product Blocked"
+               });
+           }
+  
+           window.location.reload()
+    }
+  
+  
+    async function fnUnBlock(productId){
+  
+          let response = await fetch(`/unBlockProduct?id=${productId}`,{
+  
+                method:"GET"
+          })
+  
+          let result = await response.json()
+  
+          if(result.unBlock){
+              await Swal.fire({
+                   icon:"success",
+                   title:"Product Unblocked",
+                   confirmButtonText:"OK"
+              });
+          }
+          window.location.reload()
+    }
+
+
+      
+    
+  
+      </script>
+
+      <script>
+         
+         async function deleteProduct(productId){
+
+             
+                let response = await fetch(`/deleteProduct?id=${productId}`,{
+
+                      method:"delete"
+                })
+
+                let result = await response.json()
+
+
+                if(result.deleted){
+
+                     await Swal.fire({
+
+                        icon:"success",
+                        title:"Conform  to Delete",
+                        confirmButtonText:"OK"
+                      
+                     })
+                }
+
+                window.location.reload()
+        }
+          
+      </script>
+
+
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- jQuery Validation plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+
+
+
+
+<script src="assets/js/vendors/jquery-3.6.0.min.js"></script>
+<script src="assets/js/vendors/bootstrap.bundle.min.js"></script>
+<script src="assets/js/vendors/select2.min.js"></script>
+<script src="assets/js/vendors/perfect-scrollbar.js"></script>
+<script src="assets/js/vendors/jquery.fullscreen.min.js"></script>
+<!-- Main Script -->
+<script src="assets/js/main.js" type="text/javascript"></script>
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%- include('../adminpartials/adminfooter') %>
+

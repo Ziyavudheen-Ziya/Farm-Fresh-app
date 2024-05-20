@@ -1,0 +1,268 @@
+
+<%- include('../partials/header') %>
+
+
+
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    header, footer {
+        background-color: #343a40;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .order-success-container {
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 30px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    h2 {
+        color: #c96;
+    }
+
+    .product-details {
+        margin-top: 20px;
+    }
+
+    .product-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .product-image {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 5px;
+        margin-right: 20px;
+    }
+
+    .product-info {
+        flex-grow: 1;
+    }
+
+    .total-amount {
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    .navigation-buttons {
+        margin-top: 20px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .button {
+        background-color: #c96;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .button:hover {
+        background-color: #c96;
+    }
+
+    footer {
+        margin-top: auto;
+    }
+
+
+/* Responsive styles for mobile */
+@media (max-width: 767px) {
+    .order-success-container {
+        padding: 10px; /* Reduce padding for more compact layout */
+        max-width: 100%; /* Reduce container width for better alignment */
+        margin: 0 auto; /* Center the container horizontally */
+        display: flex; /* Use flexbox */
+        flex-direction: column; /* Stack children vertically */
+        justify-content: center; /* Center vertically */
+        align-items: center; /* Center horizontally */
+    }
+
+    .page-wrapper {
+        max-width: 80%;
+    }
+
+    .thanxContent {
+        padding: 10px; /* Reduce padding for more compact layout */
+    }
+
+    .display-4 {
+        font-size: 2rem; /* Reduce font size for heading */
+    }
+
+    .h5 {
+        font-size: 0.9rem; /* Reduce font size for secondary text */
+    }
+
+    .product-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 10px; /* Adjust margin for better spacing between products */
+    }
+
+    .product-image {
+        max-width: 100%; /* Ensure images don't overflow container */
+        height: auto;
+        margin-bottom: 5px; /* Adjust margin for better spacing */
+    }
+
+    .product-info,
+    .product-price {
+        text-align: center; /* Center align text for better readability */
+        font-size: 0.8rem; /* Reduce font size for product details */
+    }
+
+    .navigation-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px; /* Adjust margin for better spacing */
+    }
+
+    .navigation-buttons button {
+        width: 100%; /* Make buttons full width on mobile */
+        margin-bottom: 5px; /* Adjust margin for better spacing */
+        font-size: 0.9rem; /* Reduce font size for buttons */
+    }
+}
+
+
+
+
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Success</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .order-success-container {
+      max-width: 800px;
+      margin: auto;
+    }
+    .product-details {
+      margin-top: 20px;
+    }
+    .product-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    .product-image {
+      max-width: 100px;
+      margin-right: 20px;
+    }
+    .product-info, .product-price {
+      flex: 1;
+    }
+    .navigation-buttons {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .navigation-buttons .button {
+      margin: 5px;
+    }
+    .btn-primary {
+    color: #fff;
+    background-color: #c96;
+    border-color: #c96;
+    }
+  </style>
+</head>
+<body>
+<br>
+<div class="page-wrapper">
+  <div class="order-success-container">
+    <h2>Order Successful!</h2>
+    <div class="thanxContent text-center bg-light p-4 rounded">
+      <h1 class="display-4 text-primary mb-3">Awesome!</h1>
+      <h4 class="h5 text-secondary">
+        Your order is confirmed. We'll notify you once it's shipped!
+      </h4>
+    </div>
+    <div class="product-details">
+      <% cartData.forEach((data) => { %>
+        <div class="product-item">
+          <img src="/adminassets/uploads/<%= data.productId.productImage[0] %>" alt="Product Image" class="product-image">
+          <div class="product-info">
+            <p>Name: <%= data?.productId?.productName %></p>
+          </div>
+          <div class="product-price">
+            <p>Quantity: <%= data?.productQuantity %></p>
+          </div>
+          <div class="navigation-buttons">
+            <button class="btn btn-primary" onclick="productStock('<%= data.productQuantity %>,<%= data.productId._id %>')">Continue to Shopping</button>
+            <button class="btn btn-secondary" onclick="downloadInvoice()">Download Invoice</button>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</div>
+<br>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script>
+  function downloadInvoice() {
+    // Implement invoice download logic here
+  }
+
+  async function productStock(productInfo) {
+    const [productStock, productId] = productInfo.split(',');
+
+    let response = await fetch(`/stockDecrase?id=${encodeURIComponent(productStock)}&productId=${encodeURIComponent(productId)}`, {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+    let result = await response.json();
+
+    if (result.sucesss) {
+      await Swal.fire({
+        icon: "success",
+        title: "OK"
+      });
+
+      window.location.href = '/';
+    }
+  }
+</script>
+</body>
+</html>
+
+
+    <%- include ('../partials/footer') %>

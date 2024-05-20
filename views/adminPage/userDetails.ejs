@@ -1,0 +1,170 @@
+
+
+<%- include('../adminpartials/adminheader') %>
+
+
+<section class="content-main">
+    <div class="row">
+        <div class="col-9">
+            <div class="content-header">
+                <h2 class="content-title">USER MANAGEMENT</h2>
+                <!-- <div>
+                        <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+                        <button class="btn btn-md rounded font-sm hover-up">Publich</button>
+                    </div> -->
+            </div>
+        </div>
+
+        <table id="example" class="display custom-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Actions</th>
+                  
+
+                </tr>
+            </thead>
+            <tbody>
+            <% userData.reverse().forEach(user => { %>
+                <tr>
+                    <td><%= user?.name %></td>
+                    <td><%= user?.email %></td>
+                    <td><%= user?.phone %></td>
+                    <td>
+
+                          <% if(user.block){ %>
+
+                         
+                      
+                           
+                            <button  id="unblock<%user%>" onclick="fnBlock('<%=user._id %>')"  type="button" class="btn btn-success">Unblock</button>
+                      
+                           <% }else{ %>
+
+
+                               
+                                <button id="block<%user%>" onclick="fnUnblock('<%=user._id%>')" type="button" class="btn btn-danger">Block</button>
+                           
+
+                          <% } %>
+
+                       
+
+                    </td>
+                </tr>
+            <% }); %>
+            
+            </tbody>
+        </table>
+
+
+    </div>
+<style>.custom-table {
+width: 100%;
+border-collapse: collapse;
+}
+
+.custom-table th,
+.custom-table td {
+border: 1px solid #ddd; /* Add borders to cells */
+padding: 8px;
+}
+
+.custom-table th {
+background-color: #f2f2f2; /* Light gray background color for headers */
+text-align: left;
+}
+
+.custom-table tbody tr:nth-child(even) {
+background-color: #f2f2f2; /* Alternate row background color */
+}
+
+.custom-table tbody tr:hover {
+background-color: #ddd; /* Hover effect */
+}
+
+.custom-table button {
+padding: 5px 10px;
+border: none;
+cursor: pointer;
+border-radius: 3px;
+}
+
+.custom-table button:hover {
+opacity: 0.8;
+}
+
+.btn-success {
+background-color: #28a745;
+color: white;
+}
+
+.btn-danger {
+background-color: #dc3545;
+color: white;
+}
+</style>
+
+<script src="assets/js/plugins/jquery-3.6.0.min.js"></script>
+<script src="assets/js/plugins/bootstrap.bundle.min.js"></script>
+<script src="assets/js/plugins/slick.min.js"></script>
+<script src="assets/js/plugins/jquery.magnific-popup.min.js"></script>
+<script src="assets/js/plugins/jquery.counterup.min.js"></script>
+<script src="assets/js/plugins/jquery.inview.min.js"></script>
+<script src="assets/js/custom.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+<script>
+   
+  async function fnBlock(userId){
+
+
+        let response = await fetch(`/blockUser?id=${userId}`,{
+            method:"GET"
+        })
+
+        let result = await response.json()
+        if(result.success){
+
+             await Swal.fire({
+
+                 icon:"Success",
+                 title:"User Unblocked"
+             })
+        }
+
+        window.location.reload()
+
+  }
+
+
+
+      async function fnUnblock(userId){
+
+           let response = await fetch(`/unBlockUser?id=${userId}`,{
+
+                 method:"GET"
+           })
+
+           let result = await response.json()
+
+           if(result.success){
+
+                await Swal.fire({
+                     icon:"error",
+                     title:"User Block",
+                     confirmButtonText:"OK"
+                })
+           }
+
+           window.location.reload()
+      }
+
+</script>
+
+
+
+<%- include('../adminpartials/adminfooter') %>
