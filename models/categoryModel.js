@@ -21,6 +21,18 @@ const categorySchema = new mongoose.Schema({
 
            type:Boolean,
            default:true
+       },
+
+       categoryOfferId:{
+
+        type:mongoose.Types.ObjectId,
+        required:true,
+        ref:'categoryOffer'
+          
+       },
+       categoryOfferAmount:{
+           required:true,
+           type:Number
        }
 
 })

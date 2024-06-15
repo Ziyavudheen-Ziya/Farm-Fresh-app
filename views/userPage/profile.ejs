@@ -194,8 +194,8 @@
                     <div class="form-group" style="margin-top: 20px;">
                         <label for="referralCode"><strong>Referral Code:</strong></label>
                         <div style="display: flex; align-items: center;">
-                            <input type="text" class="form-control" id="referralText" aria-describedby="emailHelp" value="" disabled>
-                            <button type="submit" id="copyReferral" class="btn btn-primary" style="margin-left: 10px;">Copy</button>
+                            <input type="text" class="form-control" id="referralText" aria-describedby="emailHelp" value="http://localhost:<%=process.env.localHost%>/loginpage?referalCode=<%=referalCode%>" disabled>
+                            <button type="submit" onclick="copyReferalCode()" id="copyReferral" class="btn btn-primary" style="margin-left: 10px;">Copy</button>
                         </div>
                     </div>
 
@@ -203,11 +203,17 @@
                 </div>
             
                 <hr>
-                
+                <form action="/walletGetPage" method="GET">
+
+
+              
                 <h1>Wallet Transactions</h1>
-                <h3 style="text-align: center; color: #70b5fa;">Wallet Balance : </h3>
+
+                 <button onclick="wallerPage()">Wallet</button>
+                </form>
+                <!-- <h3 style="text-align: center; color: #70b5fa;">Wallet Balance :<%=walletData?.walletBalance%> </h3> -->
                 
-                <div class="credit-transactions">
+                <!-- <div class="credit-transactions">
                     <h2>Credit Transactions</h2>
 
                             <div class="transaction">
@@ -237,7 +243,7 @@
 
             </div>
             
-            
+             -->
             
             
     
@@ -283,8 +289,43 @@
 
         <script>
 
+            function copyReferalCode(){
+
+                 const referalCode = document.getElementById('referralText').value
+                 
+                 let tempInput = document.createElement('input')
+                 document.body.appendChild(tempInput)
+                 tempInput.value=referalCode
+                 tempInput.select()
+                 document.execCommand('copy')
+                 document.body.removeChild(tempInput)
+
+                 Swal.fire('Referal code copied to clipboard')
+            }
+
               
         </script>
+
+        <!-- <script>
+
+             async function wallerPage(){
+
+                let response = await fetch('/walletPageGet',{
+
+                     method:"GET",
+                     headers:{'Content-Type':'application/json'}
+
+                })
+
+
+                 let result = await response.json()
+
+                 if(result.success){
+
+                     window.location.href='/'
+                 }
+             }
+        </script> -->
 
 
 

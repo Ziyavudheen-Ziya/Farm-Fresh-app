@@ -16,7 +16,7 @@ const orderSchema = new mongoose.Schema({
    orderDate: {
       type: Date,
       required: true,
-      default: new Date().toLocaleString()
+      default: ()=>new Date()
    },
    paymentType: {
       type: String,
@@ -41,7 +41,17 @@ const orderSchema = new mongoose.Schema({
    paymentId: {
       type: String
    },
+
+   coupanApplied:{
+
+      type:mongoose.Types.ObjectId, 
+      default:null, 
+      ref:'coupan'
+
+   },
+   
 },
+
    { strictPopulate: false }
 
 );

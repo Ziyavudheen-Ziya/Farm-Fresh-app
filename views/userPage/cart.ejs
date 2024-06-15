@@ -44,47 +44,48 @@
               </thead>
 
               <tbody>
-                <% cartData.forEach((cart) => { %>
-                <tr class="cartProduct" id="cartProduct<%=cart%>">
-                  <td class="product-col">
-                    <div class="product" style="justify-content: space-evenly">
-                      <figure class="product-media">
-                        <a href="">
-                          <img
-                            src="/adminassets/uploads/<%= cart?.productId?.productImage[0]%>"
-
-                              
-                            alt=""
-                          />
-                        </a>
-                      </figure>
-                      <h3 class="product-title">
-                        <a href=""><%=cart?.productId?.productName%></a>
-                      </h3>
-                      <!-- End .product-title -->
-                    </div>
-                    <!-- End .product -->
-                  </td>
-                  <td class="price-col" id="price" name="price">
-                    ₹<%=cart?.productId?.productPrice%>
-                  </td>
+                <% cartData?.forEach((cart) => { %>
+                  <tr class="cartProduct" id="cartProduct<%= cart._id %>">
+                    <td class="product-col">
+                      <div class="product" style="justify-content: space-evenly">
+                        <figure class="product-media">
+                          <a href="">
+                            <% if (cart.productId && cart.productId.productImage && cart.productId.productImage.length > 0) { %>
+                              <img src="/adminassets/uploads/<%= cart.productId.productImage[0] %>" alt="">
+                            <% } %>
+                          </a>
+                        </figure>
+                        <h3 class="product-title">
+                          <a href=""><%= cart.productId?.productName %></a>
+                        </h3>
+                        <!-- End .product-title -->
+                      </div>
+                      <!-- End .product -->
+                    </td>
+                    <td class="price-col" id="price" name="price">
+                      <% if (cart.productId && cart.productId.productOfferId && cart.productId.productOfferId.currentstatus && cart.productId.productOfferId.startDate <= new Date() && cart.productId.productOfferId.endDate >= new Date()) { %>
+                        ₹<%= cart.productId.productOfferId.productOfferAmount %>
+                      <% } else { %>
+                        ₹<%= cart.productId?.productPrice %>
+                      <% } %>
+                    </td>
                   <td class="cart__update-wrapper cart-flex-item text-right">
                     <div class="cart__qty text-center">
                       <div class="qtyField">
                         <button
-                          onclick="quantityminus('<%=cart.productId._id%>')"
+                          onclick="quantityminus('<%=cart?.productId?._id%>')"
                         >
                           <i class="icon icon-minus"></i>
                         </button>
                         &nbsp;
                         <span
-                          id="productQuantity_<%=cart?.productId._id%>"
+                          id="productQuantity_<%=cart?.productId?._id%>"
                           name="productQuantity"
                           ><%=cart?.productQuantity%></span
                         >
                         &nbsp;
                         <button
-                          onclick="quantityMaximum('<%=cart.productId._id%>')"
+                          onclick="quantityMaximum('<%=cart?.productId?._id%>')"
                         >
                           <i class="icon icon-plus"></i>
                         </button>
@@ -96,7 +97,7 @@
 
                   <td
                     class="total-col"
-                    id="totalCostProduct_<%=cart?.productId._id%>"
+                    id="totalCostProduct_<%=cart?.productId?._id%>"
                   >
                     ₹<%=cart?.totalCostProduct %>
                   </td>
@@ -179,7 +180,7 @@
 
                   <tr class="summary-total">
                     <td>Total:</td>
-                    <td id="grandTotal">₹</td>
+                    <td id="grandTotal">₹<%=TotalCost%></td>
                   </tr>
                   <!-- End .summary-total -->
                 </tbody>
@@ -243,6 +244,10 @@
         result.updateQuantity;
       document.getElementById(`totalCostProduct_${cartMinus}`).textContent =
         result.updateTotalCoast;
+       
+       window.location.reload()
+        
+
     }
 
     if (result.minimum) {
@@ -273,6 +278,9 @@
         result.updateQuantity;
       document.getElementById(`totalCostProduct_${cartMaximum}`).textContent =
         result.updateTotalCoast;
+
+        window.location.reload()
+        
     }
 
     if (result.maximum) {
@@ -282,6 +290,9 @@
       });
     }
   }
+
+
+ 
 </script>
 
 <script>
@@ -317,5 +328,7 @@
     }
   }
 </script>
+
+
 
 <%- include ('../partials/footer') %>

@@ -38,11 +38,11 @@
       </tr>
     </thead>
     <tbody>
-      <% orderData.reverse().forEach((data) => { %>
+      <% orderData.forEach((data) => { %>
       <tr>
         <td><%= data?.orderNumber %></td>
         <td><%= data?.userId?.name %></td>
-        <td><%= data.grandTotalCost %></td>
+        <td><%= data?.grandTotalCost %></td>
         <td><%= data?.paymentType %></td>
         <td><%= data?.orderStatus %></td>
         <td>
@@ -125,7 +125,9 @@
 
 <script>
   $(document).ready(function() {
-    $('#orderList').DataTable();
+    $('#orderList').DataTable({
+        "order":[]
+    });
   });
 
   // Initialize Bootstrap dropdowns

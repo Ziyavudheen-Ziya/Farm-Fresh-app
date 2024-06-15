@@ -1,0 +1,90 @@
+<%- include('../partials/header') %>
+
+
+<section class="lightSection clearfix pageHeader">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="page-title">
+                    <h2>WALLET</h2>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <ol class="breadcrumb float-right">
+                    <li>
+                        <a href='/'>Home</a>
+                    </li>
+                    <li class="active">WALLET</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MAIN CONTENT SECTION -->
+<section class="mainContent clearfix userProfile">
+<div class="container">
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="innerWrapper">
+                <div class="orderBox text-nowrap mb-0">
+                    <div class="table-responsive">
+                        <h2>Welcome,<%=userLogged.name%> </h2>
+                        <h5>Email: <%=userLogged.email%></h5>
+                        <div class="walletBalance">
+                           <h4>Wallet Balance: <%=walletBal.walletBalance%> </h4>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">*</th>
+                                        <th scope="col">Payment Type</th>
+                                        <th scope="col">Transaction Date</th>
+                                        <th scope="col">Transaction Amount</th>
+                                        <th scope="col">Transaction Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% for(let i=walletDet?.length - 1; i >= 0; i--){ %>
+                                        <tr>
+                                            <td>*</td>
+                                            <td><%= walletDet?.[i].paymentType%></td>
+                                            <td><%= walletDet?.[i].transactionDate.toDateString() %></td>
+                                            <td>₹<%= walletDet?.[i].transactionAmount.toFixed(2) %></td>
+                                            <td><%= walletDet?.[i].transactionType %></td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
+   
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination">
+                                  <li class="page-item"><a class="page-link">Pages</a></li>
+                    
+                                  <% for(let i=0;i<totalPages;i++){ %>
+                                    <li class="page-item"><a class="page-link" href="/walletGetPage?pageNo=<%=i+1%>">
+                                        <%=i+1%>
+                                      </a></li>
+                                    <% } %>
+                    
+                                    
+                                </ul>
+                              </nav>
+                              
+                                
+                            
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+
+<%- include ('../partials/footer') %>

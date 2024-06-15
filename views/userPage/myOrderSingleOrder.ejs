@@ -1,0 +1,315 @@
+
+<%- include('../partials/header') %>
+
+
+<style>
+    /* Default styles */
+
+body {
+font-family: 'Arial', sans-serif;
+background-color: #f8f9fa;
+}
+
+header,
+footer {
+background-color: #343a40;
+color: white;
+padding: 10px;
+text-align: center;
+width: 100%;
+}
+
+.container {
+width:80%
+}
+
+.container-new {
+width: 80%;
+padding-right: 15px;
+padding-left: 15px;
+margin-right: auto;
+margin-left: auto;
+display: flex;
+flex-direction: row;
+}
+
+.orders-container {
+width: 100%;
+background-color: #fff;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+border-radius: 10px;
+padding: 30px;
+margin-top: 20px;
+margin-bottom: 20px; /* Added margin-bottom to provide space at the bottom */
+}
+
+h1,
+h2 {
+color: #007bff;
+text-align: center;
+}
+
+.order-details {
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+
+.order-item {
+display: flex;
+flex-wrap: wrap; /* Allow items to wrap onto the next line */
+gap: 20px;
+padding: 20px;
+border-radius: 8px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+transition: transform 0.2s ease-in-out;
+}
+
+.order-item:hover {
+transform: scale(1.05);
+}
+
+.order-image {
+width: 100px;
+height: 100px;
+object-fit: cover;
+border-radius: 8px;
+}
+
+.order-content {
+flex-grow: 1;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+width: 100%; /* Ensure content fills the container */
+}
+
+.order-title {
+font-size: 1.2rem;
+font-weight: bold;
+margin-bottom: 10px;
+}
+
+.order-info {
+display: flex;
+flex-wrap: wrap; /* Allow info to wrap onto the next line */
+justify-content: space-between;
+align-items: center;
+margin-bottom: 10px;
+}
+
+.order-status {
+font-weight: bold;
+color: #28a745;
+}
+
+footer {
+margin-top: auto;
+}
+
+/* Media query for tablets and smaller devices */
+
+@media (max-width: 768px) {
+/* .container {
+    flex-direction: column;
+} */
+
+.orders-container {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.order-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.order-content {
+    text-align: center;
+}
+
+.order-image {
+    width: 80%;
+    height: auto;
+}
+
+.address-container {
+    flex-direction: column;
+}
+}
+
+/* Media query for mobile devices */
+
+@media (max-width: 576px) {
+.container-new {
+    flex-direction: column ;    
+}
+
+.order-image {
+    width: 100%;
+}
+
+.order-content {
+    padding: 10px;
+}
+}
+
+
+
+
+
+</style>
+
+</head>
+
+<body>
+
+    <script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/jquery.hoverIntent.min.js"></script>
+<script src="assets/js/jquery.waypoints.min.js"></script>
+<script src="assets/js/superfish.min.js"></script>
+<script src="assets/js/owl.carousel.min.js"></script>
+<!-- Main JS File -->
+<script src="assets/js/main.js"></script>
+
+     
+     
+
+
+   
+
+<div class="page-wrapper">
+    <nav aria-label="breadcrumb" class="breadcrumb-nav mb-2">
+        <div class="container">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="/myOrdersPage">My Orders</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Order Details</li>
+            </ol>
+        </div><!-- End .container -->
+    </nav><!-- End .breadcrumb-nav -->
+    <div class="container-new">
+        <div class="orders-container" style="margin-right: 2em;">
+            <h2>Order Details</h2>
+            <div class="order-item">
+                <div class="order-content">
+                    <div>
+                        <h2 class="order-title">Order #%><%=orderData?.orderNumber%></h2>
+                        <div class="order-info">
+                            <p><strong>Order Date:</strong><%=orderData?.orderDate.toLocaleDateString()%> </p>
+                            <p><strong>Mode of Payment:</strong><%=orderData?.paymentType%> </p>
+                            <p><strong>Total Amount:</strong> ₹<%=orderData?.grandTotalCost%></p>
+                        </div>
+                    </div>
+                    <p class="order-status">Status:<%=orderData?.orderStatus%> </p>
+                </div>
+            </div>                
+        </div>
+        <div class="orders-container">
+            <h2>Address</h2>
+            <div class="order-item">
+                <div class="order-content">
+                    <div>
+                        <div class="order-info">
+                            <p><strong>Name:</strong><%=orderData?.addressChosen?.name%> </p>
+                            <p><strong>Phone Number:</strong><%=orderData?.addressChosen?.phone%> </p>
+                            <p><strong>House Number:</strong><%=orderData?.addressChosen?.houseNumber%> </p>
+                            <p><strong>State:</strong><%=orderData?.addressChosen?.state%></p>
+                            <p><strong>City:</strong><%=orderData?.addressChosen?.city%> </p>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        </div>
+    </div>
+
+   
+    <div class="container">
+        <div class="orders-container">
+            <h2>Product Details</h2>
+            <!-- Order Details -->
+            <div class="order-details">
+                <% orderData?.cartData?.forEach((data,index) => { %>
+                    <div class="order-item">
+                        <img src="/adminassets/uploads/<%= data?.productId?.productImage[0] %>" alt="Product Image" class="order-image">
+                        <div class="order-content">
+                            <div>
+                                <div class="order-info">
+                                    <p><strong>Product:</strong> <%= data?.productId?.productName %> </p>
+                                    <p><strong>Quantity:</strong> <%= data?.productQuantity %> </p>
+                                    <p><strong>Price:</strong> ₹ <%= data?.productId?.productPrice %> </p>
+                                    <p><%= data?.singleOrderstatus %></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                      <%if(data?.singleOrderstatus!=="cancelled"){%>
+
+      
+                     
+                    <button id="cancel-<%= data.productId._id %>" onclick="singleOrderDeleting('<%= orderData.orderNumber %>', '<%= data.productId._id %>','<%=data.productQuantity%>','<%=data.productId.productPrice%>', '<%= index %>')">Cancel</button>
+                    <%}%>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- End .page-wrapper -->
+
+<script>
+        let orderId = '<%=orderData._id%>'
+         
+        console.log(orderId)
+        
+async function singleOrderDeleting(orderNumber, productId, productQuantity , productPrice,  indexId) {
+    try {
+        let response = await fetch(`/singleProductCancel?orderNumber=${orderNumber}&productId=${productId}&orderId=${orderId}&indexId=${indexId}`, {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body:JSON.stringify({productQuantity,productPrice})
+
+        });
+
+        let result = await response.json();
+
+        if (result.success) {
+            await Swal.fire({
+                icon: "success",
+                title: "OK"
+            });
+              
+
+
+             const cancelBtn =  document.getElementById(`cancel-${productId}`)
+                if(cancelBtn){
+                      
+                    cancelBtn.style.display='none';
+                }
+               window.location.reload()
+               
+            }
+          
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+     
+</script>
+
+
+
+<!-- Plugins JS File -->
+
+</body>
+
+<%- include ('../partials/footer') %>
+
+
+<!-- molla/404.html  22 Nov 2019 10:04:04 GMT -->
+
+</html>

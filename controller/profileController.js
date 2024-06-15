@@ -2,37 +2,43 @@ const { compareSync } = require("bcrypt");
 const profileCollection = require("../models/addressModel.js");
 const userCollection = require("../models/userModel.js");
 const { logOutting } = require("./userController.js");
-const bcrypt = require('bcrypt')
-
-const profilePage = async (req, res) => {
+const bcrypt = require("bcrypt");
+const cartCollecction = require("../models/cartModel.js");
+const walletCollection = require("../models/walletModel.js");
+const AppError = require('../middleware/errorHandling.js')
+const profilePage = async (req, res,next) => {
   try {
-    const userData =  await userCollection.findOne({_id:req.session?.user})  
+    const userData = await userCollection.findOne({ _id: req.session?.user });
+    const referalCode = userData?.referalCode;
 
-    console.log("userdat varund",userData);
+    const walletData = await walletCollection.findOne({
+      userId: req.session?.user,
+    });
 
     console.log(userData);
 
     if (userData) {
-      res.render("userPage/profile", { userData });
+      res.render("userPage/profile", {
+        userData,
+        referalCode: referalCode,
+        walletData,
+      });
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong Profile", 500));
   }
 };
 
-const addAddressPage = async (req, res) => {
+const addAddressPage = async (req, res,next) => {
   try {
     res.render("userPage/addAdress");
-    console.log("entering");
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong Profile", 500));
   }
 };
 
-const newAddress = async (req, res) => {
+const newAddress = async (req, res,next) => {
   try {
-    console.log("new Address entering");
-
     const ID = req.session?.user._id;
 
     const addressExsist = await profileCollection.findOne({
@@ -58,42 +64,37 @@ const newAddress = async (req, res) => {
       res.send({ success: true });
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong Profile", 500));
   }
 };
 
-const myAddressPage = async (req, res) => {
+const myAddressPage = async (req, res,next) => {
   try {
     const userData = await userCollection.find({
       _id: req?.session?.user?._id,
     });
 
-
     const addressData = await profileCollection.find({
       user_id: req.session?.user,
     });
 
-    console.log(`vanilla,vannu${addressData}`);
-
     res.render("userPage/myAdress", { addressData });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong Profile", 500));
   }
 };
 
-const editAddressPage = async (req, res) => {
+const editAddressPage = async (req, res,next) => {
   try {
     const addressData = await profileCollection.findOne({ _id: req.params.id });
 
-    console.log(`vannutta data${addressData}`);
-
     res.render("userPage/editAddress", { addressData });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong Profile", 500));
   }
 };
 
-const editAndUpdate = async (req, res) => {
+const editAndUpdate = async (req, res,next) => {
   try {
     const addressExsist = await profileCollection.findOne({
       _id: req.params.id,
@@ -120,11 +121,11 @@ const editAndUpdate = async (req, res) => {
       res.send({ success: true });
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong Profile", 500));
   }
 };
 
-const deletingAddress = async (req, res) => {
+const deletingAddress = async (req, res,next) => {
   try {
     const ID = req.query.id;
 
@@ -132,27 +133,23 @@ const deletingAddress = async (req, res) => {
 
     res.send({ deleted: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong Profile", 500));
   }
 };
 
-const editPageProfile = async (req, res) => {
+const editPageProfile = async (req, res,next) => {
   try {
     const userData = req.session?.user;
 
-    console.log(`userDrat ${userData}`);
-
     const data = await userCollection.findOne({ _id: req.session.user });
-
-    console.log(`jdcdsjsncjsncjnsd${data}`);
 
     res.render("userPage/editProfile", { data });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong Profile", 500));
   }
 };
 
-const editProfileUser = async (req, res) => {
+const editProfileUser = async (req, res,next) => {
   try {
     const { name, phone, email, userId } = req.body;
 
@@ -164,59 +161,38 @@ const editProfileUser = async (req, res) => {
 
     res.send({ success: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong Profile", 500));
   }
 };
 
-const changePasswordGetPage =async(req,res)=>{
-     
+const changePasswordGetPage = async (req, res,next) => {
   try {
-
-    const userData = await userCollection.find()
-
-      res.render('userPage/changePassword')
-    
+    res.render("userPage/changePassword");
   } catch (error) {
-      console.log(error.message);
+    next(new AppError("Something went wrong Profile", 500));
   }
-}
+};
 
+const passwordUpdating = async (req, res,next) => {
+  try {
+    const bcryptPassword = bcrypt.hashSync(req.body.confirmPassword, 10);
 
-const passwordUpdating = async(req,res)=>{
-      
-      try {
+    const passwordExsist = await userCollection.findOne();
 
-        console.log("Entering the page");
+    const exsist = bcrypt.compareSync(
+      req.body.oldpassword,
+      passwordExsist.password
+    );
 
-        const bcryptPassword = bcrypt.hashSync(req.body.confirmPassword,10)
+    if (exsist) {
+      await userCollection.updateOne({ password: bcryptPassword });
 
-        console.log("older password varund",req.body.oldpassword);
-
-         const passwordExsist = await userCollection.findOne()
-
-
-         const exsist = bcrypt.compareSync(
-             req.body.oldpassword,
-             passwordExsist.password
-         ) 
-          
-         console.log("new password",req.body.confirmPassword);
-
-         if(exsist){
-             
-              await userCollection.updateOne({password:bcryptPassword})
-
-              res.send({success:true})
-         }
-
-         console.log("update ayi kzhinu success pakka");
-      
-
-        
-      } catch (error) {
-         console.log(error.message);
-      }
-}
+      res.send({ success: true });
+    }
+  } catch (error) {
+    next(new AppError("Something went wrong Profile", 500));
+  }
+};
 
 module.exports = {
   profilePage,
@@ -229,5 +205,5 @@ module.exports = {
   editPageProfile,
   editProfileUser,
   changePasswordGetPage,
-  passwordUpdating
+  passwordUpdating,
 };

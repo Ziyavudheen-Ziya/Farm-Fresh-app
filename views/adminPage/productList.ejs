@@ -144,13 +144,18 @@
     <div class="d-flex justify-content-center py-3">
         <nav aria-label="Page navigation example">
             <ul class="pagination">
+                <li class="page-item"><a class="page-link">Pages</a></li>
 
-                
+                <%for(let i=0;i<totalPages;i++){%>
+
                     <li class="page-item">
-                        <a class="page-link" href="">
-                            
-                        </a>
+                      
+
+
+                     
+                        <a class="page-link" href="/productsdetails?pageNo=<%=i+1%>"><%=i+1%> </a>
                     </li>
+                <%}%>
                  
             </ul>
 

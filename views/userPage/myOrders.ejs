@@ -113,7 +113,7 @@
           <td class="product-col" style="justify-content: space-evenly">
             <div class="product" style="justify-content: space-evenly">
               <h3 class="product-title">
-                <a href="#"><%=data?.orderDate%> </a>
+                <a href="#"><%=data?.orderDate.toLocaleDateString()%> </a>
               </h3>
               <!-- End .product-title -->
             </div>
@@ -137,25 +137,30 @@
             </div>
             <!-- End .product -->
           </td>
-          <!-- <td class="product-col" style="justify-content: space-evenly;">
+          <td class="product-col" style="justify-content: space-evenly;">
                             <div class="product" style="justify-content: space-evenly;">
                                 <h3 class="product-title">
-                                    <a class="btn btn-light" href=""> Details </a>
+                                    <a class="btn btn-light" href="/orderSingleData?id=<%=data._id%>"> Details </a>
                                 </h3>
                             </div>
-                        </td> -->
+                        </td>
           <td class="product-col">
             <% if(data?.orderStatus == 'pending' || data?.orderStatus ==
             'shipped') { %>
             <div class="product" style="justify-content: space-evenly">
               <h3 class="product-title">
+                <%if(!data.allItemsCanceled){%>
+
+                
                 <button
-                  id="cancel"
+                  id="cancel<%= data._id %>"
                   class="btn btn-danger"
+                
                   onclick="cancelFunction('<%=data._id%>')"
                 >
                   Cancel
                 </button>
+                <%}%>
               </h3>
               <!-- End .product-title -->
             </div>
@@ -164,7 +169,7 @@
             <div class="product" style="justify-content: space-evenly">
               <h3 class="product-title">
                 <button
-                  id="return"
+                  id="return_<%= data._id %>"
                   class="btn btn-primary"
                   onclick="returnFunction('<%=data._id%>')"
                 >
@@ -173,21 +178,22 @@
               </h3>
               <!-- End .product-title -->
             </div>
-            <!-- End .product -->
-            <% } else if(data?.orderStatus == 'return') { %>
-            <div class="product" style="justify-content: space-evenly">
+         
+
+             <% } else if(data?.orderStatus == 'return') { %>
+            <!-- <div class="product" style="justify-content: space-evenly">
               <h3 class="product-title">
                 <button
-                  id="cancel"
+                  id="cancel_<%= data._id %>"
                   class="btn btn-danger"
-                  onclick="cancelFunction()"
+                  onclick="cancelFunction('<%=data._id%>')"
                 >
                   Cancel
                 </button>
               </h3>
-              <!-- End .product-title -->
-            </div>
-            <!-- End .product -->
+              
+            </div> -->
+        
 
             <div class="product" style="justify-content: space-evenly">
               <h3 class="product-title">
@@ -195,10 +201,12 @@
                   Return
                 </a>
               </h3>
-              <!-- End .product-title -->
+          
             </div>
-            <!-- End .product -->
+           
             <% } %>
+
+            
           </td>
         </tr>
 
@@ -211,15 +219,17 @@
   <div class="pagination-area mt-15 mb-50">
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
-        <li class="page-item"><a class="page-link" href=""></a></li>
+        <% for (let i = 1; i <= totalPages; i++) { %>
+          <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+            <a class="page-link" href="/myOrdersPage?pageNo=<%= i %>"><%= i %></a>
+          </li>
+        <% } %>
       </ul>
     </nav>
   </div>
-</div>
 
 <script>
   async function cancelFunction(orderId) {
-
     let result = await Swal.fire({
       title: "Confirm Cancel",
       text: "Are you sure you want to cancel this order?",
@@ -228,67 +238,88 @@
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, cancel it",
     });
-  
-   
 
-      console.log(`oredr entering${orderId}`);
-    let response = await fetch(`/cancelOrderUser?id=${orderId}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    let res = await response.json();
-
-     if(result.isConfirmed){
-
-      if (res.cancelled) {
-      await Swal.fire({
-        icon: "success",
-        title: "OK",
+    if (result.isConfirmed) {
+      let response = await fetch(`/cancelOrderUser?id=${orderId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       });
 
-      window.location.reload();
+      let res = await response.json();
+
+      if (res.cancelled) {
+        await Swal.fire({
+          icon: "success",
+          title: "Order Cancelled",
+        });
+
+        let cancelBtn = document.getElementById('cancel')
+
+        if(cancelBtn){
+           
+             cancelBtn.style.display='none';
+        }
+
+        window.location.reload()
+
+
+      }
+
+      
     }
-
-    let rs = document.getElementById("cancel");
-
-    rs.style.display = "none";
-
-
-
-     }
-
-   
-
-
- 
-
-
-
-    
   }
 
   async function returnFunction(orderId) {
-    let response = await fetch(`/returnUser?id=${orderId}`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
+    let result = await Swal.fire({
+      title: "Confirm Return",
+      text: "Are you sure you want to return this order?",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, return it",
     });
 
-    let result = await response.json();
-
-    if (result.return) {
-      await Swal.fire({
-        icon: "success",
-        title: "OK",
+    if (result.isConfirmed) {
+      let response = await fetch(`/returnUser?id=${orderId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       });
 
-      window.location.reload();
+      let res = await response.json();
+
+      if (res.return) {
+        await Swal.fire({
+          icon: "success",
+          title: "Order Returned",
+        });
+
+        let retunBtn = document.getElementById('return')
+
+        if(retunBtn){
+
+           retunBtn.style.display='none';
+        }
+
+       window.location.reload()
+      }
     }
-
-    let rs = document.getElementById("return");
-
-    rs.style.display = "Cancel";
   }
+//   function hideAllButton(orderId) {
+//   let cancelBtn = document.getElementById(`cancel_${orderId}`);
+//   let returnBtn = document.getElementById(`return_${orderId}`);
+
+//   if (cancelBtn) {
+//     cancelBtn.style.display = 'none';
+//   }
+
+//   if (returnBtn) {
+//     returnBtn.style.display = null;
+//   }
+// }
+
 </script>
+
+
+
 
 <%- include ('../partials/footer') %>

@@ -109,25 +109,33 @@
                                 </div>
     
     
-    
-                                <!-- <div class="checkout-discount">
+                                  
+                                <div class="checkout-discount">
                                     <div id="applyCoupon">
                                         <input type="text" class="form-control" required id="checkout-discount-input" placeholder="Have a coupon? Click here to enter your code ">
-                                        <button type="submit"  id="" class="btn btn-light">Apply</button> 
+                                        <button type="submit" onclick="coupanApply()" id="" class="btn btn-light">Apply</button> 
                                     </div>
         
                                 </div>
-    
+                                  
                                 <div id="couponContainer">
-                                    
-    
-                                           <div class="couponElement">
-                                               <h4>Code : <span id="couponCode"></span></h4>
-                                               <p>Discount Percentage : %</p>
-                                               <p>Minimum Purchase : <span id="minimumPurchase"></span></p>
-                                           </div>
-                                 
-                                     </div> -->
+                                    <% coupanData.forEach((data) => { %>
+                                        <% if (new Date(data.expiryDate) < new Date()) { %>
+                                            <!-- <div class="couponElement expired">
+                                                <h4>Code : <span id="couponCode">Expired</span></h4>
+                                                <p>Coupan Amount : <span id="coupanAmount">Expired</span></p>
+                                                <p>Minimum Purchase : <span id="minimumPurchase">Expired</span></p>
+                                            </div> -->
+                                        <% } else { %>
+                                            <div class="couponElement">
+                                                <h4>Code : <span id="couponCode"><%= data.coupanCode %></span></h4>
+                                                <p>Coupan Amount : <span id="coupanAmount"><%= data.coupanAmount %></span></p>
+                                                <p>Minimum Purchase : <span id="minimumPurchase"><%= data.minimumPurchase %></span></p>
+                                            </div>
+                                        <% } %>
+                                    <% }) %>
+                                </div>
+                                
                             </div>
     
     
@@ -168,7 +176,7 @@
     
                                             <tr class="summary-subtotal">
                                                 <td>Subtotal:</td>
-                                                <td>₹ <%=grandTotal%></td>
+                                                <td id="grandTotalCheckout"><%=grandTotal%></td>
                                             </tr><!-- End .summary-subtotal -->
                                             <tr>
                                                 <td>Shipping:</td>
@@ -246,8 +254,8 @@
                                                         Cash on delivery
                                                     </a> -->
                                                     <input type="radio" name="paymentType" class="paymentType" value="Cash on delivery">&nbsp; Cash on delivery <br> <br>
-                                                    <!-- <input type="radio" name="paymentType" class="paymentType" value="razorPay">&nbsp; Razorpay <br> <br>
-                                                    <input type="radio" name="paymentType" class="paymentType" value="Wallet">&nbsp; Wallet <br> <br> -->
+                                                    <input type="radio" name="paymentType" class="paymentType" value="razorPay">&nbsp; Razorpay <br> <br>
+                                                    <input type="radio" name="paymentType" class="paymentType" value="Wallet">&nbsp; Wallet <br> <br>
                                                 </h2>
                                                 <br>
                                             </div><!-- End .card-header -->
@@ -277,97 +285,191 @@
                 </div><!-- End .page-content -->
             </main><!-- End .main -->
 
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 
-            <script>
-
-                 async function placeOrder(grandTotalCheckout){
-
-                      let selectAdrress = document.querySelector('input[name=chosenAddress]:checked')
-
-                      let paymentType = document.querySelector('input[name=paymentType]:checked')
-                    
-                      let selectAddressValue = selectAdrress? selectAdrress.value :null;
-                        let paymentTypeValue = paymentType? paymentType.value : null;
-
-
-                      if(selectAddressValue == null){
-
-                             await Swal.fire({
-                                 
-                                icon:"error",
-                                text:"Address is not selected",
-                                title:"oops!"
-
-                             })
-                             return;
-                      }
-                      
-                      console.log(`data grandTotal varund${grandTotalCheckout}`);
-
-                       if(paymentTypeValue == null){
-
-                            await Swal.fire({
-
-                                 icon:"error",
-                                 text:"Payment method is not selected",
-                                 title:"oops!"
-                            })
-
-                            return;
-                       }
-
-
-
-
-              
-                        
-
-
-
-                     
-
-                       let data = {
-
-                            grandTotalCheckout:grandTotalCheckout,
-                            paymentTypeValue:paymentTypeValue,
-                            selectAddressValue:selectAddressValue,
-                       }
-
-
-                       let response = await fetch(`/orderData`,{
-
-                              method:"post",
-                              headers:{"Content-Type":"application/json"},
-                              body:JSON.stringify(data)
-                              
-                       })
-
-
-                       let result = await response.json()
-
-                      
-                        if(result.success){
-
-                            window.location.href = "/orderSuccessPage";
-
-                           }
-
-
-
-                      
-                   
-
-                      
-
-
-                       
-
-                      
-                 }
-            </script>
-
-
+<script>
+async function placeOrder(grandTotalCheckout) {
+    let selectAddress = document.querySelector('input[name=chosenAddress]:checked');
+    let paymentType = document.querySelector('input[name=paymentType]:checked');
     
+    let selectAddressValue = selectAddress ? selectAddress.value : null;
+    let paymentTypeValue = paymentType ? paymentType.value : null;
+
+    if (selectAddressValue == null) {
+        await Swal.fire({
+            icon: "error",
+            text: "Address is not selected",
+            title: "Oops!"
+        });
+        return;
+    }
+    
+    if (paymentTypeValue == null) {
+        await Swal.fire({
+            icon: "error",
+            text: "Payment method is not selected",
+            title: "Oops!"
+        });
+        return;
+    }
+
+    let data = {
+        grandTotalCheckout: grandTotalCheckout,
+        paymentTypeValue: paymentTypeValue,
+        selectAddressValue: selectAddressValue,
+    };
+
+    console.log("Placing order with data:", data);
+
+    let response;
+    if (paymentTypeValue === `Cash on delivery`) {
+        console.log("data cash on delivery",response);
+        response = await fetch(`/orderData?paymentCOD=${"Cash on delivery"}`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+    } else if (paymentTypeValue === 'razorPay') {
+        response = await fetch(`/razorPayOrder?paymentRazorPay=${"razorPay"}`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        });
+    }else if(paymentTypeValue==='Wallet'){
+
+          response = await fetch(`/walletPayment?paymentWallet=${"wallet"},`,{
+              
+              method:"POST",
+              headers:{"Content-Type":"application/json"},
+              body:JSON.stringify(data)
+          })
+    }
+
+    let result = await response.json();
+    console.log("Order response:", result);
+
+    if (result.success) {
+        if (paymentTypeValue === 'Cash on delivery') {
+            window.location.href = "/orderSuccessPage";
+        } else if (paymentTypeValue === 'razorPay') {
+            await openRazorpay(grandTotalCheckout, result.orderId);
+        }else if(paymentTypeValue==='Wallet'){
+
+            window.location.href='/orderSuccessPage'
+        }
+
+       
+    }
+
+         if(result.insuffiecientBalance){
+
+        await Swal.fire({
+    
+        icon:'error',
+       
+         text:"OK",
+         title:"Insuffient Balance in wallet",
+      })
+      
+   }
+
+     if(result.limitExceededForCOD){
+         await Swal.fire({
+             
+            icon:"error",
+            title:"Cash on delivery limit 1000",
+            
+         })
+     }
+
+
+
+// else {
+//         console.log(result);
+//         await Swal.fire({
+//             icon: "error",
+//             text: "An error occurred while processing the order.",
+//             title: "Oops!"
+//         });
+//     }
+}
+
+async function openRazorpay(amount, orderId) {
+    try {
+        var options = {
+            "key": "rzp_test_ntanbiXOhAqcaU",
+            "amount": amount + "00",
+            "currency": "INR",
+            "name": "Farm Fresh",
+            "description": "Test Integration",
+            "callback_url": "/order/orderPlaced",
+            "image": "/assets/images/farm fresh pic/farm logo.jpg",
+            "order_id": orderId,
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+
+        console.log("Opening Razorpay with options:", options);
+
+        var razorpay = new Razorpay(options);
+      await  razorpay.open();
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+</script>
+
+
+<script>
+
+    async function coupanApply(){
+
+
+        let coupanCode = document.getElementById('checkout-discount-input').value
+         let  grandTotalCheckout = document.getElementById('grandTotalCheckout').textContent
+         let coupanAmount =document.getElementById('coupanAmount').textContent
+        
+        let response = await fetch(`/coupanAdding?id=${coupanCode}&grandTotal=${grandTotalCheckout}&coupanAmount=${coupanAmount}`,{
+
+             method:"POST",
+             headers:{'Content-Type':'application/json'}
+
+        })
+
+        let result = await response.json()
+
+        if(result.success){
+
+            await Swal.fire({
+
+                icon:"suucess",
+                title:"Coupan Added Successfully"
+            })
+
+            window.location.reload()
+        }
+
+        if(result.alredyUsed){
+
+             await Swal.fire({
+
+                icon:"error",
+                title:"Already Applied"
+             })
+
+             window.location.reload()
+        }
+
+
+         
+    }
+</script>
+           
+
+
+
+
 
  <%- include ('../partials/footer') %>

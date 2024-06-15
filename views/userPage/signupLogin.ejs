@@ -40,6 +40,13 @@
         .mfp-content {
             display: none;
         }
+
+    
+.col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12, .col, .col-auto, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm, .col-sm-auto, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-md, .col-md-auto, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg, .col-lg-auto, .col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl, .col-xl-auto {
+    padding-right: -36px;
+    padding-left: -55px;
+    margin-inline: 114px;
+}
     </style>
 
 
@@ -265,29 +272,41 @@
                   <div class="form-group">
                     <label for="singin-email-2">UserName </label>
                   <input type="text" class="form-control" id="username" name="name"
-                      title="Please enter your username (at least 3 characters)" minlength="3" maxlength="20" required />
+                      title="Please enter your username (at least 3 characters)" minlength="3" maxlength="20" placeholder="Enter your username" required />
                   </div>
                   <!-- End .form-group -->
                   
                   <div class="form-group">
                     <label for="singin-username">Email</label>
                     <input type="text" class="form-control" id="email" name="email"
-                      title="Please enter valid email" required />
+                      title="Please enter valid email" placeholder="Enter your emial" required />
                   </div>
                   <!-- End .form-group -->
 
                   <div class="form-group">
                     <label for="singin-password-2">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" minlength="5"
-                      maxlength="12" required />
+                    <input type="password" class="form-control" id="password" name="password" minlength="5" 
+                      maxlength="12" placeholder="Enter your password" required />
                   </div>
                   <!-- End .form-group -->
 
                   <div class="form-group">
                     <label for="singin-phnumber">Phone Number</label>
-                    <input type="tel" class="form-control" id="phonenumber" name="phone" minlength="10"
+                    <input type="tel" class="form-control" id="phonenumber" name="phone" minlength="10" placeholder="Enter phone number"
                       maxlength="10" title=" Enter 10 numbers" required />
                   </div>
+
+                  <!-- Refaral code -->
+                  
+                      <div class="form-group">
+                        <label for="singin-phnumber">Do you have Referal code?</label>
+                        <input type="text" class="form-control" id="referalcode" name="referalcode" minlength="4" placeholder="Enter Referal code" value="<%=referal%>"
+                           title="Enter Referal code?"  />
+                      </div>
+
+
+
+
                   <!-- End .form-group -->
                   <div class="error"></div>
                   <form action="/otp" method="get">
@@ -310,22 +329,21 @@
                 </form>
                 <div class="form-choice">
                   <p class="text-center">or sign in with</p>
-                  <div class="row">
-                    <div class="col-sm-6">
-                      <a href="#" class="btn btn-login btn-g">
-                        <i class="icon-google"></i>
-                        Login With Google
-                      </a>
-                    </div>
-                    <!-- End .col-6 -->
-                    <div class="col-sm-6">
-                      <a href="#" class="btn btn-login btn-f">
-                        <i class="icon-facebook-f"></i>
-                        Login With Facebook
-                      </a>
-                    </div>
-                    <!-- End .col-6 -->
+                  
+                    <div class="row">
+                      <div class="col-sm-6">
+                          <a href="#"  class="btn btn-login btn-g" style="text-decoration: none;">
+                              <button type="submit" onclick="location.href='/auth/google';" class="btn btn-primary">
+                                  <i class="icon-google"></i>
+                                  Login With Google
+                              </button>
+                          </a>
+                      </div>
                   </div>
+                    <!-- End .col-6 -->
+                    
+                    <!-- End .col-6 -->
+                
                   <!-- End .row -->
                 </div>
                 <!-- End .form-choice -->
@@ -367,18 +385,17 @@
                       <p class="text-center">or sign in with</p>
                       <div class="row">
                         <div class="col-sm-6">
-                          <a href="#" class="btn btn-login btn-g">
-                            <i class="icon-google"></i>
-                            Login With Google
-                          </a>
+                            <a href="#"  class="btn btn-login btn-g" style="text-decoration: none;">
+                                <button type="submit" onclick="location.href='/auth/google';" class="btn btn-primary">
+                                    <i class="icon-google"></i>
+                                    Login With Google
+                                </button>
+                            </a>
                         </div>
+                    </div>
+                    
                         <!-- End .col-6 -->
-                        <div class="col-sm-6">
-                          <a href="#" class="btn btn-login btn-f">
-                            <i class="icon-facebook-f"></i>
-                            Login With Facebook
-                          </a>
-                        </div>
+                       
                         <!-- End .col-6 -->
                       </div>
                       <!-- End .row -->

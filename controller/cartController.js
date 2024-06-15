@@ -3,191 +3,226 @@ const { updateOne } = require("../models/userModel.js");
 const userCollection = require("../models/userModel.js");
 const productCollection = require("../models/productModel.js");
 const { find } = require("../models/otpModel.js");
-const { productDetail } = require("./userController.js");
-
-const cartPage = async (req, res) => {
+const { getRounds } = require("bcrypt");
+const razorpay = require("../services/razorpay.js");
+const offerProductCollection = require("../models/productOfferModel.js");
+const AppError = require('../middleware/errorHandling.js')
+const cartPage = async (req, res,next) => {
   try {
-    let cartData = await cartCollection.find({ userId: req.session.user._id }).populate('productId')
+    let TotalCost = 0;
 
-      console.log(`cartData varund ${cartData}`);
+    let cartData = await cartCollection
+      .find({ userId: req.session.user._id })
+      .populate({
+        path: "productId",
+        populate: {
+          path: "productOfferId",
+          model: "productOffer",
+        },
+      });
 
+    for (const val of cartData) {
+      if (val.productId) {
+        let price = val.productId.productPrice;
 
-    res.render("userPage/cart", { cartData });
+        if (val.productId.productOfferId) {
+          const offer = val.productId.productOfferId;
+          if (
+            offer &&
+            offer.currentstatus &&
+            offer.startDate <= new Date() &&
+            offer.endDate >= new Date()
+          ) {
+            price = offer.productOfferAmount;
+          }
+        }
+
+        TotalCost += price * val.productQuantity;
+      }
+    }
+
+    console.log("Total Cost:", TotalCost);
+
+    res.render("userPage/cart", { cartData, TotalCost });
   } catch (error) {
     console.log(error.message);
+    next(new AppError("Something went wrong CartPage", 500));
   }
 };
-const addingCart = async (req, res) => {
+
+const addingCart = async (req, res,next) => {
   try {
-    
     const currentUserId = req.session.user._id;
 
-     let prodcutStock = await productCollection.findOne({_id:req.query.id})
+    const product = await productCollection.findOne({ _id: req.query.id });
 
-     
-     const limit = prodcutStock.productStock;
+    if (!product) {
+      return res.send({ error: "Product not found" });
+    }
 
+    if (product.productStock <= 0) {
+      return res.send({ empty: true });
+    }
 
-         if(prodcutStock.productStock<0){
+    let price = product.productPrice;
+    if (product.productOfferId) {
+      const offer = await offerProductCollection.findOne({
+        _id: product.productOfferId,
+      });
+      if (
+        offer &&
+        offer.currentstatus &&
+        offer.startDate <= new Date() &&
+        offer.endDate >= new Date()
+      ) {
+        price = offer.productOfferAmount;
+      }
+    }
 
-                res.send({empty:true})
-         }else{
+    const existingCart = await cartCollection.findOne({
+      userId: currentUserId,
+      productId: req.query.id,
+    });
 
+    if (!existingCart) {
+      const newCart = new cartCollection({
+        userId: currentUserId,
+        productId: req.query.id,
+        productQuantity: 1,
+        totalCostProduct: price,
+      });
+      await newCart.save();
+      return res.send({ success: true });
+    } else {
+      if (existingCart.productQuantity < product.productStock) {
+        await cartCollection.updateOne(
+          { _id: existingCart._id },
+          { $inc: { productQuantity: 1 } }
+        );
 
-          if (currentUserId) {
-            const existingCart = await cartCollection.findOne({
-              userId: currentUserId,
-              productId: req.query.id,
-            });
-      
-            if (!existingCart) {
-             
-              const price = await productCollection.findOne({ _id: req.query.id });
-              const newCart = new cartCollection({
-                userId: currentUserId,
-                productId: req.query.id,
-                productQuantity: 1, 
-                totalCostProduct: price.productPrice, 
-              });
-              await newCart.save();
-               res.send({ success: true });
-            } else {
-              
-              
-              if (existingCart.productQuantity < limit) {
-               
-                await cartCollection.updateOne(
-                  { _id: existingCart._id },
-                  { $inc: { productQuantity: 1 } }
-                );
-      
-               
-                const price = await productCollection.findOne({ _id: req.query.id });
-                const totalCost = price.productPrice * (existingCart.productQuantity + 1);
-                await cartCollection.updateOne(
-                  { _id: existingCart._id },
-                  { $set: { totalCostProduct: totalCost } }
-                );
-                 res.send({ success: true });
-              } else {
-                
-                 res.send({ limitExceeded: true });
-              }            
-        
-            }
-      
-          } else {
-      
-            console.log(error.message);
-          
-          }
+        const totalCost = price * (existingCart.productQuantity + 1);
+        await cartCollection.updateOne(
+          { _id: existingCart._id },
+          { $set: { totalCostProduct: totalCost } }
+        );
 
-         }
-   
+        return res.send({ success: true });
+      } else {
+        return res.send({ limitExceeded: true });
+      }
+    }
   } catch (error) {
-    console.log(error.message);
-    return res.status(500).send({ error: "Internal Server Error" });
+    next(new AppError("Something went wrong CartPage", 500));
   }
 };
-
-
-
-
-
 
 const minimumQuantity = async (req, res) => {
   try {
     const productData = await productCollection.findOne({ _id: req.query.id });
+    const cartData = await cartCollection.findOne({ productId: req.query.id });
 
-    const cartData = await cartCollection
-      .findOne({ productId: req.query.id })
-      .populate("productId");
+    if (!productData || !cartData) {
+      return res.status(404).send({ message: "Product or Cart not found" });
+    }
 
-    if (productData && cartData.productQuantity > 1) {
+    let price = productData.productPrice;
+    if (productData.productOfferId) {
+      const offer = await offerProductCollection.findOne({
+        _id: productData.productOfferId,
+      });
+      if (
+        offer &&
+        offer.currentstatus &&
+        offer.startDate <= new Date() &&
+        offer.endDate >= new Date()
+      ) {
+        price = offer.productOfferAmount;
+      }
+    }
+
+    if (cartData.productQuantity > 1) {
       await cartCollection.updateOne(
         { productId: req.query.id },
-        {
-          $inc: {
-            productQuantity: -1,
-          },
-        }
+        { $inc: { productQuantity: -1 } }
       );
 
       const updateCartData = await cartCollection.findOne({
         productId: req.query.id,
       });
-      const updateTotalCoast =
-        updateCartData.productQuantity * productData.productPrice;
+      const updateTotalCoast = updateCartData.productQuantity * price;
 
       await cartCollection.updateOne(
         { productId: req.query.id },
-        {
-          $set: {
-            totalCostProduct: updateTotalCoast,
-          },
-        }
+        { $set: { totalCostProduct: updateTotalCoast } }
       );
 
-      res.send({
+      return res.send({
         lessminimum: true,
         updateTotalCoast,
         updateQuantity: updateCartData.productQuantity,
       });
     } else {
-      res.send({ minimum: true });
+      return res.send({ minimum: true });
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong CartPage", 500));
   }
 };
 
-const maximumQuantity = async (req, res) => {
+const maximumQuantity = async (req, res,next) => {
   try {
     const product = await productCollection.findOne({ _id: req.query.id });
     const cartData = await cartCollection.findOne({ productId: req.query.id });
 
-    let limit = product.productStock;
+    if (!product || !cartData) {
+      return res.status(404).send({ message: "Product or Cart not found" });
+    }
 
-    if (product&& cartData.productQuantity < limit) {
-         await cartCollection.updateOne(
+    let price = product.productPrice;
+    if (product.productOfferId) {
+      const offer = await offerProductCollection.findOne({
+        _id: product.productOfferId,
+      });
+      if (
+        offer &&
+        offer.currentstatus &&
+        offer.startDate <= new Date() &&
+        offer.endDate >= new Date()
+      ) {
+        price = offer.productOfferAmount;
+      }
+    }
+
+    if (cartData.productQuantity < product.productStock) {
+      await cartCollection.updateOne(
         { productId: req.query.id },
-        {
-          $inc: { productQuantity: 1 },
-        }
+        { $inc: { productQuantity: 1 } }
       );
-
 
       const updateCartData = await cartCollection.findOne({
         productId: req.query.id,
       });
-
-      const updateTotalCoast = updateCartData.productQuantity * product.productPrice;
-
-      console.log(`updating total cost ${updateTotalCoast}`);
+      const updateTotalCoast = updateCartData.productQuantity * price;
 
       await cartCollection.updateOne(
         { productId: req.query.id },
-        {
-          $set: {
-            totalCostProduct: updateTotalCoast,
-          },
-        }
+        { $set: { totalCostProduct: updateTotalCoast } }
       );
 
-      res.send({
+      return res.send({
         addQuantity: true,
         updateTotalCoast,
         updateQuantity: updateCartData.productQuantity,
       });
     } else {
-      res.send({ maximum: true });
+      return res.send({ maximum: true });
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong CartPage", 500));
   }
 };
 
-const deletingProdcut = async (req, res) => {
+const deletingProdcut = async (req, res,next) => {
   try {
     const Id = req.query.id;
 
@@ -195,7 +230,7 @@ const deletingProdcut = async (req, res) => {
 
     res.send({ success: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong CartPage", 500));
   }
 };
 

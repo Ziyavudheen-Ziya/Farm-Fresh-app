@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-module.exports=mongoose.connect('mongodb+srv://ziyavudheen:ziyavudheen@cluster0.zkekwwj.mongodb.net/FarmFresh')
+module.exports=mongoose.connect(process.env.Mongo_URL)
 .then(()=>{
 
     console.log("Database connected");

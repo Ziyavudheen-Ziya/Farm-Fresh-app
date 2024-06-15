@@ -1,7 +1,7 @@
+<%- include('../adminpartials/adminheader') %>
+
 <!DOCTYPE html>
 <html lang="en">
-<!-- molla/404.html  22 Nov 2019 10:04:04 GMT -->
-
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -26,7 +26,6 @@
     <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
     <!-- Main CSS File -->
     <link rel="stylesheet" href="assets/css/style.css" />
-    <!-- <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> -->
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -34,10 +33,6 @@
             margin: 0;
             padding: 0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
         }
 
         header, footer {
@@ -48,6 +43,39 @@
             width: 100%;
         }
 
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: white;
+            padding: 15px;
+            position: fixed;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            flex-grow: 1;
+            padding: 30px;
+        }
+
         .orders-container {
             width: 100%;
             background-color: #fff;
@@ -55,7 +83,7 @@
             border-radius: 10px;
             padding: 30px;
             margin-top: 20px;
-            margin-bottom: 20px; /* Added margin-bottom to provide space at the bottom */
+            margin-bottom: 20px;
         }
 
         h1, h2 {
@@ -104,8 +132,8 @@
 
         .order-info {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            gap: 5px;
             margin-bottom: 10px;
         }
 
@@ -117,99 +145,94 @@
         footer {
             margin-top: auto;
         }
+
+       .container {
+    width: 1188px;
+    max-width: 100%;
+    padding-left: 10px;
+    padding-right: 30px;
+    margin-inline: -117px;
+}
     </style>
-
 </head>
-
 <body>
-    
-    <div class="page-wrapper">
-    <br>
-    <hr>
-        <div class="container" style="display: flex; flex-direction: row;">
-            <div class="orders-container" style="margin-right: 2em;">
-                <h2>Order Details</h2>
-                <div class="order-item">
-                    <div class="order-content">
-                        <div>
-                            <h2 class="order-title">Order # <%=orderData?.orderNumber%></h2>
-                            <div class="order-info">
-                                <p><strong>Order Date:</strong> <%=orderData?.orderDate%> </p>
-                                <p><strong>Mode of Payment:</strong><%=orderData?.paymentType%></p>
-                                <p><strong>Total Amount:</strong> ₹ <%=orderData?.grandTotalCost%></p>
+    <div class="sidebar">
+        <!-- Add your sidebar links here -->
+        <a href="#">Dashboard</a>
+        <a href="#">Orders</a>
+        <a href="#">Products</a>
+        <a href="#">Customers</a>
+        <a href="#">Reports</a>
+        <a href="#">Settings</a>
+    </div>
+
+    <div class="main-content">
+        <!-- <header>
+            <h1>Admin Panel</h1>
+        </header> -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="orders-container">
+                        <h2>Order Details</h2>
+                        <div class="order-item">
+                            <div class="order-content">
+                                <div>
+                                    <h2 class="order-title">Order # <%=orderData?.orderNumber%></h2>
+                                    <div class="order-info">
+                                        <p><strong>Order Date:</strong> <%=orderData?.orderDate.toLocaleDateString()%> </p>
+                                        <p><strong>Mode of Payment:</strong><%=orderData?.paymentType%></p>
+                                        <p><strong>Total Amount:</strong> ₹ <%=orderData?.grandTotalCost%></p>
+                                    </div>
+                                </div>
+                                <p class="order-status">Status: <%=orderData?.orderStatus%></p>
                             </div>
-                        </div>
-                        <p class="order-status">Status:<%=orderData?.orderStatus%></p>
-                    </div>
-                </div>                
-            </div>
-            <br>
-            <div class="orders-container" style="margin-left: 2em;">
-                <h2>Address</h2>
-                <div class="order-item">
-                    <div class="order-content">
-                        <div>
-                            <div class="order-info">
-                                <p><strong>Name:</strong><%=orderData?.addressChosen.name%> </p>
-                                <p><strong>Phone Number:</strong><%=orderData?.addressChosen.phone%> </p>
-                                <p><strong>House Number:</strong><%=orderData?.addressChosen.houseNumber%> </p>
-                                <p><strong>State:</strong><%=orderData?.addressChosen.state%> </p>
-                                <p><strong>City:</strong><%=orderData?.addressChosen.city%> </p>
-                            </div>
-                        </div>
+                        </div>                
                     </div>
                 </div>
-                
+                <div class="col-md-6">
+                    <div class="orders-container">
+                        <h2>Address</h2>
+                        <div class="order-item">
+                            <div class="order-content">
+                                <div>
+                                    <div class="order-info">
+                                        <p><strong>Name:</strong><%=orderData?.addressChosen.name%> </p>
+                                        <p><strong>Phone Number:</strong><%=orderData?.addressChosen.phone%> </p>
+                                        <p><strong>House Number:</strong><%=orderData?.addressChosen.houseNumber%> </p>
+                                        <p><strong>State:</strong><%=orderData?.addressChosen.state%> </p>
+                                        <p><strong>City:</strong><%=orderData?.addressChosen.city%> </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                
+                    </div>
+                </div>
             </div>
-        </div>
-
-
-
-        <div class="container">
-
 
             <div class="orders-container">
                 <h2>Product Details</h2>
-        
-                <!-- Order Details -->
                 <div class="order-details">
-
-                    <%orderData.cartData.forEach((data)=>{%>
-
-
-                  
-                        <!-- Order 1 -->
-                        <div class="order-item">
-                            <img src="/adminassets/uploads/<%=data?.productId?.productImage[0]%>" alt="Product Image" class="order-image">
-                            <div class="order-content">
-                                <div>
-                                    <!-- <h2 class="order-title">Order #123456</h2> -->
-                                    <div class="order-info">
-                                        <p><strong>Product:</strong><%=data?.productId?.productName%></p>
-                                        <p><strong>Quantity:</strong><%=data?.productQuantity%></p>
-                                        <p><strong>Price:</strong> ₹<%=data?.productId?.productPrice%> </p>
-                                    </div>
+                    <% orderData.cartData.forEach((data) => { %>
+                    <div class="order-item">
+                        <img src="/adminassets/uploads/<%=data?.productId?.productImage[0]%>" alt="Product Image" class="order-image">
+                        <div class="order-content">
+                            <div>
+                                <div class="order-info">
+                                    <p><strong>Product:</strong><%=data?.productId?.productName%></p>
+                                    <p><strong>Quantity:</strong><%=data?.productQuantity%></p>
+                                    <p><strong>Price:</strong> ₹<%=data?.productId?.productPrice%> </p>
                                 </div>
-                                <!-- <p class="order-status">Status: Shipped</p> -->
                             </div>
                         </div>
-                   <% }) %>
-                 
-        
-                    <!-- Order 2 -->
-                
-        
-                    <!-- Add more orders as needed -->
+                    </div>
+                    <% }) %>
                 </div>
-        
             </div>
-        
         </div>
+       
     </div>
-    <!-- End .page-wrapper -->
-    
-    
-
+   
     <!-- Plugins JS File -->
     <script src="assets/js/jquery.min.js"></script>
     <script src="assets/js/bootstrap.bundle.min.js"></script>
@@ -220,7 +243,4 @@
     <!-- Main JS File -->
     <script src="assets/js/main.js"></script>
 </body>
-
-<!-- molla/404.html  22 Nov 2019 10:04:04 GMT -->
-
 </html>

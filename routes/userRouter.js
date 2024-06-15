@@ -1,12 +1,16 @@
 const express = require("express");
 
+
 const userController = require("../controller/userController.js");
 const profileController = require("../controller/profileController.js");
 const cartController = require("../controller/cartController.js");
 const checkoutController = require("../controller/checkoutController.js");
 const orderManagementController = require("../controller/orderManagementController.js");
-
+const walletController = require('../controller/walletController.js')
+const wishlistController = require('../controller/whislistController.js')
+const isActive = require('../middleware/userAuth.js')
 const router = express.Router();
+const passport = require('passport')
 
 router.get("/", userController.landingPage);
 router.get("/loginpage", userController.loginSignupPage);
@@ -23,48 +27,69 @@ router.post('/forgotPasswordVerifyOtp',userController.forgotPasswordVerifyOtp)
 router.post('/forgotPasswordresendotp',userController.forgotResendOtp)
 router.get('/forgotPasswordGetPasswordPage',userController.forgotPassworChangingGetPAge)
 router.post('/forgotPasswordUpdate',userController.forgotPasswordUpdating)
+router.get('/auth/google',passport.authenticate('google',{scope:['email','profile']}))
+router.get('/auth/google/callback',passport.authenticate('google',{failureRedirect:'http://localhost:3000/loginpage'}),userController.googleCallback)
 
 // ==============Product Management================//
 
-router.get("/productListPage", userController.productPage);
-router.get('/sort',userController.sortingProduct)
-router.get("/productDetail/:id", userController.productDetail);
+router.get("/productListPage", isActive,userController.productPage);
+router.get('/sort',isActive,userController.sortingProduct)
+router.get("/productDetail/:id",isActive, userController.productDetail);
+router.get('/searchOrder',isActive,userController.productSearching)
 
 // ==================Profile Management===============//
-router.get("/profilePage", profileController.profilePage);
-router.get("/editProfile", profileController.editPageProfile);
-router.post("/editProfile", profileController.editProfileUser);
-router.get("/addAddress", profileController.addAddressPage);
-router.post("/addNewAddress", profileController.newAddress);
-router.get("/myAddress", profileController.myAddressPage);
-router.get("/editAddressPage/:id", profileController.editAddressPage);
-router.post("/editAddress/:id", profileController.editAndUpdate);
+router.get("/profilePage",isActive, profileController.profilePage);
+router.get("/editProfile",isActive, profileController.editPageProfile);
+router.post("/editProfile",isActive, profileController.editProfileUser);
+router.get("/addAddress",isActive, profileController.addAddressPage);
+router.post("/addNewAddress",isActive, profileController.newAddress);
+router.get("/myAddress",isActive, profileController.myAddressPage);
+router.get("/editAddressPage/:id",isActive, profileController.editAddressPage);
+router.post("/editAddress/:id",isActive, profileController.editAndUpdate);
 router.delete("/deleteAddress", profileController.deletingAddress);
-router.get('/changePassword',profileController.changePasswordGetPage)
-router.post('/passwordUpdate',profileController.passwordUpdating)
+router.get('/changePassword',isActive,profileController.changePasswordGetPage)
+router.post('/passwordUpdate',isActive,profileController.passwordUpdating)
 
 
 // ==================================CART==================================//
-router.get("/cartPage", cartController.cartPage);
-router.post("/addToCart", cartController.addingCart);
-router.get("/minusQuantity", cartController.minimumQuantity);
-router.get("/maximumQuantity", cartController.maximumQuantity);
-router.delete("/delete", cartController.deletingProdcut);
+router.get("/cartPage",isActive, cartController.cartPage);
+router.post("/addToCart", isActive,cartController.addingCart);
+router.get("/minusQuantity",isActive, cartController.minimumQuantity);
+router.get("/maximumQuantity",isActive, cartController.maximumQuantity);
+router.delete("/delete", isActive,cartController.deletingProdcut);
 
 // ==================CHECKOUT=====================//
 
-router.get("/checkoutPage", checkoutController.checkOutPage);
+router.get("/checkoutPage",isActive, checkoutController.checkOutPage);
+router.post('/coupanAdding',isActive,checkoutController.coupanAdding)
 
 // ============ORDER PAGE=============//
 
-router.post("/orderData", checkoutController.checkOutSave);
-router.get("/orderSuccessPage", checkoutController.orderGetPage);
-router.post("/stockDecrase", checkoutController.stockDecreasing);
+router.post("/orderData", isActive,checkoutController.checkOutSave);
+router.get("/orderSuccessPage",isActive, checkoutController.orderGetPage);
+router.post("/stockDecrase",isActive, checkoutController.stockDecreasing);
+router.post('/razorPayOrder',isActive,checkoutController.razorPaying)
+router.all('/order/orderPlaced',isActive,checkoutController.orderPlacingRazorpay)
+router.post('/walletPayment',isActive,checkoutController.walletPayment)
 
 // ===========================MY ORDERS PAGE========================//
 
-router.get("/myOrdersPage", orderManagementController.myOrdersPage);
-router.get("/cancelOrderUser", orderManagementController.userOrderCancelled);
-router.get("/returnUser", orderManagementController.returnUser);
+router.get("/myOrdersPage",isActive, orderManagementController.myOrdersPage);
+router.get('/orderSingleData',isActive,orderManagementController.orderDetailsSingleUser)
+router.post('/singleProductCancel',isActive,orderManagementController.singleProductCancel)
+router.get("/cancelOrderUser",isActive, orderManagementController.userOrderCancelled);
+router.get("/returnUser",isActive, orderManagementController.returnUser);
+
+router.get('/walletGetPage',isActive,walletController.walletGetPage)
+
+
+// ==============================WISHLIST PAGE======================//
+router.post('/whishlistGetPage',isActive,wishlistController.productAddToWishlist)
+router.get('/whishlistPage',isActive,wishlistController.wishlistGetPAge)
+router.post('/addingCartProductWhish',isActive,wishlistController.addingProductFromWhishlist)
+router.delete('/deteleWhishlist',isActive,wishlistController.deleteProductWhishlist)
+
+
+
 
 module.exports = router;

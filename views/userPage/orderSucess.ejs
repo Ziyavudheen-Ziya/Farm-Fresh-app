@@ -245,7 +245,7 @@
     const [productStock, productId] = productInfo.split(',');
 
     let response = await fetch(`/stockDecrase?id=${encodeURIComponent(productStock)}&productId=${encodeURIComponent(productId)}`, {
-      method: 'post',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     });
 

@@ -205,7 +205,18 @@
 
 
 
+
+
+
+
                  <%} %>
+
+
+                 <div class="product-details-action">
+                  <div class="details-action-wrapper">
+                      <button onclick="addWishlist('<%=singleData._id%>')" class="btn-product btn-wishlist" title="Wishlist"><span>Add to Wishlist</span></button>
+                  </div>
+              </div>
                   
 
 
@@ -244,7 +255,7 @@
         console.log(`cart Id ${cartId.productPrice}`);
       
         let response = await fetch(`/addToCart?id=${cartId}`, {
-          method: "post",
+          method: "POST",
           headers:{'Content-Type':'application/json'}
         });
     
@@ -311,6 +322,47 @@
     
        
     
+    </script>
+
+    <script>
+      
+
+    async function addWishlist(producId){
+
+        let response = await fetch(`/whishlistGetPage?id=${producId}`,{
+
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+
+        })
+
+        let result = await response.json()
+
+        if(result.success){
+
+           await Swal.fire({
+
+               icon:"success",
+               title:"Whihlist Added",
+               text:"OK"
+
+
+               })
+
+               window.location.href='/whishlistPage'
+        }else if(result.alreadyExsist){
+
+            await Swal.fire({
+                
+              icon:"error",
+              title:"Alreasy Exsist in whishlist",
+              
+            })
+
+            window.location.reload()
+        }
+    }
+       
     </script>
     
     

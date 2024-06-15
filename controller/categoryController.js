@@ -1,17 +1,27 @@
 const categoryCollection = require("../models/categoryModel.js");
 const prodcutCollection = require("../models/productModel.js");
+const cartCollection = require("../models/cartModel.js");
+const AppError = require('../middleware/errorHandling.js')
 
-const category = async (req, res) => {
+const category = async (req, res,next) => {
   try {
-    const categoryData = await categoryCollection.find();
+    let categoryData = await categoryCollection.find();
 
-    res.render("adminPage/category", { Category: categoryData });
+    const categoryPerPage = 8;
+    const totalPages = categoryData.length / categoryPerPage;
+    const pageNo = req.query.pageNo || 1;
+    const start = (pageNo - 1) * categoryPerPage;
+    const end = start + categoryPerPage;
+
+    categoryData = categoryData.slice(start, end);
+
+    res.render("adminPage/category", { Category: categoryData, totalPages });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong CategoryPage", 500));
   }
 };
 
-const addcategory = async (req, res) => {
+const addcategory = async (req, res,next) => {
   try {
     const newCategory = new categoryCollection({
       categoryname: req.body.categoryName,
@@ -33,11 +43,11 @@ const addcategory = async (req, res) => {
 
     console.log("1");
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong CategoryPage", 500));
   }
 };
 
-const listCategory = async (req, res) => {
+const listCategory = async (req, res,next) => {
   try {
     console.log(req.query.id);
 
@@ -48,11 +58,11 @@ const listCategory = async (req, res) => {
 
     res.send({ list: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong CategoryPage", 500));
   }
 };
 
-const unListCategory = async (req, res) => {
+const unListCategory = async (req, res,next) => {
   try {
     console.log("unlisted");
 
@@ -63,11 +73,11 @@ const unListCategory = async (req, res) => {
 
     res.send({ unList: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong CategoryPage", 500));
   }
 };
 
-const editCategory = async (req, res) => {
+const editCategory = async (req, res,next) => {
   console.log("entered");
 
   try {
@@ -100,7 +110,7 @@ const editCategory = async (req, res) => {
       res.send({ success: true });
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Something went wrong CategoryPage", 500));
   }
 };
 

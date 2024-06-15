@@ -1,4 +1,78 @@
 <%- include('../partials/header') %>
+<style>
+  .categoryProduct .item {
+  margin-bottom: 30px;
+}
+
+.product {
+  border: 1px solid #ddd;
+  padding: 15px;
+  background: #fff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product .image {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.product .image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.product .description {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.product .description h4 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.product .pricing {
+  text-align: center;
+  margin-bottom: 10px;
+  height: 50px; /* Adjust height as needed */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.product .original-price {
+  font-size: 14px;
+  color: #999;
+}
+
+.product .offer-price {
+  font-size: 14px;
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+.product .price {
+  font-size: 18px;
+  color: #c96;
+  font-weight: bold;
+}
+
+.product .action-control {
+  text-align: center;
+}
+
+.product .btn-primary {
+  background-color: #3498db;
+  border-color: #3498db;
+  color: #fff;
+  padding: 10px 20px;
+  text-transform: uppercase;
+}
+
+</style>
 
 
 <main class="main">
@@ -57,38 +131,75 @@
                 </form>
               </div>
             </div>
+
+            <div class="container">
+              <div class="search-bar">
+                  <input type="text" id="search-input" placeholder="Search for products...">
+                  <button onclick="performSearch()">Search</button>
+              </div>
+              <div id="search-results" class="search-results"></div>
+          </div>
             <!-- End .toolbox-right -->
           </div>
           <!-- End .toolbox -->
-          <div class="row categoryProduct xsResponse clearfix">
+          <div  id="all-products" class="row categoryProduct xsResponse clearfix">
             <% productData.forEach((product) => { %>
-            <div class="item col-sm-3 col-lg-3 col-md-3 col-xs-6 grid-view">
-              <div class="product">
-                <div class="image">
-                  <a href="">
-                    <img src="/adminassets/uploads/<%= product?.productImage[0] %>" alt="img" class="img-responsive" />
-                  </a>
-                </div>
-                <div class="description">
-                  <h4 class="small-font-size">
-                    <a href=""><%= product?.productName %></a>
-                  </h4>
-                </div>
-                <div class="price">
-                  <span>RS: <%= product?.productPrice %></span>
-                </div>
-                <div class="action-control">
-                  <a href="/productDetail/<%= product._id %>" class="btn btn-primary">
-                    <span class="add2cart">
-                      <i class="glyphicon glyphicon-shopping-cart"></i> Add to cart
-                    </span>
-                  </a>
+              <div class="item col-sm-3 col-lg-3 col-md-3 col-xs-6 grid-view">
+                <div class="product">
+                  <div class="image">
+                    <a href="">
+                      <img src="/adminassets/uploads/<%= product?.productImage[0] %>" alt="img" class="img-responsive" />
+                    </a>
+                  </div>
+                  <div class="description">
+                    <h4 class="small-font-size">
+                      <a href=""><%= product?.productName %></a>
+                    </h4>
+                  </div>
+                  <div class="pricing">
+                    <% if (product.isOfferValid) { %>
+                      <div class="price">
+                        <!-- <span>RS: ₹<%= product.displayPrice %></span> -->
+                        <span>Offer: ₹<%= product.offerAmount %></span>
+                        <del>₹<%= product.productPrice %></del> 
+                      </div>
+                    <% } else { %>
+                      <div class="price">
+                        <span>RS: ₹<%= product.productPrice %></span>
+                      </div>
+                    <% } %>
+                  </div>
+
+                    <%if(product?.productStock==0){%>
+
+
+                      <div class="details-filter-row details-row-size">
+                        <div class="product-details-quantity">
+                          <span id="stockMessage" style="color: red">Out of Stock</span>
+                        </div>
+                      </div>
+
+                  <% }else{%>
+
+
+                 
+                      
+                    
+                  <div class="action-control">
+                    <a href="/productDetail/<%= product._id %>" class="btn btn-primary">
+                      <span class="add2cart">
+                        <i class="glyphicon glyphicon-shopping-cart"></i> Add to cart
+                      </span>
+                    </a>
+                  </div>
+
+                  <%}%>
                 </div>
               </div>
-            </div>
             <% }) %>
-            <!--/.item-->
           </div>
+          
+          
 
           <style>
             .small-font-size {
@@ -202,6 +313,85 @@
 
       window.location.search = urlParams.toString()
     }
+</script>
+
+<script>
+   
+   async function performSearch(){
+
+
+     const v = document.getElementById('search-input').value.trim()
+
+     if(!v){
+
+       document.getElementById('search-input').innerHTML='';
+       document.getElementById('all-products').style.display = 'block';
+
+       return;
+     }
+
+     const response = await fetch(`/searchOrder?id=${v}`,{
+
+            method:"GET",
+            headers:{'Content-Type':'application/json'}
+     })
+
+
+     let products = await response.json()
+
+     let resultsHtml = '';
+            if (products.length > 0) {
+                resultsHtml = '<ul>';
+                products.forEach(product => {
+                  resultsHtml += `
+                        <div class="item col-sm-3 col-lg-3 col-md-3 col-xs-6 grid-view">
+                            <div class="product">
+                                <div class="image">
+                                    <a href="/productDetail/${product._id}">
+                                        <img src="/adminassets/uploads/${product.productImage[0]}" alt="Product Image" class="img-responsive" />
+                                    </a>
+                                </div>
+                                <div class="description">
+                                    <h4 class="small-font-size">
+                                        <a href="/productDetail/${product._id}">${product.productName}</a>
+                                    </h4>
+                                </div>
+                                <div class="pricing">
+                                    ${product.isOfferValid ? `
+                                        <div class="price">
+                                            <span>Offer: ₹${product.offerAmount}</span>
+                                            <del>₹${product.productPrice}</del> 
+                                        </div>` : `
+                                        <div class="price">
+                                            <span>RS: ₹${product.productPrice}</span>
+                                        </div>`
+                                    }
+                                </div>
+                                <div class="action-control">
+                                    <a href="/productDetail/${product._id}" class="btn btn-primary">
+                                        <span class="add2cart">
+                                            <i class="glyphicon glyphicon-shopping-cart"></i> Add to cart
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                resultsHtml += '</ul>';
+            } else {
+                resultsHtml = '<p>No products found.</p>';
+            }
+
+            document.getElementById('search-results').innerHTML = resultsHtml;
+            document.getElementById('all-products').style.display='none'
+
+
+       
+
+
+     
+   }
 </script>
 
 

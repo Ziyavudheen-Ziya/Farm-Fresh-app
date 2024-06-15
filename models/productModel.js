@@ -7,14 +7,15 @@ const productSchema = new mongoose.Schema({
     parentCategory:{
          type: String,required:true 
     },
-    
     productImage:[{type:String}],
-
+  
     productPrice:{type:Number,required:true},
     productStock:{type:Number,required:true},
-    productOfferId:{type:mongoose.Types.ObjectId,default:null},
-    productOfferPerecentage:{type:Number,default:null},
-    isListed:{type:Boolean,default:true}
+    productOfferId:{type:mongoose.Types.ObjectId,default:null,ref:"productOffer"},
+    productOfferAmount:{type:Number,default:null},
+    isListed:{type:Boolean,default:true},
+    Cancelled:{type:Boolean,default:false},
+    categoryOfferAmount:{type:Number,default:null}
 })
 
 module.exports = mongoose.model('products',productSchema)

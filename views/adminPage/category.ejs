@@ -258,6 +258,9 @@
         </div>
       </div>
 
+
+      
+
       <script>
 
 
@@ -337,7 +340,7 @@
 
     if (result.list) {
       await Swal.fire({
-        icon: "error",
+        icon: "success",
         title: "Category Unlisted",
       });
     }
@@ -362,5 +365,27 @@
     window.location.reload();
   }
 </script>
+
+
+         
+<div class="d-flex justify-content-center py-3">
+  <nav aria-label="Page navigation example">
+      <ul class="pagination">
+          <li class="page-item"><a class="page-link">Pages</a></li>
+
+          <%for(let i=0;i<totalPages;i++){%>
+
+              <li class="page-item">
+                
+
+
+               
+                  <a class="page-link" href="/category?pageNo=<%=i+1%>"><%=i+1%> </a>
+              </li>
+          <%}%>
+           
+      </ul>
+
+</div>
 
 <%- include('../adminpartials/adminfooter') %>
