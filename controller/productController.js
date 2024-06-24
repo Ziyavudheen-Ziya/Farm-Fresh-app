@@ -4,22 +4,34 @@ const { exists } = require("../models/userModel.js");
 const { errorMonitor } = require("nodemailer/lib/xoauth2/index.js");
 const cartCollecction = require("../models/categoryModel.js");
 const AppError = require('../middleware/errorHandling.js')
-const productPage = async (req, res,next) => {
+const productPage = async (req, res, next) => {
   try {
-    let productDatas = await productCollection.find();
 
-    const productPerPage = 8;
-    const totalPages = productDatas.length / productPerPage;
-    const pageNO = req.query.pageNO || 1;
-    const start = (pageNO - 1) * productPerPage;
-    const end = start + productPerPage;
-    productDatas = productDatas.slice(start, end);
+    
 
-    res.render("adminPage/productList", { productDatas, totalPages });
+
+    const orderPerPage = 8;
+    const pageNo = parseInt(req.query.pageNo) || 1;
+    
+    const totalProducts = await productCollection.countDocuments();
+    const totalPages = Math.ceil(totalProducts / orderPerPage);
+
+    const productDatas = await productCollection
+      .find()
+      .skip((pageNo - 1) * orderPerPage)
+      .limit(orderPerPage);
+
+    res.render("adminPage/productList", { 
+      productDatas, 
+      totalPages,
+      currentPage: pageNo 
+    });
   } catch (error) {
-    next(new AppError("Something went wrong ProductPage", 500));
+    console.log(error.message);
+    next(new AppError("Something went wrong on ProductPage", 500));
   }
 };
+
 
 const addProductPage = async (req, res) => {
   try {
@@ -27,6 +39,7 @@ const addProductPage = async (req, res) => {
 
     res.render("adminPage/addProduct", { categoryData });
   } catch (error) {
+    console.log(error.message);
     next(new AppError("Something went wrong ProductPage", 500));
   }
 };
@@ -34,24 +47,29 @@ const addProductPage = async (req, res) => {
 const addProduct = async (req, res,next) => {
   try {
     let imgFiles = [];
+    let parentCategoryParts = req.body.parentCategory.split(','); // Split categoryId and categoryName
+    let categoryId = parentCategoryParts[0].trim(); // Extract categoryId
+    let parentCategoryName = parentCategoryParts[1].trim(); 
 
+    
+
+    console.log("category Id comming",categoryId);
     for (let i = 0; i < req.files.length; i++) {
       imgFiles[i] = req.files[i].filename;
     }
 
-    console.log(req.files);
 
-    console.log("van");
 
     const newProduct = new productCollection({
       productName: req.body.productName,
-      parentCategory: req.body.parentCategory,
+      parentCategory: parentCategoryName,
       productImage: imgFiles,
       productPrice: req.body.productPrice,
       productStock: req.body.productStock,
+      categoryId:categoryId
+     
     });
 
-    console.log(newProduct);
 
     const productDetails = await productCollection.find({
       productName: {
@@ -73,6 +91,7 @@ const addProduct = async (req, res,next) => {
       res.send({ success: true });
     }
   } catch (error) {
+    console.log(error.message);
     next(new AppError("Something went wrong ProductPage", 500));
   }
 };
@@ -86,6 +105,8 @@ const blockProduct = async (req, res,next) => {
 
     res.send({ block: true });
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong ProductPage", 500));
   }
 };
@@ -98,6 +119,8 @@ const unBlockProduct = async (req, res,next) => {
     );
     res.send({ unBlock: true });
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong ProductPage", 500));
   }
 };
@@ -111,12 +134,13 @@ const editPage = async (req, res,next) => {
     const productData = await productCollection.findOne({
       _id: req.params?.id,
     });
-    console.log(productData);
 
     res.render("adminPage/editAddProduct", { categoryData, productData });
 
     console.log("product sending");
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong ProductPage", 500));
   }
 };
@@ -141,9 +165,7 @@ const editProduct = async (req, res,next) => {
       }
     }
 
-    console.log(`params work ayi ${req.params.id}`);
 
-    console.log(`vann${req.files}`);
 
     const productDetails = await productCollection.findOne({
       productName: req.body.productName,
@@ -172,10 +194,11 @@ const editProduct = async (req, res,next) => {
         }
       );
 
-      console.log("updated");
       res.send({ success: true });
     }
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong ProductPage", 500));
   }
 };
@@ -187,8 +210,11 @@ const deleteProduct = async (req, res,next) => {
     await productCollection.deleteOne({ _id: id });
 
     res.send({ deleted: true });
-  } catch (error) {
+  } catch (error) {   
+
     console.log(error.message);
+    next(new AppError("Something went wrong ProductPage", 500));
+
   }
 };
 const deleteImg = async (req, res,next) => {
@@ -199,6 +225,8 @@ const deleteImg = async (req, res,next) => {
     );
     res.send({ deleted: true });
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong ProductPage", 500));
   }
 };

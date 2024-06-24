@@ -6,6 +6,10 @@ const userCollecction = require("../models/userModel");
 const productCollection = require("../models/productModel");
 const mongoose = require("mongoose");
 const AppError = require('../middleware/errorHandling')
+const { generateVoice } = require('../services/generatePdf');
+
+
+
 const myOrdersPage = async (req, res ,next) => {
   try {
     let orderData = await orderCollection.find({ userId: req.session.user })
@@ -33,7 +37,6 @@ const userOrderCancelled = async (req, res,next) => {
 
     let orderData = await orderCollection.findById({ _id: req.query.id });
 
-    console.log("orderDar avarund ", orderData);
 
     req.session.statusCancel = req.query.id;
 
@@ -130,7 +133,6 @@ const returnUser = async (req, res,next) => {
         }
       );
     } else if (paymentTypeCheck.paymentType === "Cash on delivery") {
-      console.log("entring wall COD");
 
       await walletColletion.updateOne(
         { userId: req.session.user._id },
@@ -149,7 +151,6 @@ const returnUser = async (req, res,next) => {
       );
     }
 
-    console.log("updating");
 
     res.send({ return: true });
   } catch (error) {
@@ -164,7 +165,7 @@ const orderDetailsSingleUser = async (req, res,next) => {
     const orderData = await orderCollection
       .findOne({ _id: orderId })
       .populate("addressChosen");
-
+     
     res.render("userPage/myOrderSingleOrder", { orderData });
   } catch (error) {
     next(new AppError("Something went wrong OrderManagmentPage", 500));
@@ -180,7 +181,6 @@ const singleProductCancel = async (req, res,next) => {
     const indexId = parseInt(req.query.indexId);
     const productPrice = req.body.productPrice
 
-    console.log("Prodcut Price varund",productPrice);
    
     let sum = 0
 
@@ -245,10 +245,40 @@ const singleProductCancel = async (req, res,next) => {
   }
 };
 
+
+const downloadInvoice = async(req,res,next)=>{
+
+     try {
+      console.log("Entering the download invoice page");
+      let orderDetails = await orderCollection.findOne({ _id: req.params.id }).populate('addressChosen');
+
+      console.log("Order details:", orderDetails);
+
+      const stream = res.writeHead(200, {
+          "Content-Type": "application/pdf",
+          "Content-Disposition": "attachment;filename=invoice.pdf",
+      });
+
+      generateVoice(
+          (chunk) => stream.write(chunk),
+          () => stream.end(),
+          orderDetails
+      );
+
+      console.log("Generated invoice");
+      
+     } catch (error) {
+         console.log(error.message);
+         next(new AppError("Something went wrong OrderManagmentPage", 500));
+
+     }
+}
+
 module.exports = {
   myOrdersPage,
   userOrderCancelled,
   returnUser,
   orderDetailsSingleUser,
   singleProductCancel,
+  downloadInvoice
 };

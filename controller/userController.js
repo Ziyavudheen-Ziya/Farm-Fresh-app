@@ -27,17 +27,32 @@ const landingPage = async (req, res,next) => {
       res.render("userPage/landingPage", { userLogged: false });
     }
   } catch (error) {
+    console.log(error.message);
     next(new AppError("Something went wrong User", 500));
   }
 };
 
 const loginSignupPage = async (req, res,next) => {
   try {
-    const referal = req.query?.referalCode;
-    console.log(`referal commiing ${referal}`);
 
-    req.session.tempReferalcode = referal;
-    res.render("userPage/signupLogin", { referal });
+    if(!req.session.user){
+
+      const referal = req.query?.referalCode;
+      console.log(`referal commiing ${referal}`);
+         
+      req.session.tempReferalcode = referal;
+  
+  
+      res.render("userPage/signupLogin", { referal });
+
+
+
+    }else{
+
+        res.redirect('/')
+    }
+    
+   
   } catch (error) {
     next(new AppError("Something went wrong User", 500));
   }
@@ -84,11 +99,17 @@ const userSave = async (req, res,next) => {
 
 const login = async (req, res,next) => {
   try {
+
+    console.log("login alreasy exssitig user");
     const userExist = await userCollection.findOne({ email: req.body.email });
 
     const userblock = await userCollection.findOne({ block: false });
 
-    req.session?.user;
+    if (req.session.user) {
+      return res.render("userPage/landingPage", { userLogged: req.session.user });
+    }
+
+    
     
 
     if (userExist) {
@@ -150,7 +171,7 @@ const veryFyingotp = async (req, res,next) => {
       });
 
       await newWallet.save();
-
+       
       delete req.session.tempUser;
       delete req.session.referalCode;
 

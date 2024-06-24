@@ -9,7 +9,8 @@ const walletCollection = require("../models/walletModel.js");
 const coupanCollection = require("../models/coupanModel.js");
 const { _makeLong } = require("path");
 const offerProductCollection = require("../models/productOfferModel.js");
-const AppError = require('../middleware/errorHandling.js')
+const AppError = require('../middleware/errorHandling.js');
+const Razorpay = require("razorpay");
 const checkOutPage = async (req, res,next) => {
   try {
     let grandTotal = 0;
@@ -43,9 +44,61 @@ const checkOutPage = async (req, res,next) => {
       });
     }
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
+
+
+// Ivadayanne nammal change cheythutullathe
+const failureCheck= async(req,res,next)=>{
+
+     try {
+      const userId = req.session?.user._id
+      const orderValueGenerate = Math.floor(10 + Math.random() * 90);
+      const orderNumber = orderValueGenerate;
+      req.session.orderNUmber =orderNumber 
+     
+      const userCartData = await JSON.parse(
+        JSON.stringify(
+          await cartCollection.find({ userId: userId }).populate("productId")
+        )
+      );
+      req.session.razorpayOrderData
+
+      const grandTotalCheckout =
+      req.session?.razorpayOrderData?.grandTotalCheckout;
+    const paymentTypeValue = "Payment Pending"
+    const selectAddressValue =
+      req.session?.razorpayOrderData?.selectAddressValue;
+    const razorpayId = null;
+
+
+      const orderDetails = {
+        userId: userId,
+        orderNumber: orderNumber,
+        paymentType: paymentTypeValue,
+        addressChosen: selectAddressValue,
+        cartData: userCartData,
+        grandTotalCost: grandTotalCheckout,
+        paymentId: razorpayId,
+      };
+      
+      
+      await orderCollection(orderDetails).save();
+
+    console.log("Pakka working");
+   
+     
+      res.render('userPage/paymentErrorPage')
+      
+     } catch (error) {
+         console.log(error.message);
+         next(new AppError("Something went wrong CheckoutPage", 500));
+
+     }
+}
 
 const checkOutSave = async (req, res,next) => {
   try {
@@ -54,7 +107,7 @@ const checkOutSave = async (req, res,next) => {
     req.session.paymentCOD = paymentCOD;
     let limitAmountCOD = req.body.grandTotalCheckout;
     console.log(limitAmountCOD);
-    if (limitAmountCOD <= 2000) {
+    if (limitAmountCOD <= 1000) {
       let cartData = await cartCollection
         .find({ userId: req.session?.user })
         .populate("productId");
@@ -80,10 +133,7 @@ const checkOutSave = async (req, res,next) => {
         grandTotalCost: req.body.grandTotalCheckout,
       });
 
-      console.log("");
-
-      console.log("succefully updat eakan pokunnu");
-
+      
       newOrder.cartData.forEach((item) => {
         item.singleOrderstatus = "pending";
       });
@@ -100,74 +150,8 @@ const checkOutSave = async (req, res,next) => {
       res.send({ limitExceededForCOD: true });
     }
   } catch (error) {
-    next(new AppError("Something went wrong CheckoutPage", 500));
-  }
-};
+    console.log(error.message);
 
-const orderGetPage = async (req, res,next) => {
-  try {
-    let cartData = await cartCollection
-      .find({ userId: req.session?.user })
-      .populate("productId");
-    let orderNumber = req.session.orderNUmber;
-    let orderData = await orderCollection.findOne({
-      userId: req.session?.user,
-      orderNumber: orderNumber,
-    });
-
-    res.render("userPage/orderSucess", { cartData });
-
-    await cartData.forEach(async (data) => {
-      await productCollection.findByIdAndUpdate(
-        { _id: data.productId._id },
-        { $inc: { productStock: -data.productQuantity } }
-      );
-      //  await productCollection.findByIdAndUpdate({_id:data.productId._id},{$inc:{productStock:data.productQuantity}})
-    });
-
-    await cartCollection
-      .deleteMany({ userId: req.session?.user })
-      .populate("productId");
-  } catch (error) {
-    next(new AppError("Something went wrong CheckoutPage", 500));
-  }
-};
-
-const checkingEmpty = async (req, res,next) => {
-  try {
-    const cartChecking = await cartCollection.find();
-
-    if (cartChecking == null) {
-      res.send({ empty: true });
-    }
-  } catch (error) {
-    next(new AppError("Something went wrong CheckoutPage", 500));
-  }
-};
-
-const stockDecreasing = async (req, res,next) => {
-  try {
-    //   let productQuantity = req.query.id;
-    //   let productId = req.query.productId;
-    // let productStock = await productCollection.findOne({ _id: productId });
-
-    // console.log(productStock.productStock);
-
-    // let result = productStock.productStock - productQuantity;
-
-    // await productCollection.updateOne(
-    //   { _id: productId },
-    //   {
-    //     $set: {
-    //       productStock: result,
-    //     },
-    //   }
-    // );
-
-    // const cartData = await cartCollection.find({userId:req.session.user._id}).populate('productId')
-
-    res.send({ sucesss: true });
-  } catch (error) {
     next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
@@ -188,10 +172,15 @@ const razorPaying = async (req, res,next) => {
       receipt: "receipt#1",
     };
 
-    razorpay.instance.orders.create(options, function (err, order) {
+    razorpay.instance.orders.create(options,  (err, order)=> {
+
+      if (err) {
+        return res.render('userPage/paymentErrorPage'); // Render the payment error page
+      }
       res.json({ success: true, orderId: order.id });
     });
   } catch (error) {
+    console.log(error.message);
     next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
@@ -200,8 +189,10 @@ const orderPlacingRazorpay = async (req, res,next) => {
   try {
     const userId = req.session?.user._id;
     const orderValueGenerate = Math.floor(10 + Math.random() * 90);
+
     const orderNumber = orderValueGenerate;
-    // const orderNumber = (await orderCollection.countDocuments()) + 1;
+    
+
     const userCartData = await JSON.parse(
       JSON.stringify(
         await cartCollection.find({ userId: userId }).populate("productId")
@@ -213,7 +204,7 @@ const orderPlacingRazorpay = async (req, res,next) => {
     const selectAddressValue =
       req.session?.razorpayOrderData?.selectAddressValue;
     const razorpayId = req.body?.razorpay_payment_id;
-
+    req.session.orderNUmber =orderNumber 
     const orderDetails = {
       userId: userId,
       orderNumber: orderNumber,
@@ -224,19 +215,22 @@ const orderPlacingRazorpay = async (req, res,next) => {
       paymentId: razorpayId,
     };
 
-    req.session.orderNumber = orderNumber;
+    // req.session.orderNUmber = orderNumber;
+    console.log("razorpay odrder number",  req.session.orderNUmber);
     req.session.orderDetails = orderDetails._id;
     await orderCollection(orderDetails).save();
-
+     
     res.redirect("/orderSuccessPage");
+
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
 
 const walletPayment = async (req, res,next) => {
   try {
-    console.log("payement wallet varunde", req.query.paymentWallet);
 
     const cartData = await cartCollection
       .find({ userId: req.session?.user })
@@ -264,9 +258,10 @@ const walletPayment = async (req, res,next) => {
           grandTotalCost: req.body.grandTotalCheckout,
         });
 
-        console.log(`neworder check ${newOrder}`);
         let successedOrder = await newOrder.save();
         req.session.orderNUmber = orderNumber;
+        console.log("wallet odrder number", req.session.orderNUmber);
+
 
         if (successedOrder) {
           res.send({ success: true });
@@ -293,9 +288,94 @@ const walletPayment = async (req, res,next) => {
       }
     }
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
+
+
+
+
+const orderGetPage = async (req, res,next) => {
+  try {
+    let orderNumber = req?.session?.orderNUmber;
+
+    console.log("Order number varunilla ",orderNumber);
+
+    let cartData = await cartCollection
+      .find({ userId: req.session?.user })
+      .populate("productId");
+
+    const orderData = await orderCollection.findOne({
+      userId: req.session.user,
+      orderNumber: orderNumber,
+    });
+
+    console.log("order page get kittunde",orderData);
+
+    res.render("userPage/orderSucess", { cartData,orderData });
+
+     cartData.forEach(async (data) => {
+      await productCollection.findByIdAndUpdate(
+        { _id: data.productId._id },
+        { $inc: { productStock: -data.productQuantity } }
+      );
+      //  await productCollection.findByIdAndUpdate({_id:data.productId._id},{$inc:{productStock:data.productQuantity}})
+    });
+  
+    await cartCollection
+      .deleteMany({ userId: req.session?.user })
+      .populate("productId");
+  } catch (error) {
+    console.log(error.message);
+    next(new AppError("Something went wrong CheckoutPage", 500));
+  }
+};
+
+const checkingEmpty = async (req, res,next) => {
+  try {
+    const cartChecking = await cartCollection.find();
+
+    if (cartChecking == null) {
+      res.send({ empty: true });
+    }
+  } catch (error) {
+    console.log(error.message);
+
+    next(new AppError("Something went wrong CheckoutPage", 500));
+  }
+};
+
+const stockDecreasing = async (req, res,next) => {
+  try {
+    //   let productQuantity = req.query.id;
+    //   let productId = req.query.productId;
+    // let productStock = await productCollection.findOne({ _id: productId });
+
+    // console.log(productStock.productStock);
+
+    // let result = productStock.productStock - productQuantity;
+
+    // await productCollection.updateOne(
+    //   { _id: productId },
+    //   {
+    //     $set: {
+    //       productStock: result,
+    //     },
+    //   }
+    // );
+
+    // const cartData = await cartCollection.find({userId:req.session.user._id}).populate('productId')
+
+    res.send({ sucesss: true });
+  } catch (error) {
+    console.log(error.message);
+
+    next(new AppError("Something went wrong CheckoutPage", 500));
+  }
+};
+
 
 const coupanAdding = async (req, res,next) => {
   try {
@@ -328,9 +408,12 @@ const coupanAdding = async (req, res,next) => {
       res.send({ alredyUsed: true });
     }
   } catch (error) {
+    console.log(error.message);
     next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
+
+
 
 module.exports = {
   checkOutPage,
@@ -342,4 +425,5 @@ module.exports = {
   orderPlacingRazorpay,
   walletPayment,
   coupanAdding,
+  failureCheck
 };

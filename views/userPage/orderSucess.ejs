@@ -225,10 +225,13 @@
           </div>
           <div class="navigation-buttons">
             <button class="btn btn-primary" onclick="productStock('<%= data.productQuantity %>,<%= data.productId._id %>')">Continue to Shopping</button>
-            <button class="btn btn-secondary" onclick="downloadInvoice()">Download Invoice</button>
           </div>
         </div>
       <% }) %>
+      <div>
+        <button class="btn btn-secondary" onclick="window.location.href='/downloadInvoice<%=orderData._id%>'">Download Invoice</button>
+
+      </div>
     </div>
   </div>
 </div>

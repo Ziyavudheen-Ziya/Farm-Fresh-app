@@ -1,0 +1,42 @@
+<%- include('../adminpartials/adminheader') %>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Top Selling Products</title>
+  <!-- Include your CSS files here -->
+</head>
+<body>
+  <div class="container">
+    <h1>Top Selling Products</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Product Name</th>
+          <th>Product Price</th>
+          <th>Stock Sold</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% topProducts.forEach((data,index)=>{%>
+
+          <tr>
+              <td><%=index+1%></td>
+              <td><%=data.productName%></td>
+              <td><%=data.productPrice%></td>
+              <td><%=data.productStockSold%></td>
+
+
+           
+          </tr>
+          <% }) %>
+
+          
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
+
+<%- include('../adminpartials/adminfooter') %>

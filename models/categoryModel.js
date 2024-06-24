@@ -1,6 +1,4 @@
-const { name } = require('ejs')
 const mongoose = require('mongoose')
-const { category } = require('../controller/adminController')
 
 
 const categorySchema = new mongoose.Schema({
@@ -26,14 +24,15 @@ const categorySchema = new mongoose.Schema({
        categoryOfferId:{
 
         type:mongoose.Types.ObjectId,
-        required:true,
         ref:'categoryOffer'
           
        },
        categoryOfferAmount:{
-           required:true,
-           type:Number
-       }
+         
+           type:Number,
+           default:0
+       },
+       categoryStockSold:{type:Number,default:0}
 
 })
 

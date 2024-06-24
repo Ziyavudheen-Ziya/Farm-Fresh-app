@@ -68,7 +68,7 @@
 
                     <% categoryData.forEach((category)=>{ %>
 
-                    <option value="<%=category.categoryname%>">
+                    <option value="<%= category._id %>,<%= category.categoryname %>">
                       <%=category.categoryname%>
                     </option>
 
@@ -103,7 +103,7 @@
                   id="productStock"
                   type="tel"
                   class="form-control"
-                  min="1"
+                  min="0"
                   placeholder="Product Stock"
                   required
                 />
@@ -136,6 +136,8 @@
 
 <script>
   $(document).ready(function() {
+
+    let categoryId  = '<%=categoryData._id%>'
     $("#addProduct").validate({
       rules: {
         productName: {
@@ -152,11 +154,12 @@
         productStock: {
           required: true,
           pattern: /^\d+$/,
-          min: 1 
+          min: 0 
         },
         parentCategory: {
           required: true
         }
+
       },
       messages: {
         productName: {
@@ -175,7 +178,7 @@
         event.preventDefault();
         const formData = new FormData(form);
         try {
-          let response = await fetch("/addProducts", {
+          let response = await fetch(`/addProducts`, {
             method: "POST",
             body: formData,
           });

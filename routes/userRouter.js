@@ -66,11 +66,14 @@ router.post('/coupanAdding',isActive,checkoutController.coupanAdding)
 // ============ORDER PAGE=============//
 
 router.post("/orderData", isActive,checkoutController.checkOutSave);
-router.get("/orderSuccessPage",isActive, checkoutController.orderGetPage);
 router.post("/stockDecrase",isActive, checkoutController.stockDecreasing);
 router.post('/razorPayOrder',isActive,checkoutController.razorPaying)
 router.all('/order/orderPlaced',isActive,checkoutController.orderPlacingRazorpay)
+
 router.post('/walletPayment',isActive,checkoutController.walletPayment)
+router.get("/orderSuccessPage",isActive, checkoutController.orderGetPage);
+router.get('/failurePayment',isActive,checkoutController.failureCheck)
+
 
 // ===========================MY ORDERS PAGE========================//
 
@@ -79,7 +82,10 @@ router.get('/orderSingleData',isActive,orderManagementController.orderDetailsSin
 router.post('/singleProductCancel',isActive,orderManagementController.singleProductCancel)
 router.get("/cancelOrderUser",isActive, orderManagementController.userOrderCancelled);
 router.get("/returnUser",isActive, orderManagementController.returnUser);
+router.get('/downloadInvoice:id',isActive,orderManagementController.downloadInvoice)
 
+
+//    ===========================Wallet Controller==========================//
 router.get('/walletGetPage',isActive,walletController.walletGetPage)
 
 

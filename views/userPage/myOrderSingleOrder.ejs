@@ -107,6 +107,21 @@ footer {
 margin-top: auto;
 }
 
+.green-button {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+
 /* Media query for tablets and smaller devices */
 
 @media (max-width: 768px) {
@@ -199,7 +214,16 @@ margin-top: auto;
                         <h2 class="order-title">Order #%><%=orderData?.orderNumber%></h2>
                         <div class="order-info">
                             <p><strong>Order Date:</strong><%=orderData?.orderDate.toLocaleDateString()%> </p>
-                            <p><strong>Mode of Payment:</strong><%=orderData?.paymentType%> </p>
+
+                            <%if(orderData?.paymentType==='Payment Pending'){%>
+                                <p><strong>Mode of Payment:</strong><%=orderData?.paymentType%> </p>
+                                <button class="btn green-button" onclick="window.location.href='/razorPayOrder<%=orderData.paymentType%>'">Continue Payment</button>
+
+                            <%}else{%>
+                                <p><strong>Mode of Payment:</strong><%=orderData?.paymentType%> </p>
+
+
+                           <% } %>
                             <p><strong>Total Amount:</strong> ₹<%=orderData?.grandTotalCost%></p>
                         </div>
                     </div>
@@ -267,6 +291,21 @@ margin-top: auto;
         
 async function singleOrderDeleting(orderNumber, productId, productQuantity , productPrice,  indexId) {
     try {
+
+        let result = await Swal.fire({
+      title: "Confirm Cancel",
+      text: "Are you sure you want to cancel this order?",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, cancel it",
+    });
+
+
+           
+    if(result.isConfirmed){
+
+        
         let response = await fetch(`/singleProductCancel?orderNumber=${orderNumber}&productId=${productId}&orderId=${orderId}&indexId=${indexId}`, {
             method: "POST",
             headers: { 'Content-Type': 'application/json' },
@@ -292,6 +331,10 @@ async function singleOrderDeleting(orderNumber, productId, productQuantity , pro
                window.location.reload()
                
             }
+
+
+    }
+
           
     } catch (error) {
         console.error("Error:", error);
@@ -303,9 +346,13 @@ async function singleOrderDeleting(orderNumber, productId, productQuantity , pro
 
 
 
+
+
 <!-- Plugins JS File -->
 
 </body>
+
+
 
 <%- include ('../partials/footer') %>
 

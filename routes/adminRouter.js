@@ -80,4 +80,8 @@ adminRouter.get('/salesReport/download/pdf',salesController.generatingPdf)
 adminRouter.get('/salesReport/download/xlsx',salesController.salesReportSheet)
 
 
+// =======================Top Selling Prodcuts===================================//
+adminRouter.get('/topSellingProducts',adminController.topSellingProducts)
+adminRouter.get('/topSellingCategory',adminController.topSellingCategory)
+
 module.exports = adminRouter;

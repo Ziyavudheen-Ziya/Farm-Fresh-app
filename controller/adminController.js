@@ -1,14 +1,22 @@
 const userCollection = require("../models/userModel.js");
 const cartCollecction = require("../models/cartModel.js");
-const AppError = require('../middleware/errorHandling.js')
+const AppError = require('../middleware/errorHandling.js');
+const orderCollection = require("../models/orderModel.js");
+const productCollection = require('../models/productModel.js')
+const categoryCollection = require('../models/categoryModel.js')
 
 let adminMail = "admin12@gmail.com";
 let adminPass = "123123";
+
+
+
 
 const adminLoginPage = async (req, res,next) => {
   try {
 
     if(req.session.admin){
+
+
 
       res.render("adminPage/adminLogin");
 
@@ -21,14 +29,21 @@ const adminLoginPage = async (req, res,next) => {
       
 
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong adminPage", 500));
   }
 };
 
 const dashboardGetPage = async (req, res,next) => {
   try {
+    
+  
+
+    
     res.render("adminPage/adminDashboard");
   } catch (error) {
+    console.log(error.message);
     next(new AppError("Something went wrong adminPage", 500));
   }
 };
@@ -45,6 +60,8 @@ const admincheck = async (req, res,next) => {
       res.redirect("/admin");
     }
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong adminPage", 500));
   }
 };
@@ -62,6 +79,8 @@ const userdetails = async (req, res,next) => {
 
     res.render("adminPage/userDetails", { userData, totalPages });
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong adminPage", 500));
   }
 };
@@ -75,6 +94,8 @@ const blockUser = async (req, res,next) => {
     );
     res.send({ success: true });
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong adminPage", 500));
   }
 };
@@ -88,6 +109,8 @@ const unBlockUser = async (req, res,next) => {
     );
     res.send({ success: true });
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong adminPage", 500));
   }
 };
@@ -97,7 +120,44 @@ const logoutPage = async (req, res,next) => {
     req.session.admin=false
     res.redirect("/admin");
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong adminPage", 500));
+  }
+};
+
+const topSellingProducts = async (req, res, next) => {
+  try {
+
+
+    const topProducts = await productCollection
+      .find({}, { productName: 1, productStockSold: 1, parentCategory: 1, productPrice: 1, productImage: 1 })  
+      .sort({ productStockSold: -1 })
+      .limit(10);
+
+
+      res.render('adminPage/topProducts',{topProducts});
+
+
+  } catch (error) {
+    console.log(error.message);
+    next(new AppError("Something went wrong adminPage", 500));
+  }
+};
+
+
+const topSellingCategory = async (req, res, next) => {
+  try {
+     
+      
+     const topCategory =  await categoryCollection.find({},{categoryname:1,categoryStockSold:1}).sort({categoryStockSold:-1}).limit(10)
+
+     
+
+      res.render('adminPage/topCategory',{topCategory});
+  } catch (error) {
+      console.log(error.message);
+      next(new AppError("Something went wrong on adminPage", 500));
   }
 };
 
@@ -109,4 +169,6 @@ module.exports = {
   unBlockUser,
   logoutPage,
   dashboardGetPage,
+  topSellingProducts,
+  topSellingCategory
 };

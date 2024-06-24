@@ -23,12 +23,12 @@ const category = async (req, res,next) => {
 
 const addcategory = async (req, res,next) => {
   try {
+    console.log("entring 1");
     const newCategory = new categoryCollection({
       categoryname: req.body.categoryName,
       categoryDescription: req.body.categoryDescription,
     });
 
-    console.log("checking");
 
     const categoryExists = await categoryCollection.findOne({
       categoryname: req.body.categoryName,
@@ -41,8 +41,9 @@ const addcategory = async (req, res,next) => {
       res.send({ success: true });
     }
 
-    console.log("1");
+    console.log("entring 1");
   } catch (error) {
+    console.log(error.message);
     next(new AppError("Something went wrong CategoryPage", 500));
   }
 };

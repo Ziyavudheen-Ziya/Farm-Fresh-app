@@ -21,12 +21,8 @@ const productOfferGetPage = async (req, res,next) => {
 
 const productOfferAdding = async (req, res,next) => {
   try {
-    console.log("entring add product page");
 
-    console.log("productnam vannu", req.body.productName);
-    console.log("productamount vannu", req.body.productOfferAmount);
-    console.log("product date vannu", req.body.productName);
-    console.log("product end vannu", req.body.productName);
+  
 
     const prodictExsist = await productCollection.findOne({
       productName: req.body.productName,
@@ -71,10 +67,7 @@ const productOfferAdding = async (req, res,next) => {
 
 const prodcutEditOffer = async (req, res,next) => {
   try {
-    console.log("date varund", req.body.productName);
-    console.log("date varund", req.body.productOfferAmount);
-    console.log("date varund", req.body.startDate);
-    console.log("date varund", req.body.endDate);
+   
 
     const prodcutExsist = await offerProductCollection.findOne({
       productName: req.body.productName,

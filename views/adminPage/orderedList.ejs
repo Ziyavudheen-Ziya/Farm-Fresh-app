@@ -142,7 +142,7 @@
 
   async function pending(orderId) {
     let response = await fetch(`/pending?id=${orderId}`, {
-      method: "get",
+      method: "GET",
       headers: { "Content-Type": "application/json" },
     });
 
@@ -155,13 +155,21 @@
       });
       window.location.reload();
     }
+
+    if(result.alreadyPending){
+
+       await Swal.fire({
+
+          icon:"error",
+          title:"Already Pending"
+       })
+    }
   }
 
   async function shipped(orderId) {
-    console.log(`shipped${orderId}`);
 
     let response = await fetch(`/shipped?id=${orderId}`, {
-      method: "get",
+      method: "GET",
       headers: { "Content-Type": "application/json" },
     });
 
@@ -170,16 +178,25 @@
     if (result.shipped) {
       await Swal.fire({
         icon: "success",
-        confirmButtonText: "OK",
+        title: "OK"
       });
       window.location.reload();
+    }
+
+    if(result.alreadyShipped){
+        
+      await Swal.fire({
+
+          icon:"error",
+          title:"Already Shipped"
+      })
+      window.location.reload()
     }
   }
 
   async function delivered(orderId) {
-    console.log(`fde;ivered ${orderId}`);
     let response = await fetch(`/delivered?id=${orderId}`, {
-      method: "get",
+      method: "GET",
       headers: { "Content-Type": "application/json" },
     });
 
@@ -188,16 +205,27 @@
     if (result.delivered) {
       await Swal.fire({
         icon: "success",
-        title: "OK",
+        title: "OK"
       });
 
       window.location.reload();
+    }
+
+    if(result.alreadyDelivered){
+
+        await Swal.fire({
+
+            icon:"error",
+            title:"Already Delivered"
+        })
+
+        window.location.reload()
     }
   }
 
   async function returnDeliver(userId) {
     let response = await fetch(`/returnDeliver?id=${userId}`, {
-      method: "get",
+      method: "GET",
       headers: { "Content-Type": "application/json" },
     });
 
@@ -215,7 +243,7 @@
 
   async function cancelled(orderId) {
     let response = await fetch(`/cancelled?id=${orderId}`, {
-      method: "get",
+      method: "GET",
       headers: { 'Content-Type': 'application/json' }
     });
 

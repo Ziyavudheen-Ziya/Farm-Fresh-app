@@ -183,25 +183,7 @@
                                                 <td>Free shipping</td>
                                             </tr>
                                             
-                                                   <!-- COUPAN SPACE YOU HAVE ALRAEDY JUST CONTROL SLASH  -->
-
-                                                <!-- <tr class="summary-subtotal">
-                                                    <td>Coupon Amount :</td>
-                                                    <td>- ₹ </td>
-                                                </tr> -->
-<!--     
-                                                <tr class="summary-total">
-                                                    <td>Total:</td>
-                                                    <td>₹ <span id="grandTotalCheckout"></span></td>                                        
-                                                </tr>
-    
-                                           
-                                                <tr class="summary-total">
-                                                    <td>Total:</td>
-                                                    <td>₹ <span id="grandTotalCheckout"></span></td>                                        
-                                                </tr> -->
-
-                                            <!-- COUPAN ENDING -->
+                                                
 
                                          
                                             
@@ -408,8 +390,17 @@ async function openRazorpay(amount, orderId) {
             "order_id": orderId,
             "theme": {
                 "color": "#3399cc"
-            }
-        };
+            },
+
+            "handler": function (response) {
+        window.location.href = "/order/orderPlaced";
+      },
+      "modal": {
+        "ondismiss": function () {
+          window.location.href = "/failurePayment";
+        }
+      }
+        }
 
         console.log("Opening Razorpay with options:", options);
 

@@ -15,7 +15,9 @@ const productSchema = new mongoose.Schema({
     productOfferAmount:{type:Number,default:null},
     isListed:{type:Boolean,default:true},
     Cancelled:{type:Boolean,default:false},
-    categoryOfferAmount:{type:Number,default:null}
+    categoryOfferAmount:{type:Number,default:null},
+    productStockSold:{type:Number,default:0},
+    categoryId :{type:mongoose.Types.ObjectId,default:null,ref:'category'}
 })
 
 module.exports = mongoose.model('products',productSchema)
