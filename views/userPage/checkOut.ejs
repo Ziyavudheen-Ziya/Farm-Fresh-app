@@ -127,7 +127,7 @@
                                                 <p>Minimum Purchase : <span id="minimumPurchase">Expired</span></p>
                                             </div> -->
                                         <% } else { %>
-                                            <div class="couponElement">
+                                            <div class="couponElement" data-id="<%= data._id %>">
                                                 <h4>Code : <span id="couponCode"><%= data.coupanCode %></span></h4>
                                                 <p>Coupan Amount : <span id="coupanAmount"><%= data.coupanAmount %></span></p>
                                                 <p>Minimum Purchase : <span id="minimumPurchase"><%= data.minimumPurchase %></span></p>
@@ -415,47 +415,50 @@ async function openRazorpay(amount, orderId) {
 
 <script>
 
-    async function coupanApply(){
+async function coupanApply() {
+    const couponCodeInput = document.getElementById('checkout-discount-input');
+    const couponCode = couponCodeInput.value.trim();
+    const grandTotalCheckout = parseFloat(document.getElementById('grandTotalCheckout').textContent);
 
+    // Find the coupon element that matches the entered coupon code
+    const couponElement = [...document.querySelectorAll('.couponElement')].find(element => 
+        element.querySelector('#couponCode').textContent.trim() === couponCode
+    );
 
-        let coupanCode = document.getElementById('checkout-discount-input').value
-         let  grandTotalCheckout = document.getElementById('grandTotalCheckout').textContent
-         let coupanAmount =document.getElementById('coupanAmount').textContent
-        
-        let response = await fetch(`/coupanAdding?id=${coupanCode}&grandTotal=${grandTotalCheckout}&coupanAmount=${coupanAmount}`,{
-
-             method:"POST",
-             headers:{'Content-Type':'application/json'}
-
-        })
-
-        let result = await response.json()
-
-        if(result.success){
-
-            await Swal.fire({
-
-                icon:"suucess",
-                title:"Coupan Added Successfully"
-            })
-
-            window.location.reload()
-        }
-
-        if(result.alredyUsed){
-
-             await Swal.fire({
-
-                icon:"error",
-                title:"Already Applied"
-             })
-
-             window.location.reload()
-        }
-
-
-         
+    if (!couponElement) {
+        await Swal.fire({
+            icon: "error",
+            title: "Invalid Coupon",
+            text: "Coupon code does not exist or is expired"
+        });
+        return;
     }
+
+    const couponId = couponElement.getAttribute('data-id');
+    const couponAmount = parseFloat(couponElement.querySelector('#coupanAmount').textContent);
+
+    const response = await fetch(`/coupanAdding?id=${couponId}&grandTotal=${grandTotalCheckout}&coupanAmount=${couponAmount}`, {
+        method: "POST",
+        headers: {'Content-Type': 'application/json'}
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        await Swal.fire({
+            icon: "success",
+            title: "Coupon Added Successfully"
+        });
+        window.location.reload();
+    } else if (result.alreadyUsed) {
+        await Swal.fire({
+            icon: "error",
+            title: "Already Applied"
+        });
+        window.location.reload();
+    }
+}
+
 </script>
            
 

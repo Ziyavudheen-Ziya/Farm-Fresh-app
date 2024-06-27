@@ -217,7 +217,7 @@ margin-top: auto;
 
                             <%if(orderData?.paymentType==='Payment Pending'){%>
                                 <p><strong>Mode of Payment:</strong><%=orderData?.paymentType%> </p>
-                                <button class="btn green-button" onclick="window.location.href='/razorPayOrder<%=orderData.paymentType%>'">Continue Payment</button>
+                                <button class="btn green-button" onclick="window.location.href='/checkoutPage'">Continue Payment</button>
 
                             <%}else{%>
                                 <p><strong>Mode of Payment:</strong><%=orderData?.paymentType%> </p>

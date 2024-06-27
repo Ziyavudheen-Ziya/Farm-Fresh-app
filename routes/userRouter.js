@@ -40,7 +40,7 @@ router.get('/searchOrder',isActive,userController.productSearching)
 // ==================Profile Management===============//
 router.get("/profilePage",isActive, profileController.profilePage);
 router.get("/editProfile",isActive, profileController.editPageProfile);
-router.post("/editProfile",isActive, profileController.editProfileUser);
+router.put("/editProfiles",isActive, profileController.editProfileUser);
 router.get("/addAddress",isActive, profileController.addAddressPage);
 router.post("/addNewAddress",isActive, profileController.newAddress);
 router.get("/myAddress",isActive, profileController.myAddressPage);

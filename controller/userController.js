@@ -15,11 +15,11 @@ const applyReferalCode = require("../helper/referal.js");
 const offerProductCollection = require("../models/productOfferModel.js");
 const categoryOfferCollection = require("../models/categoryOfferModel.js");
 const AppError = require("../middleware/errorHandling.js");
-const landingPage = async (req, res,next) => {
+const landingPage = async (req, res, next) => {
   try {
     let userLogged = req.session?.user;
 
-    console.log("use logged",userLogged);
+    console.log("use logged", userLogged);
 
     if (userLogged) {
       res.render("userPage/landingPage", { userLogged: userLogged });
@@ -32,33 +32,24 @@ const landingPage = async (req, res,next) => {
   }
 };
 
-const loginSignupPage = async (req, res,next) => {
+const loginSignupPage = async (req, res, next) => {
   try {
-
-    if(!req.session.user){
-
+    if (!req.session.user) {
       const referal = req.query?.referalCode;
       console.log(`referal commiing ${referal}`);
-         
+
       req.session.tempReferalcode = referal;
-  
-  
+
       res.render("userPage/signupLogin", { referal });
-
-
-
-    }else{
-
-        res.redirect('/')
+    } else {
+      res.redirect("/");
     }
-    
-   
   } catch (error) {
     next(new AppError("Something went wrong User", 500));
   }
 };
 
-const userSave = async (req, res,next) => {
+const userSave = async (req, res, next) => {
   try {
     let bcryptPassword = bcrypt.hashSync(req.body.password, 10);
     let referalCode = Math.floor(100000 + Math.random() * 900000);
@@ -97,20 +88,18 @@ const userSave = async (req, res,next) => {
   }
 };
 
-const login = async (req, res,next) => {
+const login = async (req, res, next) => {
   try {
-
     console.log("login alreasy exssitig user");
     const userExist = await userCollection.findOne({ email: req.body.email });
 
     const userblock = await userCollection.findOne({ block: false });
 
     if (req.session.user) {
-      return res.render("userPage/landingPage", { userLogged: req.session.user });
+      return res.render("userPage/landingPage", {
+        userLogged: req.session.user,
+      });
     }
-
-    
-    
 
     if (userExist) {
       let passwordMatch = bcrypt.compareSync(
@@ -137,7 +126,7 @@ const login = async (req, res,next) => {
   }
 };
 
-const otpPage = async (req, res,next) => {
+const otpPage = async (req, res, next) => {
   try {
     let userId = req.session.user;
 
@@ -153,7 +142,7 @@ const otpPage = async (req, res,next) => {
   }
 };
 
-const veryFyingotp = async (req, res,next) => {
+const veryFyingotp = async (req, res, next) => {
   try {
     const otp = await otpCollection.findOne({ otp: req.body?.otp });
 
@@ -171,7 +160,7 @@ const veryFyingotp = async (req, res,next) => {
       });
 
       await newWallet.save();
-       
+
       delete req.session.tempUser;
       delete req.session.referalCode;
 
@@ -190,7 +179,7 @@ const veryFyingotp = async (req, res,next) => {
   }
 };
 
-const resendotp = async (req, res,next) => {
+const resendotp = async (req, res, next) => {
   try {
     const generateOtp = Math.floor(100000 + Math.random() * 900000);
 
@@ -201,7 +190,7 @@ const resendotp = async (req, res,next) => {
     next(new AppError("Something went wrong User", 500));
   }
 };
-const productPage = async (req, res,next) => {
+const productPage = async (req, res, next) => {
   try {
     const categoryData = await categoryCollection.find();
     const categoryOffers = await categoryOfferCollection.find();
@@ -288,7 +277,7 @@ const productPage = async (req, res,next) => {
   }
 };
 
-const productDetail = async (req, res,next) => {
+const productDetail = async (req, res, next) => {
   try {
     const singleData = await productCollection.findOne({ _id: req.params.id });
 
@@ -313,7 +302,7 @@ const logOutting = async (req, res) => {
   }
 };
 
-const sortingProduct = async (req, res,next) => {
+const sortingProduct = async (req, res, next) => {
   try {
     let page = Number(req.query.page) || 1;
     let limit = 8;
@@ -345,7 +334,7 @@ const sortingProduct = async (req, res,next) => {
   }
 };
 
-const forgotPasswordGetPage = async (req, res,next) => {
+const forgotPasswordGetPage = async (req, res, next) => {
   try {
     res.render("userPage/forgotPassword");
   } catch (error) {
@@ -353,7 +342,7 @@ const forgotPasswordGetPage = async (req, res,next) => {
   }
 };
 
-const forgotOtpGrtPage = async (req, res,next) => {
+const forgotOtpGrtPage = async (req, res, next) => {
   try {
     res.render("userPage/fogotPasswordOtp");
   } catch (error) {
@@ -361,7 +350,7 @@ const forgotOtpGrtPage = async (req, res,next) => {
   }
 };
 
-const updatingForgotPassword = async (req, res,next) => {
+const updatingForgotPassword = async (req, res, next) => {
   try {
     req.session.forgotEmail = req.body.forgetEmail;
 
@@ -391,7 +380,7 @@ const updatingForgotPassword = async (req, res,next) => {
   }
 };
 
-const forgotPasswordVerifyOtp = async (req, res,next) => {
+const forgotPasswordVerifyOtp = async (req, res, next) => {
   try {
     console.log(req.body.otp);
     console.log("1");
@@ -409,7 +398,7 @@ const forgotPasswordVerifyOtp = async (req, res,next) => {
   }
 };
 
-const forgotResendOtp = async (req, res,next) => {
+const forgotResendOtp = async (req, res, next) => {
   try {
     const generateOtp = Math.floor(100000 + Math.random() * 900000);
     console.log(generateOtp);
@@ -421,7 +410,7 @@ const forgotResendOtp = async (req, res,next) => {
   }
 };
 
-const forgotPassworChangingGetPAge = async (req, res,next) => {
+const forgotPassworChangingGetPAge = async (req, res, next) => {
   try {
     res.render("userPage/UpdatingForgotChangePassword");
   } catch (error) {
@@ -429,7 +418,7 @@ const forgotPassworChangingGetPAge = async (req, res,next) => {
   }
 };
 
-const forgotPasswordUpdating = async (req, res,next) => {
+const forgotPasswordUpdating = async (req, res, next) => {
   try {
     console.log("Entering");
 
@@ -450,7 +439,7 @@ const forgotPasswordUpdating = async (req, res,next) => {
   }
 };
 
-const productSearching = async (req, res,next) => {
+const productSearching = async (req, res, next) => {
   try {
     const searchValue = req.query.id;
     const regex = new RegExp(`^${searchValue}`, "i");
@@ -462,44 +451,28 @@ const productSearching = async (req, res,next) => {
   }
 };
 
+const googleCallback = async (req, res, next) => {
+  try {
+    console.log("enterin t this page ggogle callBack");
 
-const googleCallback = async(req,res,next)=>{
+    let referalCode = Math.floor(100000 + Math.random() * 900000);
 
-      try {
+    req.session.referalCode = referalCode;
 
-        console.log("enterin t this page ggogle callBack");
+    const user = await userCollection.findOneAndUpdate(
+      { email: req.user.email },
+      { $set: { name: req.user.displayName, referalCode: referalCode } },
+      { upsert: true, new: true }
+    );
 
+    req.session.user = user;
 
-        let referalCode = Math.floor(100000 + Math.random() * 900000);
-
-        req.session.referalCode = referalCode
-        
-        const user = await userCollection.findOneAndUpdate(
-
-          {email:req.user.email},
-          {$set:{name:req.user.displayName,referalCode:referalCode}},
-          {upsert:true , new:true}
-            
-
-        );
-
-        
-
-
-        req.session.user = user
-       
-        res.redirect('/')
-
-
-        
-      } catch (error) {
-        next(new AppError("Something went wrong User", 500));
-        res.redirect('/loginpage')
-      }
-}
-
-
-
+    res.redirect("/");
+  } catch (error) {
+    next(new AppError("Something went wrong User", 500));
+    res.redirect("/loginpage");
+  }
+};
 
 module.exports = {
   landingPage,
@@ -521,5 +494,5 @@ module.exports = {
   forgotPassworChangingGetPAge,
   forgotPasswordUpdating,
   productSearching,
-  googleCallback
+  googleCallback,
 };

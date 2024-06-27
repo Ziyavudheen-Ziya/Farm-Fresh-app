@@ -115,8 +115,8 @@
         userId: "<%=data._id%>",
       };
 
-      let response = await fetch(`/editProfile`, {
-        method: "POST",
+      let response = await fetch(`/editProfiles`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });

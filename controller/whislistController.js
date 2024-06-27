@@ -1,8 +1,8 @@
 const wishlistCollection = require("../models/wishlistModel");
 const productCollection = require("../models/productModel");
 const cartCollection = require("../models/cartModel");
-const AppError = require('../middleware/errorHandling')
-const wishlistGetPAge = async (req, res,next) => {
+const AppError = require("../middleware/errorHandling");
+const wishlistGetPAge = async (req, res, next) => {
   try {
     const whishlistData = await wishlistCollection
       .find({ userId: req.session?.user._id })
@@ -14,7 +14,7 @@ const wishlistGetPAge = async (req, res,next) => {
   }
 };
 
-const productAddToWishlist = async (req, res,next) => {
+const productAddToWishlist = async (req, res, next) => {
   try {
     let newWishlist = new wishlistCollection({
       userId: req.session?.user._id,
@@ -36,7 +36,7 @@ const productAddToWishlist = async (req, res,next) => {
   }
 };
 
-const addingProductFromWhishlist = async (req, res,next) => {
+const addingProductFromWhishlist = async (req, res, next) => {
   try {
     const currentUserId = req.session.user._id;
     const productId = req.query.id;
@@ -87,7 +87,7 @@ const addingProductFromWhishlist = async (req, res,next) => {
   }
 };
 
-const deleteProductWhishlist = async (req, res,next) => {
+const deleteProductWhishlist = async (req, res, next) => {
   try {
     await wishlistCollection.deleteOne({ _id: req.query.id });
 

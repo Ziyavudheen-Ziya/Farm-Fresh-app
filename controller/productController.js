@@ -3,16 +3,12 @@ const categoryCollection = require("../models/categoryModel.js");
 const { exists } = require("../models/userModel.js");
 const { errorMonitor } = require("nodemailer/lib/xoauth2/index.js");
 const cartCollecction = require("../models/categoryModel.js");
-const AppError = require('../middleware/errorHandling.js')
+const AppError = require("../middleware/errorHandling.js");
 const productPage = async (req, res, next) => {
   try {
-
-    
-
-
     const orderPerPage = 8;
     const pageNo = parseInt(req.query.pageNo) || 1;
-    
+
     const totalProducts = await productCollection.countDocuments();
     const totalPages = Math.ceil(totalProducts / orderPerPage);
 
@@ -21,17 +17,16 @@ const productPage = async (req, res, next) => {
       .skip((pageNo - 1) * orderPerPage)
       .limit(orderPerPage);
 
-    res.render("adminPage/productList", { 
-      productDatas, 
+    res.render("adminPage/productList", {
+      productDatas,
       totalPages,
-      currentPage: pageNo 
+      currentPage: pageNo,
     });
   } catch (error) {
     console.log(error.message);
     next(new AppError("Something went wrong on ProductPage", 500));
   }
 };
-
 
 const addProductPage = async (req, res) => {
   try {
@@ -44,21 +39,17 @@ const addProductPage = async (req, res) => {
   }
 };
 
-const addProduct = async (req, res,next) => {
+const addProduct = async (req, res, next) => {
   try {
     let imgFiles = [];
-    let parentCategoryParts = req.body.parentCategory.split(','); // Split categoryId and categoryName
+    let parentCategoryParts = req.body.parentCategory.split(","); // Split categoryId and categoryName
     let categoryId = parentCategoryParts[0].trim(); // Extract categoryId
-    let parentCategoryName = parentCategoryParts[1].trim(); 
+    let parentCategoryName = parentCategoryParts[1].trim();
 
-    
-
-    console.log("category Id comming",categoryId);
+    console.log("category Id comming", categoryId);
     for (let i = 0; i < req.files.length; i++) {
       imgFiles[i] = req.files[i].filename;
     }
-
-
 
     const newProduct = new productCollection({
       productName: req.body.productName,
@@ -66,10 +57,8 @@ const addProduct = async (req, res,next) => {
       productImage: imgFiles,
       productPrice: req.body.productPrice,
       productStock: req.body.productStock,
-      categoryId:categoryId
-     
+      categoryId: categoryId,
     });
-
 
     const productDetails = await productCollection.find({
       productName: {
@@ -96,7 +85,7 @@ const addProduct = async (req, res,next) => {
   }
 };
 
-const blockProduct = async (req, res,next) => {
+const blockProduct = async (req, res, next) => {
   try {
     await productCollection.updateOne(
       { productName: req.query.id },
@@ -111,7 +100,7 @@ const blockProduct = async (req, res,next) => {
   }
 };
 
-const unBlockProduct = async (req, res,next) => {
+const unBlockProduct = async (req, res, next) => {
   try {
     await productCollection.updateOne(
       { productName: req.query.id },
@@ -125,7 +114,7 @@ const unBlockProduct = async (req, res,next) => {
   }
 };
 
-const editPage = async (req, res,next) => {
+const editPage = async (req, res, next) => {
   try {
     console.log(`vanna vanilla ${req.params.id}`);
 
@@ -144,7 +133,7 @@ const editPage = async (req, res,next) => {
     next(new AppError("Something went wrong ProductPage", 500));
   }
 };
-const editProduct = async (req, res,next) => {
+const editProduct = async (req, res, next) => {
   try {
     let imgFiles = [];
 
@@ -164,8 +153,6 @@ const editProduct = async (req, res,next) => {
         imgFiles.push(req.files[i].filename);
       }
     }
-
-
 
     const productDetails = await productCollection.findOne({
       productName: req.body.productName,
@@ -203,21 +190,19 @@ const editProduct = async (req, res,next) => {
   }
 };
 
-const deleteProduct = async (req, res,next) => {
+const deleteProduct = async (req, res, next) => {
   try {
     const id = req.query.id;
 
     await productCollection.deleteOne({ _id: id });
 
     res.send({ deleted: true });
-  } catch (error) {   
-
+  } catch (error) {
     console.log(error.message);
     next(new AppError("Something went wrong ProductPage", 500));
-
   }
 };
-const deleteImg = async (req, res,next) => {
+const deleteImg = async (req, res, next) => {
   try {
     await productCollection.updateOne(
       { _id: req.query.productId },

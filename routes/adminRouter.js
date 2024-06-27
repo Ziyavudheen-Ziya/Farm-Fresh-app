@@ -13,6 +13,7 @@ const salesController = require('../controller/adminsalesReportController.js')
 const adminIsActive = require('../middleware/adminAuth.js')
 adminRouter.get("/admin", adminController.adminLoginPage);
 adminRouter.get('/dashboardGetPage',adminController.dashboardGetPage)
+adminRouter.get('/dashboardData',adminController.dashboardData)
 adminRouter.post("/dashbord", adminController.admincheck);
 
 adminRouter.get("/userdetails", adminController.userdetails);

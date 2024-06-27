@@ -6,8 +6,8 @@ const { find } = require("../models/otpModel.js");
 const { getRounds } = require("bcrypt");
 const razorpay = require("../services/razorpay.js");
 const offerProductCollection = require("../models/productOfferModel.js");
-const AppError = require('../middleware/errorHandling.js')
-const cartPage = async (req, res,next) => {
+const AppError = require("../middleware/errorHandling.js");
+const cartPage = async (req, res, next) => {
   try {
     let TotalCost = 0;
 
@@ -50,7 +50,7 @@ const cartPage = async (req, res,next) => {
   }
 };
 
-const addingCart = async (req, res,next) => {
+const addingCart = async (req, res, next) => {
   try {
     const currentUserId = req.session.user._id;
 
@@ -169,7 +169,7 @@ const minimumQuantity = async (req, res) => {
   }
 };
 
-const maximumQuantity = async (req, res,next) => {
+const maximumQuantity = async (req, res, next) => {
   try {
     const product = await productCollection.findOne({ _id: req.query.id });
     const cartData = await cartCollection.findOne({ productId: req.query.id });
@@ -222,7 +222,7 @@ const maximumQuantity = async (req, res,next) => {
   }
 };
 
-const deletingProdcut = async (req, res,next) => {
+const deletingProdcut = async (req, res, next) => {
   try {
     const Id = req.query.id;
 

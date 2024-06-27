@@ -1,7 +1,7 @@
 const offerProductCollection = require("../models/productOfferModel");
 const productCollection = require("../models/productModel");
-const AppError = require('../middleware/errorHandling')
-const productOfferGetPage = async (req, res,next) => {
+const AppError = require("../middleware/errorHandling");
+const productOfferGetPage = async (req, res, next) => {
   try {
     let offerData = await offerProductCollection.find();
 
@@ -19,11 +19,8 @@ const productOfferGetPage = async (req, res,next) => {
   }
 };
 
-const productOfferAdding = async (req, res,next) => {
+const productOfferAdding = async (req, res, next) => {
   try {
-
-  
-
     const prodictExsist = await productCollection.findOne({
       productName: req.body.productName,
     });
@@ -65,10 +62,8 @@ const productOfferAdding = async (req, res,next) => {
   }
 };
 
-const prodcutEditOffer = async (req, res,next) => {
+const prodcutEditOffer = async (req, res, next) => {
   try {
-   
-
     const prodcutExsist = await offerProductCollection.findOne({
       productName: req.body.productName,
     });

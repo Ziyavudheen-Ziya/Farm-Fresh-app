@@ -1,9 +1,9 @@
 const categoryCollection = require("../models/categoryModel.js");
 const prodcutCollection = require("../models/productModel.js");
 const cartCollection = require("../models/cartModel.js");
-const AppError = require('../middleware/errorHandling.js')
+const AppError = require("../middleware/errorHandling.js");
 
-const category = async (req, res,next) => {
+const category = async (req, res, next) => {
   try {
     let categoryData = await categoryCollection.find();
 
@@ -21,14 +21,13 @@ const category = async (req, res,next) => {
   }
 };
 
-const addcategory = async (req, res,next) => {
+const addcategory = async (req, res, next) => {
   try {
     console.log("entring 1");
     const newCategory = new categoryCollection({
       categoryname: req.body.categoryName,
       categoryDescription: req.body.categoryDescription,
     });
-
 
     const categoryExists = await categoryCollection.findOne({
       categoryname: req.body.categoryName,
@@ -48,7 +47,7 @@ const addcategory = async (req, res,next) => {
   }
 };
 
-const listCategory = async (req, res,next) => {
+const listCategory = async (req, res, next) => {
   try {
     console.log(req.query.id);
 
@@ -63,7 +62,7 @@ const listCategory = async (req, res,next) => {
   }
 };
 
-const unListCategory = async (req, res,next) => {
+const unListCategory = async (req, res, next) => {
   try {
     console.log("unlisted");
 
@@ -78,7 +77,7 @@ const unListCategory = async (req, res,next) => {
   }
 };
 
-const editCategory = async (req, res,next) => {
+const editCategory = async (req, res, next) => {
   console.log("entered");
 
   try {

@@ -16,9 +16,9 @@ app.use((req, res, next) => {
 
 app.use(
     session({
-         secret:"my secret",
-        resave:true,
-        saveUninitialized:true,
+         secret:process.env.Session_Pass,
+         resave:true,
+         saveUninitialized:true,
        
     })
 )
@@ -55,7 +55,7 @@ app.get('*',function(req,res){
 
 
 
-app.listen(3000, () => {
+app.listen(process.env.PORT, () => {
 
     console.log("The server start");
 })

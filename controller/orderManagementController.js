@@ -5,38 +5,41 @@ const walletColletion = require("../models/walletModel");
 const userCollecction = require("../models/userModel");
 const productCollection = require("../models/productModel");
 const mongoose = require("mongoose");
-const AppError = require('../middleware/errorHandling')
-const { generateVoice } = require('../services/generatePdf');
+const AppError = require("../middleware/errorHandling");
+const { generateVoice } = require("../services/generatePdf");
 
-
-
-const myOrdersPage = async (req, res ,next) => {
+const myOrdersPage = async (req, res, next) => {
   try {
-    let orderData = await orderCollection.find({ userId: req.session.user })
+    let orderData = await orderCollection.find({ userId: req.session.user }).sort({_id:-1
+      
+    })
 
     const orderPerPage = 8;
     const totalPages = Math.ceil(orderData.length / orderPerPage);
-    const pageNo = parseInt(req.query.pageNo)  || 1;
+    const pageNo = parseInt(req.query.pageNo) || 1;
     const start = (pageNo - 1) * orderPerPage;
     const end = start + orderPerPage;
 
     const paginatedOrders = orderData.slice(start, end);
-
-    res.render("userPage/myOrders", { orderData:paginatedOrders, totalPages ,currentPage: pageNo});
+    // paginatedOrders.reverse();
+    res.render("userPage/myOrders", {
+      orderData: paginatedOrders,
+      totalPages,
+      currentPage: pageNo,
+    });
   } catch (error) {
     console.log(error.mesaage);
     next(new AppError("Something went wrong OrderManagmentPage", 500));
   }
 };
 
-const userOrderCancelled = async (req, res,next) => {
+const userOrderCancelled = async (req, res, next) => {
   try {
     let paymentTypeCheck = await orderCollection.findOne({ _id: req.query.id });
 
     let payment = await orderCollection.find({ _id: req.query.id });
 
     let orderData = await orderCollection.findById({ _id: req.query.id });
-
 
     req.session.statusCancel = req.query.id;
 
@@ -95,7 +98,7 @@ const userOrderCancelled = async (req, res,next) => {
   }
 };
 
-const returnUser = async (req, res,next) => {
+const returnUser = async (req, res, next) => {
   try {
     let paymentTypeCheck = await orderCollection.findOne({ _id: req.query.id });
 
@@ -133,7 +136,6 @@ const returnUser = async (req, res,next) => {
         }
       );
     } else if (paymentTypeCheck.paymentType === "Cash on delivery") {
-
       await walletColletion.updateOne(
         { userId: req.session.user._id },
 
@@ -151,40 +153,36 @@ const returnUser = async (req, res,next) => {
       );
     }
 
-
     res.send({ return: true });
   } catch (error) {
     next(new AppError("Something went wrong OrderManagmentPage", 500));
   }
 };
 
-const orderDetailsSingleUser = async (req, res,next) => {
+const orderDetailsSingleUser = async (req, res, next) => {
   try {
     let orderId = req.query.id;
 
     const orderData = await orderCollection
       .findOne({ _id: orderId })
       .populate("addressChosen");
-     
+
     res.render("userPage/myOrderSingleOrder", { orderData });
   } catch (error) {
     next(new AppError("Something went wrong OrderManagmentPage", 500));
   }
 };
 
-const singleProductCancel = async (req, res,next) => {
+const singleProductCancel = async (req, res, next) => {
   try {
     const orderNumber = parseInt(req.query.orderNumber);
     const productId = req.query.productId;
     const productQuantity = req.body.productQuantity;
     const orderId = req.query.orderId;
     const indexId = parseInt(req.query.indexId);
-    const productPrice = req.body.productPrice
+    const productPrice = req.body.productPrice;
 
-   
-    let sum = 0
-
-   
+    let sum = 0;
 
     let orderData = await orderCollection.findOne({ _id: orderId });
 
@@ -206,23 +204,19 @@ const singleProductCancel = async (req, res,next) => {
     );
 
     await walletColletion.updateOne(
+      { userId: req.session.user._id },
+      {
+        $inc: { walletBalance: productPrice },
 
-      {userId:req.session.user._id},
-      {$inc:{walletBalance:productPrice},
-
-      $push:{walletTransaction:{
-
-        transactionDate: Date.now(),
-        transactionAmount: productPrice,
-        transactionType: "Credit on Cancel order"
-
-      }}
-    
-    
-    },
-    
-    )
-    
+        $push: {
+          walletTransaction: {
+            transactionDate: Date.now(),
+            transactionAmount: productPrice,
+            transactionType: "Credit on Cancel order",
+          },
+        },
+      }
+    );
 
     const updatedOrderData = await orderCollection.findOne({ _id: orderId });
 
@@ -245,34 +239,32 @@ const singleProductCancel = async (req, res,next) => {
   }
 };
 
+const downloadInvoice = async (req, res, next) => {
+  try {
+    console.log("Entering the download invoice page");
+    let orderDetails = await orderCollection
+      .findOne({ _id: req.params.id })
+      .populate("addressChosen");
 
-const downloadInvoice = async(req,res,next)=>{
+    console.log("Order details:", orderDetails);
 
-     try {
-      console.log("Entering the download invoice page");
-      let orderDetails = await orderCollection.findOne({ _id: req.params.id }).populate('addressChosen');
+    const stream = res.writeHead(200, {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "attachment;filename=invoice.pdf",
+    });
 
-      console.log("Order details:", orderDetails);
+    generateVoice(
+      (chunk) => stream.write(chunk),
+      () => stream.end(),
+      orderDetails
+    );
 
-      const stream = res.writeHead(200, {
-          "Content-Type": "application/pdf",
-          "Content-Disposition": "attachment;filename=invoice.pdf",
-      });
-
-      generateVoice(
-          (chunk) => stream.write(chunk),
-          () => stream.end(),
-          orderDetails
-      );
-
-      console.log("Generated invoice");
-      
-     } catch (error) {
-         console.log(error.message);
-         next(new AppError("Something went wrong OrderManagmentPage", 500));
-
-     }
-}
+    console.log("Generated invoice");
+  } catch (error) {
+    console.log(error.message);
+    next(new AppError("Something went wrong OrderManagmentPage", 500));
+  }
+};
 
 module.exports = {
   myOrdersPage,
@@ -280,5 +272,5 @@ module.exports = {
   returnUser,
   orderDetailsSingleUser,
   singleProductCancel,
-  downloadInvoice
+  downloadInvoice,
 };

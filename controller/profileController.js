@@ -5,8 +5,8 @@ const { logOutting } = require("./userController.js");
 const bcrypt = require("bcrypt");
 const cartCollecction = require("../models/cartModel.js");
 const walletCollection = require("../models/walletModel.js");
-const AppError = require('../middleware/errorHandling.js')
-const profilePage = async (req, res,next) => {
+const AppError = require("../middleware/errorHandling.js");
+const profilePage = async (req, res, next) => {
   try {
     const userData = await userCollection.findOne({ _id: req.session?.user });
     const referalCode = userData?.referalCode;
@@ -29,7 +29,7 @@ const profilePage = async (req, res,next) => {
   }
 };
 
-const addAddressPage = async (req, res,next) => {
+const addAddressPage = async (req, res, next) => {
   try {
     res.render("userPage/addAdress");
   } catch (error) {
@@ -37,7 +37,7 @@ const addAddressPage = async (req, res,next) => {
   }
 };
 
-const newAddress = async (req, res,next) => {
+const newAddress = async (req, res, next) => {
   try {
     const ID = req.session?.user._id;
 
@@ -68,7 +68,7 @@ const newAddress = async (req, res,next) => {
   }
 };
 
-const myAddressPage = async (req, res,next) => {
+const myAddressPage = async (req, res, next) => {
   try {
     const userData = await userCollection.find({
       _id: req?.session?.user?._id,
@@ -84,7 +84,7 @@ const myAddressPage = async (req, res,next) => {
   }
 };
 
-const editAddressPage = async (req, res,next) => {
+const editAddressPage = async (req, res, next) => {
   try {
     const addressData = await profileCollection.findOne({ _id: req.params.id });
 
@@ -94,7 +94,7 @@ const editAddressPage = async (req, res,next) => {
   }
 };
 
-const editAndUpdate = async (req, res,next) => {
+const editAndUpdate = async (req, res, next) => {
   try {
     const addressExsist = await profileCollection.findOne({
       _id: req.params.id,
@@ -125,7 +125,7 @@ const editAndUpdate = async (req, res,next) => {
   }
 };
 
-const deletingAddress = async (req, res,next) => {
+const deletingAddress = async (req, res, next) => {
   try {
     const ID = req.query.id;
 
@@ -137,7 +137,7 @@ const deletingAddress = async (req, res,next) => {
   }
 };
 
-const editPageProfile = async (req, res,next) => {
+const editPageProfile = async (req, res, next) => {
   try {
     const userData = req.session?.user;
 
@@ -149,7 +149,7 @@ const editPageProfile = async (req, res,next) => {
   }
 };
 
-const editProfileUser = async (req, res,next) => {
+const editProfileUser = async (req, res, next) => {
   try {
     const { name, phone, email, userId } = req.body;
 
@@ -165,7 +165,7 @@ const editProfileUser = async (req, res,next) => {
   }
 };
 
-const changePasswordGetPage = async (req, res,next) => {
+const changePasswordGetPage = async (req, res, next) => {
   try {
     res.render("userPage/changePassword");
   } catch (error) {
@@ -173,7 +173,7 @@ const changePasswordGetPage = async (req, res,next) => {
   }
 };
 
-const passwordUpdating = async (req, res,next) => {
+const passwordUpdating = async (req, res, next) => {
   try {
     const bcryptPassword = bcrypt.hashSync(req.body.confirmPassword, 10);
 

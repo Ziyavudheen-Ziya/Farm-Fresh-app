@@ -5,9 +5,9 @@ const { start } = require("repl");
 const PDFDocument = require("pdfkit");
 const ExcelJS = require("exceljs");
 const formatDate = require("../helper/formmerDataHelper");
-const AppError = require('../middleware/errorHandling')
+const AppError = require("../middleware/errorHandling");
 
-const salesGetPage = async (req, res,next) => {
+const salesGetPage = async (req, res, next) => {
   try {
     let salesData = [];
     let grandTotal = 0;
@@ -36,7 +36,7 @@ const salesGetPage = async (req, res,next) => {
         0
       );
     }
-    req.session.grandTotal = grandTotal
+    req.session.grandTotal = grandTotal;
 
     salesData.reverse();
 
@@ -69,7 +69,13 @@ const salesReportFiltered = async (req, res, next) => {
       .exec();
 
     salesDataFiltered.forEach((sale) => {
-      sale.orderDateFormatted = sale.orderDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '-');
+      sale.orderDateFormatted = sale.orderDate
+        .toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        })
+        .replace(/\//g, "-");
     });
 
     req.session.admin = {
@@ -86,8 +92,7 @@ const salesReportFiltered = async (req, res, next) => {
   }
 };
 
-
-const salesReportFilteredLong = async (req, res,next) => {
+const salesReportFilteredLong = async (req, res, next) => {
   try {
     const filterOption = req.body.filterOption;
 
@@ -139,7 +144,7 @@ const salesReportFilteredLong = async (req, res,next) => {
   }
 };
 
-const generatingPdf = async (req, res,next) => {
+const generatingPdf = async (req, res, next) => {
   try {
     const salesData = await orderCollection
       .find({})
@@ -169,7 +174,10 @@ const generatingPdf = async (req, res,next) => {
 
     doc
       .fontSize(20)
-      .text("Sales Report Farm Fresh",110,57, { align: "center", underline: true });
+      .text("Sales Report Farm Fresh", 110, 57, {
+        align: "center",
+        underline: true,
+      });
     doc.moveDown();
 
     doc
@@ -178,23 +186,22 @@ const generatingPdf = async (req, res,next) => {
     doc.fontSize(20).text(`Total Revenue:${grandTotal}`, { align: "left" });
     doc.moveDown();
 
-
-
-
     const drawRow = (y, order, index) => {
-      doc.lineWidth(0.5)
-        .rect(30, y, 550, 80)
-        .stroke();
+      doc.lineWidth(0.5).rect(30, y, 550, 80).stroke();
 
       doc.fontSize(15).text(`Order#: ${index + 1}`, 40, y + 5);
       doc.fontSize(12).text(`Order No: ${order.orderNumber}`, 40, y + 25);
-      doc.text(`Date: ${new Date(order.orderDate).toLocaleDateString()}`, 250, y + 25);
+      doc.text(
+        `Date: ${new Date(order.orderDate).toLocaleDateString()}`,
+        250,
+        y + 25
+      );
       doc.text(`Total Cost: ₹${order.grandTotalCost}`, 40, y + 40);
       doc.text(`Payment Method: ${order.paymentType}`, 250, y + 40);
       doc.text(`Payment Status: ${order.orderStatus}`, 40, y + 55);
 
-      doc.text('Products:', 250, y + 55);
-      let productText = '';
+      doc.text("Products:", 250, y + 55);
+      let productText = "";
       order.cartData.forEach((product) => {
         productText += ` - ${product.productId.productName}: ${product.productQuantity}\n`;
       });
@@ -217,7 +224,7 @@ const generatingPdf = async (req, res,next) => {
   }
 };
 
-const salesReportSheet = async (req, res,next) => {
+const salesReportSheet = async (req, res, next) => {
   try {
     const salesData = await orderCollection
       .find({})
