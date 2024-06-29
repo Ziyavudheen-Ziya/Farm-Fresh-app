@@ -12,9 +12,9 @@ const categoryOfferCollection = require('../controller/categoryOfferController.j
 const salesController = require('../controller/adminsalesReportController.js')
 const adminIsActive = require('../middleware/adminAuth.js')
 adminRouter.get("/admin", adminController.adminLoginPage);
+adminRouter.post("/dashbord", adminController.admincheck);
 adminRouter.get('/dashboardGetPage',adminController.dashboardGetPage)
 adminRouter.get('/dashboardData',adminController.dashboardData)
-adminRouter.post("/dashbord", adminController.admincheck);
 
 adminRouter.get("/userdetails", adminController.userdetails);
 adminRouter.get("/blockUser", adminController.blockUser);
