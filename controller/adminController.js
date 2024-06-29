@@ -30,7 +30,7 @@ const adminLoginPage = async (req, res, next) => {
 
 const dashboardGetPage = async (req, res) => {
   try {
-
+      console.log('req entered dashboard')
       res.render("adminPage/adminDashboard");
 
     
