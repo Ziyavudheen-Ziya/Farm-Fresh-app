@@ -48,7 +48,7 @@ const admincheck = async (req, res, next) => {
     if (adminMail === req.body.email && adminPass === req.body.password) {
       
 
-      res.redirect("/dashboardGetPage");
+      res.render("adminPage/adminDashboard");
     } else {
       
       res.redirect("/admin");
