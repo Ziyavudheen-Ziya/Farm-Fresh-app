@@ -28,7 +28,7 @@ const adminLoginPage = async (req, res, next) => {
 };
 
 
-const dashboardGetPage = async (req, res) => {
+const dashboardGetPage = async (req, res,next) => {
   try {
       console.log('req entered dashboard')
       res.status(200).render("adminPage/adminDashboard");
@@ -36,6 +36,8 @@ const dashboardGetPage = async (req, res) => {
     
   } catch (error) {
     console.log(error.message);
+    next(new AppError("Something went wrong adminPage", 500));
+
   }
 };
 
