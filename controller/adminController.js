@@ -30,9 +30,11 @@ const adminLoginPage = async (req, res, next) => {
 
 const dashboardGetPage = async (req, res, next) => {
   try {
-   
+  
 
       res.render("adminPage/adminDashboard");
+
+
 
     
   } catch (error) {
