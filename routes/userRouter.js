@@ -45,7 +45,7 @@ router.get("/addAddress",isActive, profileController.addAddressPage);
 router.post("/addNewAddress",isActive, profileController.newAddress);
 router.get("/myAddress",isActive, profileController.myAddressPage);
 router.get("/editAddressPage/:id",isActive, profileController.editAddressPage);
-router.post("/editAddress/:id",isActive, profileController.editAndUpdate);
+router.put("/editAddress/:id",isActive, profileController.editAndUpdate);
 router.delete("/deleteAddress", profileController.deletingAddress);
 router.get('/changePassword',isActive,profileController.changePasswordGetPage)
 router.post('/passwordUpdate',isActive,profileController.passwordUpdating)

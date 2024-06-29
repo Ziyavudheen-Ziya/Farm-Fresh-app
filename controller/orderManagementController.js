@@ -244,7 +244,9 @@ const downloadInvoice = async (req, res, next) => {
     console.log("Entering the download invoice page");
     let orderDetails = await orderCollection
       .findOne({ _id: req.params.id })
-      .populate("addressChosen");
+      .populate("addressChosen")
+      .populate('coupanApplied')
+      
 
     console.log("Order details:", orderDetails);
 

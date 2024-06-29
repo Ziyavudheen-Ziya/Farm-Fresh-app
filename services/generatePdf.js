@@ -34,6 +34,8 @@ function generateCustomerInformation(doc, orderData) {
 }
 
 function generateBody(doc, orderData) {
+
+     const coupanId =  orderData.coupanApplied
     generateHr(doc, 90);
 
     doc.fontSize(15).text("Invoice", 210, 170);
@@ -60,7 +62,7 @@ function generateBody(doc, orderData) {
 
     generateHr(doc, doc.y);
     doc.moveDown();
-
+     doc.fontSize(14).text(`Discount Amount:${coupanId?.coupanAmount||0}`)
     doc.fontSize(14).text(`Total Price: Rs.${orderData.grandTotalCost}`, 350, doc.y);
 }
 

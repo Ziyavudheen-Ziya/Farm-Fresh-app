@@ -144,7 +144,7 @@
             
       console.log(formData);
       let response = await fetch(`/editAddress/<%=addressData._id%>`, {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });

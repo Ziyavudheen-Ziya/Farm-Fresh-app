@@ -45,6 +45,8 @@ const loginSignupPage = async (req, res, next) => {
       res.redirect("/");
     }
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong User", 500));
   }
 };
@@ -84,6 +86,8 @@ const userSave = async (req, res, next) => {
       res.redirect("/otp");
     }
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong User", 500));
   }
 };
@@ -122,6 +126,8 @@ const login = async (req, res, next) => {
       res.redirect("/loginpage");
     }
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong User", 500));
   }
 };
@@ -138,6 +144,8 @@ const otpPage = async (req, res, next) => {
 
     console.log("get this page");
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrongUser", 500));
   }
 };
@@ -175,6 +183,7 @@ const veryFyingotp = async (req, res, next) => {
       res.send({ otpInvalid: true });
     }
   } catch (error) {
+    console.log(error.message);
     next(new AppError("Something went wrong User", 500));
   }
 };
@@ -273,6 +282,8 @@ const productPage = async (req, res, next) => {
       res.redirect("/loginpage");
     }
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong User", 500));
   }
 };
@@ -289,6 +300,8 @@ const productDetail = async (req, res, next) => {
 
     res.render("userPage/productDetails", { singleData });
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong User", 500));
   }
 };
@@ -298,6 +311,8 @@ const logOutting = async (req, res) => {
     req.session.user = false;
     res.redirect("/");
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong User", 500));
   }
 };
@@ -330,6 +345,8 @@ const sortingProduct = async (req, res, next) => {
 
     res.send({ success: true });
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong User", 500));
   }
 };
@@ -338,6 +355,8 @@ const forgotPasswordGetPage = async (req, res, next) => {
   try {
     res.render("userPage/forgotPassword");
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong User", 500));
   }
 };
@@ -346,6 +365,8 @@ const forgotOtpGrtPage = async (req, res, next) => {
   try {
     res.render("userPage/fogotPasswordOtp");
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong User", 500));
   }
 };
@@ -376,6 +397,8 @@ const updatingForgotPassword = async (req, res, next) => {
       res.send({ wrong: true });
     }
   } catch (error) {
+    console.log(error.message);
+
     next(new AppError("Something went wrong User", 500));
   }
 };

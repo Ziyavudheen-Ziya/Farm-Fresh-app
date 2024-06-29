@@ -10,10 +10,15 @@ let adminPass = process.env.Admin_Pass;
 
 const adminLoginPage = async (req, res, next) => {
   try {
-    if (req.session.admin) {
-      res.render("adminPage/adminLogin");
+
+    let adminLogged = req.session.admin
+    if (adminLogged==true) {
+
+      res.render("adminPage/adminDashboard");
+
     } else {
       res.render("adminPage/adminLogin");
+
     }
   } catch (error) {
     console.log(error.message);
@@ -22,24 +27,34 @@ const adminLoginPage = async (req, res, next) => {
   }
 };
 
+
 const dashboardGetPage = async (req, res, next) => {
   try {
-    res.render("adminPage/adminDashboard");
+    if(req.session.admin==true){
+
+      res.render("adminPage/adminDashboard");
+
+    }else{
+
+       res.redirect('/admin')
+    }
   } catch (error) {
     console.log(error.message);
     next(new AppError("Something went wrong adminPage", 500));
   }
 };
 
+
+
 const admincheck = async (req, res, next) => {
   try {
-    console.log(adminMail);
-    console.log(adminPass);
-
+   
     if (adminMail === req.body.email && adminPass === req.body.password) {
-      req.session.admin = true;
-      res.render("adminPage/adminDashboard");
+      req.session.admin = true
+
+      res.redirect("/dashboardGetPage");
     } else {
+      req.session.admin  =false
       res.redirect("/admin");
     }
   } catch (error) {
@@ -100,7 +115,7 @@ const unBlockUser = async (req, res, next) => {
 
 const logoutPage = async (req, res, next) => {
   try {
-    req.session.admin = false;
+    req.session.admin = false
     res.redirect("/admin");
   } catch (error) {
     console.log(error.message);
@@ -179,6 +194,7 @@ const dashboardData = async (req, res, next) => {
       shipping,
     };
     res.json(data);
+
   } catch (error) {
     console.log(error.message);
     next(new AppError("Something went wrong on adminPage", 500));

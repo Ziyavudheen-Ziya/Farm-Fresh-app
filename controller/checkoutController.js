@@ -14,11 +14,11 @@ const Razorpay = require("razorpay");
 const checkOutPage = async (req, res, next) => {
   try {
     let grandTotal = 0;
-
+     req.session.grandTotal = grandTotal
     const adrressData = await profileCollectionn.find({
       user_id: req.session?.user,
     });
-
+    
     const cartData = await cartCollection
       .find({ userId: req.session?.user })
       .populate("productId");
@@ -26,13 +26,14 @@ const checkOutPage = async (req, res, next) => {
     cartData.forEach((value) => {
       grandTotal += value.totalCostProduct;
     });
+     
 
+    
     const cartChecking = await cartCollection
       .find({ userId: req.session?.user })
       .populate("productId");
 
     const coupanData = await coupanCollection.find();
-
     if (cartChecking == "") {
       res.redirect("/cartPage");
     } else {
@@ -124,6 +125,7 @@ const checkOutSave = async (req, res, next) => {
         addressChosen: req.body.selectAddressValue,
         cartData: JSON.parse(JSON.stringify(cartData)),
         grandTotalCost: req.body.grandTotalCheckout,
+        coupanApplied: req.session.coupanId || null
       });
 
       newOrder.cartData.forEach((item) => {
@@ -203,6 +205,7 @@ const orderPlacingRazorpay = async (req, res, next) => {
       cartData: userCartData,
       grandTotalCost: grandTotalCheckout,
       paymentId: razorpayId,
+      coupanApplied:req.session.coupanId || null
     };
 
     // req.session.orderNUmber = orderNumber;
@@ -244,6 +247,7 @@ const walletPayment = async (req, res, next) => {
           addressChosen: req.body.selectAddressValue,
           cartData: JSON.parse(JSON.stringify(cartData)),
           grandTotalCost: req.body.grandTotalCheckout,
+          coupanApplied:req.session.coupanId || null
         });
 
         let successedOrder = await newOrder.save();
@@ -361,23 +365,19 @@ const stockDecreasing = async (req, res, next) => {
 };
 const coupanAdding = async (req, res, next) => {
   try {
-    let total = parseFloat(req.query.grandTotal);
+    // let total = parseFloat(req.query.grandTotal);
+
+   let total = req.session.grandTotal
     let coupanId = req.query.id;
 
-    console.log("Grand total coming:", total);
-    console.log("Coupon ID:", coupanId);
-
-    // Fetch the coupon details using the coupon ID
     let coupon = await coupanCollection.findOne({ _id: coupanId });
 
-    // Check if the coupon exists
     if (!coupon) {
       return res.status(404).send({ message: "Coupon not found" });
     }
 
     let coupanAmount = coupon.coupanAmount;
-
-    console.log("Coupon amount:", coupanAmount);
+     let totalValue = total - coupanAmount
 
     let coupanAlreadyUsed = await coupanCollection.findOne({
       _id: coupanId,
@@ -387,7 +387,7 @@ const coupanAdding = async (req, res, next) => {
     if (!coupanAlreadyUsed) {
       await cartCollection.updateOne(
         { userId: req.session.user._id },
-        { $set: { totalCostProduct: total - coupanAmount } }
+        { $inc: { totalCostProduct:totalValue  } }
       );
 
       await coupanCollection.updateOne(
@@ -395,11 +395,14 @@ const coupanAdding = async (req, res, next) => {
         { $push: { usedUsers: req.session.user._id } }
       );
 
-      await orderCollection.updateOne(
-        { _id: req.session.orderDetails },
-        { $inc: { grandTotalCost: -coupanAmount } }
-      );
+       req.session.coupanId = coupanId
+      // await orderCollection.updateOne(
+      //   { _id: req.session.orderDetails },
+        
+      //   { $inc: { grandTotalCost: req.session.grandTotal } }
+      // );
 
+      
       res.send({ success: true });
     } else {
       res.send({ alreadyUsed: true });

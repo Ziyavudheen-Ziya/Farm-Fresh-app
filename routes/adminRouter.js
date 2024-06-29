@@ -24,7 +24,7 @@ adminRouter.get('/adminlogout',adminController.logoutPage)
 //    =================Category Controller================
 adminRouter.get("/category",adminIsActive, categoryController.category);
 adminRouter.post("/addCategory",adminIsActive, categoryController.addcategory);
-adminRouter.post("/editCategory", adminIsActive,categoryController.editCategory);
+adminRouter.put("/editCategory", adminIsActive,categoryController.editCategory);
 adminRouter.get("/listCategory",adminIsActive, categoryController.listCategory);
 adminRouter.get("/unListCategory",adminIsActive, categoryController.unListCategory);
 
@@ -35,7 +35,7 @@ adminRouter.post("/addProducts",adminIsActive, uploads.any(), productController.
 adminRouter.get("/blockProduct",adminIsActive, productController.blockProduct);
 adminRouter.get("/unBlockProduct",adminIsActive, productController.unBlockProduct);
 adminRouter.get("/editPage/:id", adminIsActive,productController.editPage);
-adminRouter.post(
+adminRouter.put(
   "/editProduct/:id",
   uploads.any(),
   productController.editProduct
@@ -57,7 +57,7 @@ adminRouter.get('/viewDetails:id',adminIsActive,orderMangement.viewDetails)
 
 adminRouter.get('/coupan',coupanController.coupanGetPage)
 adminRouter.post('/addCoupan',coupanController.coupanAdding)
-adminRouter.post('/editCoupan',coupanController.editCoupan)
+adminRouter.put('/editCoupan',coupanController.editCoupan)
 adminRouter.delete('/deleteCoupan',coupanController.deleteCoupan)
 
 
@@ -71,7 +71,7 @@ adminRouter.post('/productOfferEdit',prodcutOfferController.prodcutEditOffer)
 // ===========================Category OfferProduct===========================//
 adminRouter.get('/categoryOffer',categoryOfferCollection.categoryOfferGetPage)
 adminRouter.post('/categoryOfferAdding',categoryOfferCollection.categoryAdding)
-adminRouter.post('/editCategoryOffer',categoryOfferCollection.categoryOfferEdited)
+adminRouter.put('/editCategoryOffer',categoryOfferCollection.categoryOfferEdited)
 
 // =========================Sales Report===========================//
 adminRouter.get('/salesreport',salesController.salesGetPage)

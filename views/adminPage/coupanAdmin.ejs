@@ -372,7 +372,7 @@
                                  let response = await fetch(`/editCoupan?id=${currentCouponId}`,{
             
                                         
-                                        method:"POST",
+                                        method:"PUT",
                                         headers:{'Content-Type':'application/json'},
                                         body:JSON.stringify(formData)
                                  })
