@@ -10,7 +10,8 @@ const prodcutOfferController = require('../controller/productOfferManagment.js')
 const categoryOfferCollection = require('../controller/categoryOfferController.js')
 
 const salesController = require('../controller/adminsalesReportController.js')
-const adminIsActive = require('../middleware/adminAuth.js')
+// const adminIsActive = require('../middleware/adminAuth.js')
+
 adminRouter.get("/admin", adminController.adminLoginPage);
 adminRouter.post("/dashbord", adminController.admincheck);
 adminRouter.get('/dashboardGetPage',adminController.dashboardGetPage)
@@ -24,35 +25,35 @@ adminRouter.get("/unBlockUser", adminController.unBlockUser);
 adminRouter.get('/adminlogout',adminController.logoutPage)
 
 //    =================Category Controller================
-adminRouter.get("/category",adminIsActive, categoryController.category);
-adminRouter.post("/addCategory",adminIsActive, categoryController.addcategory);
-adminRouter.put("/editCategory", adminIsActive,categoryController.editCategory);
-adminRouter.get("/listCategory",adminIsActive, categoryController.listCategory);
-adminRouter.get("/unListCategory",adminIsActive, categoryController.unListCategory);
+adminRouter.get("/category", categoryController.category);
+adminRouter.post("/addCategory", categoryController.addcategory);
+adminRouter.put("/editCategory", categoryController.editCategory);
+adminRouter.get("/listCategory",categoryController.listCategory);
+adminRouter.get("/unListCategory", categoryController.unListCategory);
 
 // ==================Product Controller==============
-adminRouter.get("/productsdetails",adminIsActive, productController.productPage);
-adminRouter.get("/addProduct",adminIsActive, productController.addProductPage);
-adminRouter.post("/addProducts",adminIsActive, uploads.any(), productController.addProduct);
-adminRouter.get("/blockProduct",adminIsActive, productController.blockProduct);
-adminRouter.get("/unBlockProduct",adminIsActive, productController.unBlockProduct);
-adminRouter.get("/editPage/:id", adminIsActive,productController.editPage);
+adminRouter.get("/productsdetails", productController.productPage);
+adminRouter.get("/addProduct", productController.addProductPage);
+adminRouter.post("/addProducts", uploads.any(), productController.addProduct);
+adminRouter.get("/blockProduct", productController.blockProduct);
+adminRouter.get("/unBlockProduct", productController.unBlockProduct);
+adminRouter.get("/editPage/:id", productController.editPage);
 adminRouter.put(
   "/editProduct/:id",
   uploads.any(),
   productController.editProduct
 );
-adminRouter.post("/deletepicture",adminIsActive, productController.deleteImg);
-adminRouter.delete("/deleteProduct",adminIsActive, productController.deleteProduct);
+adminRouter.post("/deletepicture", productController.deleteImg);
+adminRouter.delete("/deleteProduct", productController.deleteProduct);
 
 //=========================ORDER MANAGMENT========================//
-adminRouter.get("/ordersDetails",adminIsActive, orderMangement.orderManagmentPage);
-adminRouter.get("/pending",adminIsActive, orderMangement.pending);
-adminRouter.get("/shipped",adminIsActive, orderMangement.shipped);
-adminRouter.get("/delivered",adminIsActive, orderMangement.delivered);
-adminRouter.get("/returnDeliver",adminIsActive, orderMangement.returnDeliver);
-adminRouter.get("/cancelled",adminIsActive, orderMangement.cancelled);
-adminRouter.get('/viewDetails:id',adminIsActive,orderMangement.viewDetails)
+adminRouter.get("/ordersDetails", orderMangement.orderManagmentPage);
+adminRouter.get("/pending", orderMangement.pending);
+adminRouter.get("/shipped", orderMangement.shipped);
+adminRouter.get("/delivered", orderMangement.delivered);
+adminRouter.get("/returnDeliver", orderMangement.returnDeliver);
+adminRouter.get("/cancelled", orderMangement.cancelled);
+adminRouter.get('/viewDetails:id',orderMangement.viewDetails)
 
 
 // ==================================Coupan==================================//
