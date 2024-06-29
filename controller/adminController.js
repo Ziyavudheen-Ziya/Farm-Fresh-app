@@ -12,14 +12,14 @@ const adminLoginPage = async (req, res, next) => {
   try {
 
    
-    if (req.session.admin) {
+   
 
-      res.redirect("/dashboardGetPage");
+     
 
-    } else {
+   
       res.render("adminPage/adminLogin");
 
-    }
+    
   } catch (error) {
     console.log(error.message);
 
@@ -30,15 +30,8 @@ const adminLoginPage = async (req, res, next) => {
 
 const dashboardGetPage = async (req, res, next) => {
   try {
-   
-  
 
       res.render("adminPage/adminDashboard");
-
-    
-
-
-
 
     
   } catch (error) {
@@ -57,7 +50,7 @@ const admincheck = async (req, res, next) => {
 
       res.redirect("/dashboardGetPage");
     } else {
-      req.session.admin  =false
+      
       res.redirect("/admin");
     }
   } catch (error) {
@@ -118,7 +111,7 @@ const unBlockUser = async (req, res, next) => {
 
 const logoutPage = async (req, res, next) => {
   try {
-    req.session.admin = false
+   
     res.redirect("/admin");
   } catch (error) {
     console.log(error.message);
