@@ -14,7 +14,7 @@ const adminLoginPage = async (req, res, next) => {
    
     if (req.session.admin) {
 
-      res.render("adminPage/adminDashboard");
+      res.redirect("/dashboardGetPage");
 
     } else {
       res.render("adminPage/adminLogin");
@@ -30,14 +30,11 @@ const adminLoginPage = async (req, res, next) => {
 
 const dashboardGetPage = async (req, res, next) => {
   try {
-    if(req.session.admin==true){
+   
 
       res.render("adminPage/adminDashboard");
 
-    }else{
-
-       res.redirect('/admin')
-    }
+    
   } catch (error) {
     console.log(error.message);
     next(new AppError("Something went wrong adminPage", 500));

@@ -19,7 +19,6 @@ const landingPage = async (req, res, next) => {
   try {
     let userLogged = req.session?.user;
 
-    console.log("use logged", userLogged);
 
     if (userLogged) {
       res.render("userPage/landingPage", { userLogged: userLogged });
