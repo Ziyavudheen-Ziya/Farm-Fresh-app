@@ -31,11 +31,11 @@ const adminLoginPage = async (req, res, next) => {
 const dashboardGetPage = async (req, res, next) => {
   try {
    
-    if(req.session.admin){
+  
 
       res.render("adminPage/adminDashboard");
 
-    }
+    
 
 
 
@@ -53,7 +53,7 @@ const admincheck = async (req, res, next) => {
   try {
    
     if (adminMail === req.body.email && adminPass === req.body.password) {
-      req.session.admin = adminMail
+      
 
       res.redirect("/dashboardGetPage");
     } else {
