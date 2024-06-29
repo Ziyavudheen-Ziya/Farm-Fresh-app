@@ -11,8 +11,8 @@ let adminPass = process.env.Admin_Pass;
 const adminLoginPage = async (req, res, next) => {
   try {
 
-    let adminLogged = req.session.admin
-    if (adminLogged==true) {
+   
+    if (req.session.admin) {
 
       res.render("adminPage/adminDashboard");
 
