@@ -2,11 +2,11 @@ const orderCollection = require("../models/orderModel.js");
 const { any } = require("../services/multer.js");
 const userCollection = require("../models/userModel.js");
 const cartCollection = require("../models/cartModel.js");
-const AppError = require("../middleware/errorHandling.js");
+// const AppError = require("../middleware/errorHandling.js");
 const productCollection = require("../models/productModel.js");
 const categoryCollection = require("../models/categoryModel.js");
 
-const orderManagmentPage = async (req, res, next) => {
+const orderManagmentPage = async (req, res) => {
   try {
     const orderData = await orderCollection.find().populate("userId");
 
@@ -15,11 +15,10 @@ const orderManagmentPage = async (req, res, next) => {
     res.render("adminPage/orderedList", { orderData });
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong adminOrderPage", 500));
   }
 };
 
-const pending = async (req, res, next) => {
+const pending = async (req, res) => {
   try {
     let orderId = req.query.id;
 
@@ -40,11 +39,11 @@ const pending = async (req, res, next) => {
       res.send({ pending: true });
     }
   } catch (error) {
-    next(new AppError("Something went wrong adminOrderPage", 500));
+    console.log(error.message);
   }
 };
 
-const shipped = async (req, res, next) => {
+const shipped = async (req, res) => {
   try {
     let orderId = req.query.id;
 
@@ -65,11 +64,12 @@ const shipped = async (req, res, next) => {
       res.send({ shipped: true });
     }
   } catch (error) {
-    next(new AppError("Something went wrong adminOrderPage", 500));
+    console.log(error.message);
+
   }
 };
 
-const delivered = async (req, res, next) => {
+const delivered = async (req, res) => {
   try {
     let orderId = req.query.id;
     let orderData = await orderCollection.findById(orderId);
@@ -116,11 +116,10 @@ const delivered = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong adminOrderPage", 500));
   }
 };
 
-const returnDeliver = async (req, res, next) => {
+const returnDeliver = async (req, res) => {
   try {
     await orderCollection.updateOne(
       { _id: req.query.id },
@@ -133,11 +132,11 @@ const returnDeliver = async (req, res, next) => {
 
     res.send({ returnDeliver: true });
   } catch (error) {
-    next(new AppError("Something went wrong adminOrderPage", 500));
+    console.log(error.message);
   }
 };
 
-const cancelled = async (req, res, next) => {
+const cancelled = async (req, res) => {
   try {
     await orderCollection.updateOne(
       { _id: req.query.id },
@@ -150,11 +149,11 @@ const cancelled = async (req, res, next) => {
 
     res.send({ cancelled: true });
   } catch (error) {
-    next(new AppError("Something went wrong adminOrderPage", 500));
+    console.log(error.message);
   }
 };
 
-const viewDetails = async (req, res, next) => {
+const viewDetails = async (req, res) => {
   try {
     let orderNumber = req.session.orderNUmber;
 
@@ -164,7 +163,7 @@ const viewDetails = async (req, res, next) => {
 
     res.render("adminPage/viewDetails", { orderData });
   } catch (error) {
-    next(new AppError("Something went wrong adminOrderPage", 500));
+    console.log(error.message);
   }
 };
 

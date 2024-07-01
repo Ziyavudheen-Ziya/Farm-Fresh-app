@@ -5,10 +5,10 @@ const walletColletion = require("../models/walletModel");
 const userCollecction = require("../models/userModel");
 const productCollection = require("../models/productModel");
 const mongoose = require("mongoose");
-const AppError = require("../middleware/errorHandling");
+// const AppError = require("../middleware/errorHandling");
 const { generateVoice } = require("../services/generatePdf");
 
-const myOrdersPage = async (req, res, next) => {
+const myOrdersPage = async (req, res) => {
   try {
     let orderData = await orderCollection.find({ userId: req.session.user }).sort({_id:-1
       
@@ -29,11 +29,10 @@ const myOrdersPage = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error.mesaage);
-    next(new AppError("Something went wrong OrderManagmentPage", 500));
   }
 };
 
-const userOrderCancelled = async (req, res, next) => {
+const userOrderCancelled = async (req, res) => {
   try {
     let paymentTypeCheck = await orderCollection.findOne({ _id: req.query.id });
 
@@ -94,11 +93,11 @@ const userOrderCancelled = async (req, res, next) => {
 
     res.send({ cancelled: true });
   } catch (error) {
-    next(new AppError("Something went wrong", 500));
+    console.log(error.message);
   }
 };
 
-const returnUser = async (req, res, next) => {
+const returnUser = async (req, res) => {
   try {
     let paymentTypeCheck = await orderCollection.findOne({ _id: req.query.id });
 
@@ -155,11 +154,11 @@ const returnUser = async (req, res, next) => {
 
     res.send({ return: true });
   } catch (error) {
-    next(new AppError("Something went wrong OrderManagmentPage", 500));
+    console.log(error.message);
   }
 };
 
-const orderDetailsSingleUser = async (req, res, next) => {
+const orderDetailsSingleUser = async (req, res) => {
   try {
     let orderId = req.query.id;
 
@@ -235,11 +234,11 @@ const singleProductCancel = async (req, res, next) => {
 
     res.send({ success: true });
   } catch (error) {
-    next(new AppError("Something went wrong OrderManagmentPage", 500));
+    console.log(error.message);
   }
 };
 
-const downloadInvoice = async (req, res, next) => {
+const downloadInvoice = async (req, res) => {
   try {
     console.log("Entering the download invoice page");
     let orderDetails = await orderCollection
@@ -264,7 +263,7 @@ const downloadInvoice = async (req, res, next) => {
     console.log("Generated invoice");
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong OrderManagmentPage", 500));
+    console.log(error.message);
   }
 };
 

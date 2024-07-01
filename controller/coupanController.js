@@ -1,7 +1,7 @@
 const { _makeLong } = require("path");
 const coupanCollection = require("../models/coupanModel");
-const AppError = require("../middleware/errorHandling");
-const coupanGetPage = async (req, res, next) => {
+// const AppError = require("../middleware/errorHandling");
+const coupanGetPage = async (req, res) => {
   try {
     let coupanData = await coupanCollection.find();
 
@@ -15,11 +15,12 @@ const coupanGetPage = async (req, res, next) => {
 
     res.render("adminPage/coupanAdmin", { coupanData, totalPages });
   } catch (error) {
-    next(new AppError("Something went wrong CoupanPage", 500));
+    console.log(error.message);
+
   }
 };
 
-const coupanAdding = async (req, res, next) => {
+const coupanAdding = async (req, res) => {
   try {
     let coupanExsist = await coupanCollection.findOne({
       coupanCode: req.body.couponCode,
@@ -41,11 +42,11 @@ const coupanAdding = async (req, res, next) => {
       res.send({ alreadyExsist: true });
     }
   } catch (error) {
-    next(new AppError("Something went wrong CoupanPage", 500));
+    console.log(error.message);
   }
 };
 
-const editCoupan = async (req, res, next) => {
+const editCoupan = async (req, res) => {
   try {
     const coupanCodeExsisit = await coupanCollection.findOne({
       _id: req.query.id,
@@ -79,7 +80,7 @@ const editCoupan = async (req, res, next) => {
       res.send({ coupanIsNotAVialable: true });
     }
   } catch (error) {
-    next(new AppError("Something went wrong CoupanPage", 500));
+    console.log(error.message);
   }
 };
 
@@ -96,13 +97,13 @@ const coupanRemoving = async () => {
   }
 };
 
-const deleteCoupan = async (req, res, next) => {
+const deleteCoupan = async (req, res) => {
   try {
     await coupanCollection.deleteOne({ _id: req.query.id });
 
     res.send({ deleted: true });
   } catch (error) {
-    next(new AppError("Something went wrong CoupanPage", 500));
+    console.log(error.message);
   }
 };
 module.exports = {

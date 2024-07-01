@@ -5,8 +5,9 @@ const session = require('express-session')
 require('dotenv').config()
 require('./config/dbconnect.js')
 require('./middleware/goggleAuth.js')
-const nocache = require('nocache')
 const passport = require('passport')
+
+const nocache = require('nocache')
 
 
 app.use((req, res, next) => {
@@ -42,11 +43,11 @@ const adminRouter = require('./routes/adminRouter.js')
 app.use(adminRouter)
 
 
-app.use((err,req,res,next)=>{
-      const statusCode = err.satusCode || 500
-      const status = err.status || 'error';
-      res.status(statusCode).render('userPage/error',{statusCode:status,message:err.message})
-})
+// app.use((err,req,res,next)=>{
+//       const statusCode = err.satusCode || 500
+//       const status = err.status || 'error';
+//       res.status(statusCode).render('userPage/error',{statusCode:status,message:err.message})
+// })
 
 app.get('*',function(req,res){
 

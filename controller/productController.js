@@ -3,8 +3,8 @@ const categoryCollection = require("../models/categoryModel.js");
 const { exists } = require("../models/userModel.js");
 const { errorMonitor } = require("nodemailer/lib/xoauth2/index.js");
 const cartCollecction = require("../models/categoryModel.js");
-const AppError = require("../middleware/errorHandling.js");
-const productPage = async (req, res, next) => {
+// const AppError = require("../middleware/errorHandling.js");
+const productPage = async (req, res) => {
   try {
     const orderPerPage = 8;
     const pageNo = parseInt(req.query.pageNo) || 1;
@@ -24,7 +24,6 @@ const productPage = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong on ProductPage", 500));
   }
 };
 
@@ -35,11 +34,10 @@ const addProductPage = async (req, res) => {
     res.render("adminPage/addProduct", { categoryData });
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong ProductPage", 500));
   }
 };
 
-const addProduct = async (req, res, next) => {
+const addProduct = async (req, res) => {
   try {
     let imgFiles = [];
     let parentCategoryParts = req.body.parentCategory.split(","); // Split categoryId and categoryName
@@ -96,11 +94,10 @@ const blockProduct = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong ProductPage", 500));
   }
 };
 
-const unBlockProduct = async (req, res, next) => {
+const unBlockProduct = async (req, res) => {
   try {
     await productCollection.updateOne(
       { productName: req.query.id },
@@ -110,11 +107,10 @@ const unBlockProduct = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong ProductPage", 500));
   }
 };
 
-const editPage = async (req, res, next) => {
+const editPage = async (req, res) => {
   try {
     console.log(`vanna vanilla ${req.params.id}`);
 
@@ -130,10 +126,9 @@ const editPage = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong ProductPage", 500));
   }
 };
-const editProduct = async (req, res, next) => {
+const editProduct = async (req, res) => {
   try {
     let imgFiles = [];
 
@@ -186,11 +181,10 @@ const editProduct = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong ProductPage", 500));
   }
 };
 
-const deleteProduct = async (req, res, next) => {
+const deleteProduct = async (req, res) => {
   try {
     const id = req.query.id;
 
@@ -199,10 +193,9 @@ const deleteProduct = async (req, res, next) => {
     res.send({ deleted: true });
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong ProductPage", 500));
   }
 };
-const deleteImg = async (req, res, next) => {
+const deleteImg = async (req, res) => {
   try {
     await productCollection.updateOne(
       { _id: req.query.productId },
@@ -212,7 +205,6 @@ const deleteImg = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong ProductPage", 500));
   }
 };
 

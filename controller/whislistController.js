@@ -1,8 +1,8 @@
 const wishlistCollection = require("../models/wishlistModel");
 const productCollection = require("../models/productModel");
 const cartCollection = require("../models/cartModel");
-const AppError = require("../middleware/errorHandling");
-const wishlistGetPAge = async (req, res, next) => {
+// const AppError = require("../middleware/errorHandling");
+const wishlistGetPAge = async (req, res) => {
   try {
     const whishlistData = await wishlistCollection
       .find({ userId: req.session?.user._id })
@@ -10,11 +10,11 @@ const wishlistGetPAge = async (req, res, next) => {
 
     res.render("userPage/wishlist", { whishlistData });
   } catch (error) {
-    next(new AppError("Something went wrong Whilshlist", 500));
+    console.log(error.message);
   }
 };
 
-const productAddToWishlist = async (req, res, next) => {
+const productAddToWishlist = async (req, res) => {
   try {
     let newWishlist = new wishlistCollection({
       userId: req.session?.user._id,
@@ -32,11 +32,11 @@ const productAddToWishlist = async (req, res, next) => {
       res.send({ alreadyExsist: true });
     }
   } catch (error) {
-    next(new AppError("Something went wrong Whilshlist", 500));
+    console.log(error.message);
   }
 };
 
-const addingProductFromWhishlist = async (req, res, next) => {
+const addingProductFromWhishlist = async (req, res) => {
   try {
     const currentUserId = req.session.user._id;
     const productId = req.query.id;
@@ -83,17 +83,17 @@ const addingProductFromWhishlist = async (req, res, next) => {
       }
     }
   } catch (error) {
-    next(new AppError("Something went wrong Whilshlist", 500));
+    console.log(error.message);
   }
 };
 
-const deleteProductWhishlist = async (req, res, next) => {
+const deleteProductWhishlist = async (req, res) => {
   try {
     await wishlistCollection.deleteOne({ _id: req.query.id });
 
     res.send({ success: true });
   } catch (error) {
-    next(new AppError("Something went wrong Whilshlist", 500));
+    console.log(error.message);
   }
 };
 

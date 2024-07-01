@@ -1,7 +1,7 @@
 const offerProductCollection = require("../models/productOfferModel");
 const productCollection = require("../models/productModel");
-const AppError = require("../middleware/errorHandling");
-const productOfferGetPage = async (req, res, next) => {
+// const AppError = require("../middleware/errorHandling");
+const productOfferGetPage = async (req, res) => {
   try {
     let offerData = await offerProductCollection.find();
 
@@ -15,11 +15,11 @@ const productOfferGetPage = async (req, res, next) => {
 
     res.render("adminPage/productOffer", { offerData, totalPages });
   } catch (error) {
-    next(new AppError("Something went wrong ProdcutOfferPage", 500));
+    console.log(error.message);
   }
 };
 
-const productOfferAdding = async (req, res, next) => {
+const productOfferAdding = async (req, res) => {
   try {
     const prodictExsist = await productCollection.findOne({
       productName: req.body.productName,
@@ -58,11 +58,11 @@ const productOfferAdding = async (req, res, next) => {
       res.send({ notExsist: true });
     }
   } catch (error) {
-    next(new AppError("Something went wrong ProdcutOfferPage", 500));
+    console.log(error.message);
   }
 };
 
-const prodcutEditOffer = async (req, res, next) => {
+const prodcutEditOffer = async (req, res) => {
   try {
     const prodcutExsist = await offerProductCollection.findOne({
       productName: req.body.productName,
@@ -84,7 +84,7 @@ const prodcutEditOffer = async (req, res, next) => {
 
     res.send({ success: true });
   } catch (error) {
-    next(new AppError("Something went wrong ProdcutOfferPage", 500));
+    console.log(error.message);
   }
 };
 

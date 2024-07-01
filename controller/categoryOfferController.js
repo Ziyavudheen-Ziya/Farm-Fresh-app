@@ -1,8 +1,8 @@
 const categoryCollection = require("../models/categoryModel");
 const categoryOfferCollection = require("../models/categoryOfferModel");
 const productCollection = require("../models//productModel");
-const AppError = require("../middleware/errorHandling");
-const categoryOfferGetPage = async (req, res, next) => {
+// const AppError = require("../middleware/errorHandling");
+const categoryOfferGetPage = async (req, res) => {
   try {
     let categoryOfferData = await categoryOfferCollection.find();
 
@@ -15,11 +15,11 @@ const categoryOfferGetPage = async (req, res, next) => {
 
     res.render("adminPage/categoryOffer", { categoryOfferData, totalPages });
   } catch (error) {
-    next(new AppError("Something went wrong CategoryOfferPage", 500));
+    console.log(error.message);
   }
 };
 
-const categoryAdding = async (req, res, next) => {
+const categoryAdding = async (req, res) => {
   try {
     console.log(req.body.categoryName);
     console.log(req.body.productOfferAmount);
@@ -57,11 +57,11 @@ const categoryAdding = async (req, res, next) => {
       res.send({ categoryNotExsist: true });
     }
   } catch (error) {
-    next(new AppError("Something went wrong CategoryOfferPage", 500));
+    console.log(error.message);
   }
 };
 
-const categoryOfferEdited = async (req, res, next) => {
+const categoryOfferEdited = async (req, res) => {
   try {
     // console.log("data comming", req.body.productOfferAmount);
     // console.log("data comming", req.body.startDate);
@@ -89,7 +89,7 @@ const categoryOfferEdited = async (req, res, next) => {
 
     await res.send({ success: true });
   } catch (error) {
-    next(new AppError("Something went wrong CategoryOfferPage", 500));
+    console.log(error.message);
   }
 };
 

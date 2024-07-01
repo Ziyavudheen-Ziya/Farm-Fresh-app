@@ -9,9 +9,9 @@ const walletCollection = require("../models/walletModel.js");
 const coupanCollection = require("../models/coupanModel.js");
 const { _makeLong } = require("path");
 const offerProductCollection = require("../models/productOfferModel.js");
-const AppError = require("../middleware/errorHandling.js");
+// const AppError = require("../middleware/errorHandling.js");
 const Razorpay = require("razorpay");
-const checkOutPage = async (req, res, next) => {
+const checkOutPage = async (req, res) => {
   try {
     let grandTotal = 0;
      req.session.grandTotal = grandTotal
@@ -47,12 +47,11 @@ const checkOutPage = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
 
 // Ivadayanne nammal change cheythutullathe
-const failureCheck = async (req, res, next) => {
+const failureCheck = async (req, res) => {
   try {
     const userId = req.session?.user._id;
     const orderValueGenerate = Math.floor(10 + Math.random() * 90);
@@ -90,11 +89,10 @@ const failureCheck = async (req, res, next) => {
     res.render("userPage/paymentErrorPage");
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
 
-const checkOutSave = async (req, res, next) => {
+const checkOutSave = async (req, res) => {
   try {
     let paymentCOD = req.query.paymentCOD;
 
@@ -146,11 +144,10 @@ const checkOutSave = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
 
-const razorPaying = async (req, res, next) => {
+const razorPaying = async (req, res) => {
   try {
     console.log(`razorpay comming ${req?.query?.paymentRazorPay}`);
 
@@ -174,11 +171,10 @@ const razorPaying = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
 
-const orderPlacingRazorpay = async (req, res, next) => {
+const orderPlacingRazorpay = async (req, res) => {
   try {
     const userId = req.session?.user._id;
     const orderValueGenerate = Math.floor(10 + Math.random() * 90);
@@ -217,11 +213,10 @@ const orderPlacingRazorpay = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
 
-const walletPayment = async (req, res, next) => {
+const walletPayment = async (req, res) => {
   try {
     const cartData = await cartCollection
       .find({ userId: req.session?.user })
@@ -281,11 +276,10 @@ const walletPayment = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
 
-const orderGetPage = async (req, res, next) => {
+const orderGetPage = async (req, res) => {
   try {
     let orderNumber = req?.session?.orderNUmber;
 
@@ -317,11 +311,10 @@ const orderGetPage = async (req, res, next) => {
       .populate("productId");
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
 
-const checkingEmpty = async (req, res, next) => {
+const checkingEmpty = async (req, res) => {
   try {
     const cartChecking = await cartCollection.find();
 
@@ -331,11 +324,10 @@ const checkingEmpty = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
 
-const stockDecreasing = async (req, res, next) => {
+const stockDecreasing = async (req, res) => {
   try {
     //   let productQuantity = req.query.id;
     //   let productId = req.query.productId;
@@ -360,10 +352,9 @@ const stockDecreasing = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong CheckoutPage", 500));
   }
 };
-const coupanAdding = async (req, res, next) => {
+const coupanAdding = async (req, res) => {
   try {
     // let total = parseFloat(req.query.grandTotal);
 
@@ -409,7 +400,6 @@ const coupanAdding = async (req, res, next) => {
     }
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong on the Checkout Page", 500));
   }
 };
 

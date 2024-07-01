@@ -1,6 +1,6 @@
 const walletCollection = require("../models/walletModel");
-const AppError = require("../middleware/errorHandling");
-const walletGetPage = async (req, res, next) => {
+// const AppError = require("../middleware/errorHandling");
+const walletGetPage = async (req, res) => {
   try {
     //  let userId =req.session?.user
     let userLogged = req.session?.user;
@@ -26,7 +26,7 @@ const walletGetPage = async (req, res, next) => {
       totalPages,
     });
   } catch (error) {
-    next(new AppError("Something went wrong Wallet", 500));
+    console.log(error.message);
   }
 };
 

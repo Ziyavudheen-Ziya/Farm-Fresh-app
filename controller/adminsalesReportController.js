@@ -5,9 +5,9 @@ const { start } = require("repl");
 const PDFDocument = require("pdfkit");
 const ExcelJS = require("exceljs");
 const formatDate = require("../helper/formmerDataHelper");
-const AppError = require("../middleware/errorHandling");
+// const AppError = require("../middleware/errorHandling");
 
-const salesGetPage = async (req, res, next) => {
+const salesGetPage = async (req, res) => {
   try {
     let salesData = [];
     let grandTotal = 0;
@@ -42,11 +42,11 @@ const salesGetPage = async (req, res, next) => {
 
     res.render("adminPage/salesReport", { salesData, grandTotal, dateValues });
   } catch (error) {
-    next(new AppError("Something went wrong adminSalesPage", 500));
+    console.log(error.message);
   }
 };
 
-const salesReportFiltered = async (req, res, next) => {
+const salesReportFiltered = async (req, res) => {
   try {
     const startDate = new Date(req.body.startDate);
     const endDate = new Date(req.body.endDate);
@@ -88,11 +88,11 @@ const salesReportFiltered = async (req, res, next) => {
     res.json({ success: true });
     console.log("data passed successfully");
   } catch (error) {
-    next(new AppError("Something went wrong adminSalesPage", 500));
+    console.log(error.message);
   }
 };
 
-const salesReportFilteredLong = async (req, res, next) => {
+const salesReportFilteredLong = async (req, res) => {
   try {
     const filterOption = req.body.filterOption;
 
@@ -140,11 +140,11 @@ const salesReportFilteredLong = async (req, res, next) => {
 
     res.json({ success: true });
   } catch (error) {
-    next(new AppError("Something went wrong adminSalesPage", 500));
+    console.log(error.message);
   }
 };
 
-const generatingPdf = async (req, res, next) => {
+const generatingPdf = async (req, res) => {
   try {
     const salesData = await orderCollection
       .find({})
@@ -220,11 +220,11 @@ const generatingPdf = async (req, res, next) => {
 
     doc.end();
   } catch (error) {
-    next(new AppError("Something went wrong adminSalesPage", 500));
+    console.log(error.message);
   }
 };
 
-const salesReportSheet = async (req, res, next) => {
+const salesReportSheet = async (req, res) => {
   try {
     const salesData = await orderCollection
       .find({})
@@ -289,7 +289,7 @@ const salesReportSheet = async (req, res, next) => {
     await workbook.xlsx.write(res);
     res.end();
   } catch (error) {
-    next(new AppError("Something went wrong adminSalesPage", 500));
+    console.log(error.message);
   }
 };
 
