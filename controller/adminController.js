@@ -157,7 +157,7 @@ const topSellingCategory = async (req, res, next) => {
   }
 };
 
-const dashboardData = async (req, res, next) => {
+const dashboardData = async (req, res) => {
   try {
     const [
       productsCount,
@@ -193,7 +193,6 @@ const dashboardData = async (req, res, next) => {
 
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong on adminPage", 500));
   }
 };
 
