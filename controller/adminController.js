@@ -41,13 +41,13 @@ const dashboardGetPage = async (req, res) => {
 
 
 
-const admincheck = async (req, res, ) => {
+const admincheck = async (req, res ) => {
   try {
    
     if (adminMail === req.body.email && adminPass === req.body.password) {
       
 
-      res.redirect("/dashboardGetPage");
+      res.redirect("/getPageDashboard");
     } else {
       
       res.redirect("/admin");

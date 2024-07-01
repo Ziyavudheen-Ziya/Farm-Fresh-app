@@ -8,12 +8,11 @@ const adminRouter = express.Router();
 const uploads = require("../services/multer.js");
 const prodcutOfferController = require('../controller/productOfferManagment.js')
 const categoryOfferCollection = require('../controller/categoryOfferController.js')
-
 const salesController = require('../controller/adminsalesReportController.js')
-// const adminIsActive = require('../middleware/adminAuth.js')
+
 
 adminRouter.get("/admin", adminController.adminLoginPage);
-adminRouter.get('/dashboardGetPage',adminController.dashboardGetPage)
+adminRouter.get('/getPageDashboard',adminController.dashboardGetPage)
 adminRouter.post("/dashbord", adminController.admincheck);
 adminRouter.get('/dashboardData',adminController.dashboardData)
 
