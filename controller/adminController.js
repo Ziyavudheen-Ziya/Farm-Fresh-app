@@ -30,7 +30,7 @@ const adminLoginPage = async (req, res) => {
 const dashboardGetPage = async (req, res) => {
   try {
       console.log('req entered dashboard')
-      res.status(200).render("adminPage/adminDashboard");
+      res.render("adminPage/adminDashboard");
 
     
   } catch (error) {
