@@ -1,6 +1,6 @@
 const userCollection = require("../models/userModel.js");
 const cartCollecction = require("../models/cartModel.js");
-const AppError = require("../middleware/errorHandling.js");
+// const AppError = require("../middleware/errorHandling.js");
 const orderCollection = require("../models/orderModel.js");
 const productCollection = require("../models/productModel.js");
 const categoryCollection = require("../models/categoryModel.js");
@@ -8,7 +8,7 @@ const dashboard = require("../services/dashboardChart.js");
 let adminMail = process.env.Admin_Mail;
 let adminPass = process.env.Admin_Pass;
 
-const adminLoginPage = async (req, res, next) => {
+const adminLoginPage = async (req, res) => {
   try {
 
    
@@ -23,7 +23,6 @@ const adminLoginPage = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong adminPage", 500));
   }
 };
 
@@ -42,7 +41,7 @@ const dashboardGetPage = async (req, res) => {
 
 
 
-const admincheck = async (req, res, next) => {
+const admincheck = async (req, res, ) => {
   try {
    
     if (adminMail === req.body.email && adminPass === req.body.password) {
@@ -56,11 +55,10 @@ const admincheck = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong adminPage", 500));
   }
 };
 
-const userdetails = async (req, res, next) => {
+const userdetails = async (req, res) => {
   try {
     let userData = await userCollection.find();
 
@@ -75,11 +73,10 @@ const userdetails = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong adminPage", 500));
   }
 };
 
-const blockUser = async (req, res, next) => {
+const blockUser = async (req, res) => {
   try {
     await userCollection.updateOne(
       { _id: req.query.id },
@@ -90,11 +87,10 @@ const blockUser = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong adminPage", 500));
   }
 };
 
-const unBlockUser = async (req, res, next) => {
+const unBlockUser = async (req, res) => {
   try {
     await userCollection.updateOne(
       { _id: req.query.id },
@@ -105,22 +101,20 @@ const unBlockUser = async (req, res, next) => {
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong adminPage", 500));
   }
 };
 
-const logoutPage = async (req, res, next) => {
+const logoutPage = async (req, res) => {
   try {
    
     res.redirect("/admin");
   } catch (error) {
     console.log(error.message);
 
-    next(new AppError("Something went wrong adminPage", 500));
   }
 };
 
-const topSellingProducts = async (req, res, next) => {
+const topSellingProducts = async (req, res) => {
   try {
     const topProducts = await productCollection
       .find(
@@ -139,11 +133,10 @@ const topSellingProducts = async (req, res, next) => {
     res.render("adminPage/topProducts", { topProducts });
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong adminPage", 500));
   }
 };
 
-const topSellingCategory = async (req, res, next) => {
+const topSellingCategory = async (req, res) => {
   try {
     const topCategory = await categoryCollection
       .find({}, { categoryname: 1, categoryStockSold: 1 })
@@ -153,7 +146,6 @@ const topSellingCategory = async (req, res, next) => {
     res.render("adminPage/topCategory", { topCategory });
   } catch (error) {
     console.log(error.message);
-    next(new AppError("Something went wrong on adminPage", 500));
   }
 };
 
