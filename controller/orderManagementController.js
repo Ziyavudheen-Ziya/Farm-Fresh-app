@@ -5,14 +5,14 @@ const walletColletion = require("../models/walletModel");
 const userCollecction = require("../models/userModel");
 const productCollection = require("../models/productModel");
 const mongoose = require("mongoose");
-// const AppError = require("../middleware/errorHandling");
+const AppError = require("../middleware/errorHandling");
 const { generateVoice } = require("../services/generatePdf");
 
-const myOrdersPage = async (req, res) => {
+const myOrdersPage = async (req, res, next) => {
   try {
-    let orderData = await orderCollection.find({ userId: req.session.user }).sort({_id:-1
-      
-    })
+    let orderData = await orderCollection
+      .find({ userId: req.session.user })
+      .sort({ _id: -1 });
 
     const orderPerPage = 8;
     const totalPages = Math.ceil(orderData.length / orderPerPage);
@@ -28,11 +28,13 @@ const myOrdersPage = async (req, res) => {
       currentPage: pageNo,
     });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.mesaage);
   }
 };
 
-const userOrderCancelled = async (req, res) => {
+const userOrderCancelled = async (req, res, next) => {
   try {
     let paymentTypeCheck = await orderCollection.findOne({ _id: req.query.id });
 
@@ -93,11 +95,13 @@ const userOrderCancelled = async (req, res) => {
 
     res.send({ cancelled: true });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const returnUser = async (req, res) => {
+const returnUser = async (req, res, next) => {
   try {
     let paymentTypeCheck = await orderCollection.findOne({ _id: req.query.id });
 
@@ -154,11 +158,13 @@ const returnUser = async (req, res) => {
 
     res.send({ return: true });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const orderDetailsSingleUser = async (req, res) => {
+const orderDetailsSingleUser = async (req, res, next) => {
   try {
     let orderId = req.query.id;
 
@@ -234,18 +240,19 @@ const singleProductCancel = async (req, res, next) => {
 
     res.send({ success: true });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const downloadInvoice = async (req, res) => {
+const downloadInvoice = async (req, res, next) => {
   try {
     console.log("Entering the download invoice page");
     let orderDetails = await orderCollection
       .findOne({ _id: req.params.id })
       .populate("addressChosen")
-      .populate('coupanApplied')
-      
+      .populate("coupanApplied");
 
     console.log("Order details:", orderDetails);
 
@@ -262,7 +269,7 @@ const downloadInvoice = async (req, res) => {
 
     console.log("Generated invoice");
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
     console.log(error.message);
   }
 };

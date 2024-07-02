@@ -9,16 +9,17 @@ const walletCollection = require("../models/walletModel.js");
 const coupanCollection = require("../models/coupanModel.js");
 const { _makeLong } = require("path");
 const offerProductCollection = require("../models/productOfferModel.js");
-// const AppError = require("../middleware/errorHandling.js");
+const AppError = require("../middleware/errorHandling.js");
 const Razorpay = require("razorpay");
-const checkOutPage = async (req, res) => {
+
+const checkOutPage = async (req, res, next) => {
   try {
     let grandTotal = 0;
-     req.session.grandTotal = grandTotal
+    req.session.grandTotal = grandTotal;
     const adrressData = await profileCollectionn.find({
       user_id: req.session?.user,
     });
-    
+
     const cartData = await cartCollection
       .find({ userId: req.session?.user })
       .populate("productId");
@@ -26,9 +27,7 @@ const checkOutPage = async (req, res) => {
     cartData.forEach((value) => {
       grandTotal += value.totalCostProduct;
     });
-     
 
-    
     const cartChecking = await cartCollection
       .find({ userId: req.session?.user })
       .populate("productId");
@@ -45,13 +44,13 @@ const checkOutPage = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-// Ivadayanne nammal change cheythutullathe
-const failureCheck = async (req, res) => {
+const failureCheck = async (req, res, next) => {
   try {
     const userId = req.session?.user._id;
     const orderValueGenerate = Math.floor(10 + Math.random() * 90);
@@ -84,15 +83,15 @@ const failureCheck = async (req, res) => {
 
     await orderCollection(orderDetails).save();
 
-    console.log("Pakka working");
-
     res.render("userPage/paymentErrorPage");
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const checkOutSave = async (req, res) => {
+const checkOutSave = async (req, res, next) => {
   try {
     let paymentCOD = req.query.paymentCOD;
 
@@ -123,7 +122,7 @@ const checkOutSave = async (req, res) => {
         addressChosen: req.body.selectAddressValue,
         cartData: JSON.parse(JSON.stringify(cartData)),
         grandTotalCost: req.body.grandTotalCheckout,
-        coupanApplied: req.session.coupanId || null
+        coupanApplied: req.session.coupanId || null,
       });
 
       newOrder.cartData.forEach((item) => {
@@ -142,12 +141,13 @@ const checkOutSave = async (req, res) => {
       res.send({ limitExceededForCOD: true });
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const razorPaying = async (req, res) => {
+const razorPaying = async (req, res, next) => {
   try {
     console.log(`razorpay comming ${req?.query?.paymentRazorPay}`);
 
@@ -170,11 +170,13 @@ const razorPaying = async (req, res) => {
       res.json({ success: true, orderId: order.id });
     });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const orderPlacingRazorpay = async (req, res) => {
+const orderPlacingRazorpay = async (req, res, next) => {
   try {
     const userId = req.session?.user._id;
     const orderValueGenerate = Math.floor(10 + Math.random() * 90);
@@ -201,7 +203,7 @@ const orderPlacingRazorpay = async (req, res) => {
       cartData: userCartData,
       grandTotalCost: grandTotalCheckout,
       paymentId: razorpayId,
-      coupanApplied:req.session.coupanId || null
+      coupanApplied: req.session.coupanId || null,
     };
 
     // req.session.orderNUmber = orderNumber;
@@ -211,12 +213,13 @@ const orderPlacingRazorpay = async (req, res) => {
 
     res.redirect("/orderSuccessPage");
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const walletPayment = async (req, res) => {
+const walletPayment = async (req, res, next) => {
   try {
     const cartData = await cartCollection
       .find({ userId: req.session?.user })
@@ -242,7 +245,7 @@ const walletPayment = async (req, res) => {
           addressChosen: req.body.selectAddressValue,
           cartData: JSON.parse(JSON.stringify(cartData)),
           grandTotalCost: req.body.grandTotalCheckout,
-          coupanApplied:req.session.coupanId || null
+          coupanApplied: req.session.coupanId || null,
         });
 
         let successedOrder = await newOrder.save();
@@ -274,12 +277,13 @@ const walletPayment = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const orderGetPage = async (req, res) => {
+const orderGetPage = async (req, res, next) => {
   try {
     let orderNumber = req?.session?.orderNUmber;
 
@@ -310,11 +314,13 @@ const orderGetPage = async (req, res) => {
       .deleteMany({ userId: req.session?.user })
       .populate("productId");
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const checkingEmpty = async (req, res) => {
+const checkingEmpty = async (req, res, next) => {
   try {
     const cartChecking = await cartCollection.find();
 
@@ -322,12 +328,13 @@ const checkingEmpty = async (req, res) => {
       res.send({ empty: true });
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const stockDecreasing = async (req, res) => {
+const stockDecreasing = async (req, res, next) => {
   try {
     //   let productQuantity = req.query.id;
     //   let productId = req.query.productId;
@@ -350,15 +357,16 @@ const stockDecreasing = async (req, res) => {
 
     res.send({ sucesss: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
-const coupanAdding = async (req, res) => {
+const coupanAdding = async (req, res, next) => {
   try {
     // let total = parseFloat(req.query.grandTotal);
 
-   let total = req.session.grandTotal
+    let total = req.session.grandTotal;
     let coupanId = req.query.id;
 
     let coupon = await coupanCollection.findOne({ _id: coupanId });
@@ -368,7 +376,7 @@ const coupanAdding = async (req, res) => {
     }
 
     let coupanAmount = coupon.coupanAmount;
-     let totalValue = total - coupanAmount
+    let totalValue = total - coupanAmount;
 
     let coupanAlreadyUsed = await coupanCollection.findOne({
       _id: coupanId,
@@ -378,7 +386,7 @@ const coupanAdding = async (req, res) => {
     if (!coupanAlreadyUsed) {
       await cartCollection.updateOne(
         { userId: req.session.user._id },
-        { $inc: { totalCostProduct:totalValue  } }
+        { $inc: { totalCostProduct: totalValue } }
       );
 
       await coupanCollection.updateOne(
@@ -386,19 +394,20 @@ const coupanAdding = async (req, res) => {
         { $push: { usedUsers: req.session.user._id } }
       );
 
-       req.session.coupanId = coupanId
+      req.session.coupanId = coupanId;
       // await orderCollection.updateOne(
       //   { _id: req.session.orderDetails },
-        
+
       //   { $inc: { grandTotalCost: req.session.grandTotal } }
       // );
 
-      
       res.send({ success: true });
     } else {
       res.send({ alreadyUsed: true });
     }
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };

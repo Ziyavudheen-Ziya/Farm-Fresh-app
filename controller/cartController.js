@@ -6,8 +6,9 @@ const { find } = require("../models/otpModel.js");
 const { getRounds } = require("bcrypt");
 const razorpay = require("../services/razorpay.js");
 const offerProductCollection = require("../models/productOfferModel.js");
-// const AppError = require("../middleware/errorHandling.js");
-const cartPage = async (req, res) => {
+const AppError = require("../middleware/errorHandling.js");
+
+const cartPage = async (req, res, next) => {
   try {
     let TotalCost = 0;
 
@@ -45,11 +46,13 @@ const cartPage = async (req, res) => {
 
     res.render("userPage/cart", { cartData, TotalCost });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const addingCart = async (req, res) => {
+const addingCart = async (req, res, next) => {
   try {
     const currentUserId = req.session.user._id;
 
@@ -111,12 +114,13 @@ const addingCart = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const minimumQuantity = async (req, res) => {
+const minimumQuantity = async (req, res, next) => {
   try {
     const productData = await productCollection.findOne({ _id: req.query.id });
     const cartData = await cartCollection.findOne({ productId: req.query.id });
@@ -165,11 +169,13 @@ const minimumQuantity = async (req, res) => {
       return res.send({ minimum: true });
     }
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const maximumQuantity = async (req, res) => {
+const maximumQuantity = async (req, res, next) => {
   try {
     const product = await productCollection.findOne({ _id: req.query.id });
     const cartData = await cartCollection.findOne({ productId: req.query.id });
@@ -218,11 +224,13 @@ const maximumQuantity = async (req, res) => {
       return res.send({ maximum: true });
     }
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const deletingProdcut = async (req, res) => {
+const deletingProdcut = async (req, res, next) => {
   try {
     const Id = req.query.id;
 
@@ -230,6 +238,8 @@ const deletingProdcut = async (req, res) => {
 
     res.send({ success: true });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };

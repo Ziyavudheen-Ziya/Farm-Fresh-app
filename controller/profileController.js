@@ -5,8 +5,9 @@ const { logOutting } = require("./userController.js");
 const bcrypt = require("bcrypt");
 const cartCollecction = require("../models/cartModel.js");
 const walletCollection = require("../models/walletModel.js");
-// const AppError = require("../middleware/errorHandling.js");
-const profilePage = async (req, res) => {
+const AppError = require("../middleware/errorHandling.js");
+
+const profilePage = async (req, res, next) => {
   try {
     const userData = await userCollection.findOne({ _id: req.session?.user });
     const referalCode = userData?.referalCode;
@@ -25,19 +26,23 @@ const profilePage = async (req, res) => {
       });
     }
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const addAddressPage = async (req, res) => {
+const addAddressPage = async (req, res, next) => {
   try {
     res.render("userPage/addAdress");
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const newAddress = async (req, res) => {
+const newAddress = async (req, res, next) => {
   try {
     const ID = req.session?.user._id;
 
@@ -64,11 +69,13 @@ const newAddress = async (req, res) => {
       res.send({ success: true });
     }
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const myAddressPage = async (req, res) => {
+const myAddressPage = async (req, res, next) => {
   try {
     const userData = await userCollection.find({
       _id: req?.session?.user?._id,
@@ -80,21 +87,25 @@ const myAddressPage = async (req, res) => {
 
     res.render("userPage/myAdress", { addressData });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const editAddressPage = async (req, res) => {
+const editAddressPage = async (req, res, next) => {
   try {
     const addressData = await profileCollection.findOne({ _id: req.params.id });
 
     res.render("userPage/editAddress", { addressData });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const editAndUpdate = async (req, res) => {
+const editAndUpdate = async (req, res, next) => {
   try {
     const addressExsist = await profileCollection.findOne({
       _id: req.params.id,
@@ -121,11 +132,13 @@ const editAndUpdate = async (req, res) => {
       res.send({ success: true });
     }
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const deletingAddress = async (req, res) => {
+const deletingAddress = async (req, res, next) => {
   try {
     const ID = req.query.id;
 
@@ -133,11 +146,13 @@ const deletingAddress = async (req, res) => {
 
     res.send({ deleted: true });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const editPageProfile = async (req, res) => {
+const editPageProfile = async (req, res, next) => {
   try {
     const userData = req.session?.user;
 
@@ -145,11 +160,13 @@ const editPageProfile = async (req, res) => {
 
     res.render("userPage/editProfile", { data });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const editProfileUser = async (req, res) => {
+const editProfileUser = async (req, res, next) => {
   try {
     const { name, phone, email, userId } = req.body;
 
@@ -161,19 +178,23 @@ const editProfileUser = async (req, res) => {
 
     res.send({ success: true });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const changePasswordGetPage = async (req, res) => {
+const changePasswordGetPage = async (req, res, next) => {
   try {
     res.render("userPage/changePassword");
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const passwordUpdating = async (req, res) => {
+const passwordUpdating = async (req, res, next) => {
   try {
     const bcryptPassword = bcrypt.hashSync(req.body.confirmPassword, 10);
 
@@ -190,6 +211,8 @@ const passwordUpdating = async (req, res) => {
       res.send({ success: true });
     }
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };

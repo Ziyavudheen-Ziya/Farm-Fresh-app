@@ -1,64 +1,57 @@
 const userCollection = require("../models/userModel.js");
 const cartCollecction = require("../models/cartModel.js");
-// const AppError = require("../middleware/errorHandling.js");
 const orderCollection = require("../models/orderModel.js");
 const productCollection = require("../models/productModel.js");
 const categoryCollection = require("../models/categoryModel.js");
 const dashboard = require("../services/dashboardChart.js");
 let adminMail = process.env.Admin_Mail;
 let adminPass = process.env.Admin_Pass;
+const AppError = require("../middleware/errorHandling.js");
 
-const adminLoginPage = async (req, res) => {
+const adminLoginPage = async (req, res, next) => {
   try {
-
-   
-   
-
-     
-
-   
-      res.render("adminPage/adminLogin");
-
-    
-  } catch (error) {
-    console.log(error.message);
-
-  }
-};
-
-
-const dashboardGetPage = async (req, res) => {
-  try {
-      console.log('req entered dashboard')
-      res.render("adminPage/adminDashboard");
-
-    
-  } catch (error) {
-    console.log(error.message);
-
-  }
-};
-
-
-
-const admincheck = async (req, res ) => {
-  try {
-   
-    if (adminMail === req.body.email && adminPass === req.body.password) {
-      
-
+    if (req.session.admin) {
       res.redirect("/getPageDashboard");
     } else {
-      
+      res.render("adminPage/adminLogin");
+    }
+  } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
+    console.log(error.message);
+  }
+};
+
+const dashboardGetPage = async (req, res, next) => {
+  try {
+    if (req.session.admin) {
+      res.render("adminPage/adminDashboard");
+    } else {
       res.redirect("/admin");
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const userdetails = async (req, res) => {
+const admincheck = async (req, res, next) => {
+  try {
+    if (adminMail === req.body.email && adminPass === req.body.password) {
+      req.session.admin = true;
+      res.redirect("/getPageDashboard");
+    } else {
+      res.redirect("/admin");
+    }
+  } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
+    console.log(error.message);
+  }
+};
+
+const userdetails = async (req, res, next) => {
   try {
     let userData = await userCollection.find();
 
@@ -71,12 +64,13 @@ const userdetails = async (req, res) => {
 
     res.render("adminPage/userDetails", { userData, totalPages });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const blockUser = async (req, res) => {
+const blockUser = async (req, res, next) => {
   try {
     await userCollection.updateOne(
       { _id: req.query.id },
@@ -85,12 +79,13 @@ const blockUser = async (req, res) => {
     );
     res.send({ success: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const unBlockUser = async (req, res) => {
+const unBlockUser = async (req, res, next) => {
   try {
     await userCollection.updateOne(
       { _id: req.query.id },
@@ -99,22 +94,24 @@ const unBlockUser = async (req, res) => {
     );
     res.send({ success: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const logoutPage = async (req, res) => {
+const logoutPage = async (req, res, next) => {
   try {
-   
+    req.session.admin = false;
     res.redirect("/admin");
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const topSellingProducts = async (req, res) => {
+const topSellingProducts = async (req, res, next) => {
   try {
     const topProducts = await productCollection
       .find(
@@ -145,11 +142,13 @@ const topSellingCategory = async (req, res) => {
 
     res.render("adminPage/topCategory", { topCategory });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const dashboardData = async (req, res) => {
+const dashboardData = async (req, res, next) => {
   try {
     const [
       productsCount,
@@ -182,8 +181,9 @@ const dashboardData = async (req, res) => {
       shipping,
     };
     res.json(data);
-
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };

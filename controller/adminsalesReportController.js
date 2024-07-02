@@ -5,9 +5,9 @@ const { start } = require("repl");
 const PDFDocument = require("pdfkit");
 const ExcelJS = require("exceljs");
 const formatDate = require("../helper/formmerDataHelper");
-// const AppError = require("../middleware/errorHandling");
+const AppError = require("../middleware/errorHandling");
 
-const salesGetPage = async (req, res) => {
+const salesGetPage = async (req, res, next) => {
   try {
     let salesData = [];
     let grandTotal = 0;
@@ -19,7 +19,7 @@ const salesGetPage = async (req, res) => {
         (total, sale) => total + sale.grandTotalCost,
         0
       );
-      req.session.admin.salesData = null; // Clear the session data after use
+      req.session.admin.salesData = null;
     } else {
       salesData = await orderCollection
         .find()
@@ -42,19 +42,18 @@ const salesGetPage = async (req, res) => {
 
     res.render("adminPage/salesReport", { salesData, grandTotal, dateValues });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const salesReportFiltered = async (req, res) => {
+const salesReportFiltered = async (req, res, next) => {
   try {
     const startDate = new Date(req.body.startDate);
     const endDate = new Date(req.body.endDate);
 
     endDate.setHours(23, 59, 59, 999);
-
-    console.log("startDate coming", startDate);
-    console.log("endDate coming", endDate);
 
     const salesDataFiltered = await orderCollection
       .find({
@@ -83,20 +82,17 @@ const salesReportFiltered = async (req, res) => {
       salesData: salesDataFiltered,
     };
 
-    console.log("data is coming salesDataFiltered", req.session.admin);
-
     res.json({ success: true });
-    console.log("data passed successfully");
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const salesReportFilteredLong = async (req, res) => {
+const salesReportFilteredLong = async (req, res, next) => {
   try {
     const filterOption = req.body.filterOption;
-
-    console.log("filter option", filterOption);
 
     const today = new Date();
     let startDate;
@@ -140,11 +136,13 @@ const salesReportFilteredLong = async (req, res) => {
 
     res.json({ success: true });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const generatingPdf = async (req, res) => {
+const generatingPdf = async (req, res, next) => {
   try {
     const salesData = await orderCollection
       .find({})
@@ -172,12 +170,10 @@ const generatingPdf = async (req, res) => {
     doc.on("data", (chunk) => res.write(chunk));
     doc.on("end", () => res.end());
 
-    doc
-      .fontSize(20)
-      .text("Sales Report Farm Fresh", 110, 57, {
-        align: "center",
-        underline: true,
-      });
+    doc.fontSize(20).text("Sales Report Farm Fresh", 110, 57, {
+      align: "center",
+      underline: true,
+    });
     doc.moveDown();
 
     doc
@@ -220,11 +216,13 @@ const generatingPdf = async (req, res) => {
 
     doc.end();
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const salesReportSheet = async (req, res) => {
+const salesReportSheet = async (req, res, next) => {
   try {
     const salesData = await orderCollection
       .find({})
@@ -289,6 +287,8 @@ const salesReportSheet = async (req, res) => {
     await workbook.xlsx.write(res);
     res.end();
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };

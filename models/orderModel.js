@@ -1,64 +1,55 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const orderSchema = new mongoose.Schema({
-
-   userId: {
-
+const orderSchema = new mongoose.Schema(
+  {
+    userId: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: "users"
-   },
+      ref: "users",
+    },
 
-   orderNumber: {
+    orderNumber: {
       type: Number,
-      required: true
-   },
-   orderDate: {
+      required: true,
+    },
+    orderDate: {
       type: Date,
       required: true,
-      default: ()=>new Date()
-   },
-   paymentType: {
+      default: () => new Date(),
+    },
+    paymentType: {
       type: String,
-      default: 'toBeChosen'
-   },
-   orderStatus: {
+      default: "toBeChosen",
+    },
+    orderStatus: {
       type: String,
-      default: 'pending'
-   },
-   addressChosen: {
+      default: "pending",
+    },
+    addressChosen: {
       type: mongoose.Types.ObjectId,
       required: true,
-      ref: "address"
-   },
-   cartData: {
-      type: Array
-   },
-   grandTotalCost: {
+      ref: "address",
+    },
+    cartData: {
+      type: Array,
+    },
+    grandTotalCost: {
       type: Number,
+    },
+    paymentId: {
+      type: String,
+    },
 
-   },
-   paymentId: {
-      type: String
-   },
+    coupanApplied: {
+      type: mongoose.Types.ObjectId,
+      default: null,
+      ref: "coupan",
+    },
+  },
 
-   coupanApplied:{
-
-      type:mongoose.Types.ObjectId, 
-      default:null, 
-      ref:'coupan'
-
-   },
-
-   
-   
-},
-
-   { strictPopulate: false }
-
+  { strictPopulate: false }
 );
 
+const orderCollection = mongoose.model("orders", orderSchema);
 
-const orderCollection = mongoose.model('orders', orderSchema)
-
-module.exports = orderCollection
+module.exports = orderCollection;

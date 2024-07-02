@@ -3,8 +3,9 @@ const categoryCollection = require("../models/categoryModel.js");
 const { exists } = require("../models/userModel.js");
 const { errorMonitor } = require("nodemailer/lib/xoauth2/index.js");
 const cartCollecction = require("../models/categoryModel.js");
-// const AppError = require("../middleware/errorHandling.js");
-const productPage = async (req, res) => {
+const AppError = require("../middleware/errorHandling.js");
+
+const productPage = async (req, res, next) => {
   try {
     const orderPerPage = 8;
     const pageNo = parseInt(req.query.pageNo) || 1;
@@ -23,21 +24,25 @@ const productPage = async (req, res) => {
       currentPage: pageNo,
     });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const addProductPage = async (req, res) => {
+const addProductPage = async (req, res, next) => {
   try {
     const categoryData = await categoryCollection.find({ isListed: true });
 
     res.render("adminPage/addProduct", { categoryData });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const addProduct = async (req, res) => {
+const addProduct = async (req, res, next) => {
   try {
     let imgFiles = [];
     let parentCategoryParts = req.body.parentCategory.split(","); // Split categoryId and categoryName
@@ -92,12 +97,13 @@ const blockProduct = async (req, res, next) => {
 
     res.send({ block: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const unBlockProduct = async (req, res) => {
+const unBlockProduct = async (req, res, next) => {
   try {
     await productCollection.updateOne(
       { productName: req.query.id },
@@ -105,12 +111,13 @@ const unBlockProduct = async (req, res) => {
     );
     res.send({ unBlock: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const editPage = async (req, res) => {
+const editPage = async (req, res, next) => {
   try {
     console.log(`vanna vanilla ${req.params.id}`);
 
@@ -121,14 +128,13 @@ const editPage = async (req, res) => {
     });
 
     res.render("adminPage/editAddProduct", { categoryData, productData });
-
-    console.log("product sending");
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
-const editProduct = async (req, res) => {
+const editProduct = async (req, res, next) => {
   try {
     let imgFiles = [];
 
@@ -179,12 +185,13 @@ const editProduct = async (req, res) => {
       res.send({ success: true });
     }
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 
-const deleteProduct = async (req, res) => {
+const deleteProduct = async (req, res, next) => {
   try {
     const id = req.query.id;
 
@@ -192,10 +199,12 @@ const deleteProduct = async (req, res) => {
 
     res.send({ deleted: true });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
-const deleteImg = async (req, res) => {
+const deleteImg = async (req, res, next) => {
   try {
     await productCollection.updateOne(
       { _id: req.query.productId },
@@ -203,8 +212,9 @@ const deleteImg = async (req, res) => {
     );
     res.send({ deleted: true });
   } catch (error) {
-    console.log(error.message);
+    next(new AppError("Somthing went Wrong", 500));
 
+    console.log(error.message);
   }
 };
 

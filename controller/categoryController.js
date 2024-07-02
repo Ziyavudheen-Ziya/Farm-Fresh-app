@@ -1,9 +1,9 @@
 const categoryCollection = require("../models/categoryModel.js");
 const prodcutCollection = require("../models/productModel.js");
 const cartCollection = require("../models/cartModel.js");
-// const AppError = require("../middleware/errorHandling.js");
+const AppError = require("../middleware/errorHandling.js");
 
-const category = async (req, res) => {
+const category = async (req, res, next) => {
   try {
     let categoryData = await categoryCollection.find();
 
@@ -17,11 +17,13 @@ const category = async (req, res) => {
 
     res.render("adminPage/category", { Category: categoryData, totalPages });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const addcategory = async (req, res) => {
+const addcategory = async (req, res, next) => {
   try {
     console.log("entring 1");
     const newCategory = new categoryCollection({
@@ -39,8 +41,6 @@ const addcategory = async (req, res) => {
       newCategory.save();
       res.send({ success: true });
     }
-
-    console.log("entring 1");
   } catch (error) {
     console.log(error.message);
     next(new AppError("Something went wrong CategoryPage", 500));
@@ -58,14 +58,14 @@ const listCategory = async (req, res, next) => {
 
     res.send({ list: true });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const unListCategory = async (req, res) => {
+const unListCategory = async (req, res, next) => {
   try {
-    console.log("unlisted");
-
     await categoryCollection.updateOne(
       { categoryname: req.query.id },
       { $set: { isListed: true } }
@@ -73,13 +73,13 @@ const unListCategory = async (req, res) => {
 
     res.send({ unList: true });
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
 
-const editCategory = async (req, res) => {
-  console.log("entered");
-
+const editCategory = async (req, res, next) => {
   try {
     const catDetails = await categoryCollection.findOne({
       categoryname: {
@@ -110,6 +110,8 @@ const editCategory = async (req, res) => {
       res.send({ success: true });
     }
   } catch (error) {
+    next(new AppError("Somthing went Wrong", 500));
+
     console.log(error.message);
   }
 };
