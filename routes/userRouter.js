@@ -36,7 +36,7 @@ router.get(
 router.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://localhost:3000/loginpage",
+    failureRedirect: "http://farmfresh.icu/loginpage",
   }),
   userController.googleCallback
 );
