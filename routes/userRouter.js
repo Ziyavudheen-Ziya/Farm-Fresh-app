@@ -34,9 +34,9 @@ router.get(
   passport.authenticate("google", { scope: ["email", "profile"] })
 );
 router.get(
-  "/google/callback",
+  "/auth/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "http://farmfresh.icu/google/callback/loginpage",
+    failureRedirect: "https://farmfresh.icu/auth/google/callback/loginpage",
   }),
   userController.googleCallback
 );
