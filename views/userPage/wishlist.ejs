@@ -34,7 +34,7 @@
 
                 <tbody>
 
-                    <%whishlistData.forEach((data)=>{ %>
+                    <%whishlistData?.forEach((data)=>{ %>
 
                 
                     
@@ -43,20 +43,20 @@
                             <div class="product">
                                 <figure class="product-media">
                                     <a href="#">
-                                        <img src="/adminassets/uploads/<%=data.productId.productImage[0]%>" alt="Product image">
+                                        <img src="/adminassets/uploads/<%=data.productId?.productImage[0]%>" alt="Product image">
                                     </a>
                                 </figure>
 
                                 <h3 class="product-title">
-                                    <a href="#"><%=data.productId.productName%></a>
+                                    <a href="#"><%=data?.productId?.productName%></a>
                                 </h3><!-- End .product-title -->
                             </div><!-- End .product -->
                         </td>
 
 
-                        <td class="price-col">₹:<%=data.productId.productPrice%></td>
+                        <td class="price-col">₹:<%=data.productId?.productPrice%></td>
                           
-                             <%if(data.productId.productStock===0){%>
+                             <%if(data.productId?.productStock===0){%>
 
                                 <td class="stock-col"><span class="out-of-stock">Out of stock</span></td>
                           
@@ -66,11 +66,11 @@
                         <%}%>
 
                         <td class="action-col">
-                            <button onclick="addToCart('<%=data.productId._id%>')" class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to Cart</button>
+                            <button onclick="addToCart('<%=data?.productId._id%>')" class="btn btn-block btn-outline-primary-2"><i class="icon-cart-plus"></i>Add to Cart</button>
                         </td>
                       
                         
-                        <td class="remove-col"><button onclick="deleteWhishlist('<%=data._id%>')" class="btn-remove"><i class="icon-close"></i></button></td>
+                        <td class="remove-col"><button onclick="deleteWhishlist('<%=data?._id%>')" class="btn-remove"><i class="icon-close"></i></button></td>
                     </tr>
                         <%})%>
                     

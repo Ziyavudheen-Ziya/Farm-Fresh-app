@@ -209,6 +209,8 @@ const maximumQuantity = async (req, res, next) => {
         productId: req.query.id,
       });
       const updateTotalCoast = updateCartData.productQuantity * price;
+       
+       
 
       await cartCollection.updateOne(
         { productId: req.query.id },
